@@ -1,0 +1,57 @@
+version: "3.3"
+services:
+ backend:
+  depends_on:
+   - db
+  build: './webshop-api'
+  ports:
+   - 5000:5000
+  volumes:
+   - ./webshop-api:/api
+   - /api/node_modules
+  networks:
+   - backend
+   - database
+  env_file:
+   - ./webshop-api/.env
+ frontend:
+  build: './webshop-app'
+  ports:
+   - 3000:3000
+  volumes:
+   - ./webshop-app:/app
+   - /app/node_modules
+  networks:
+   - backend
+ db:
+  image: mysql:latest
+  ports:
+   - 3306:3306
+  volumes:
+   - db-data:/var/lib/mysql
+  networks:
+   - database
+  environment:
+   - MYSQL_ROOT_PASSWORD=123456
+   - MYSQL_DATABASE=webshop_db
+   - MYSQL_USER=hoaideptrai
+   - MYSQL_PASSWORD=123456
+ phpmyadmin:
+  depends_on:
+   - db
+  image: phpmyadmin/phpmyadmin
+  networks:
+   - database
+  ports:
+   - 8081:80
+  environment:
+   - PMA_HOST=db
+   - PMA_PORT=3306
+   - PMA_ARBITRARY=1
+volumes:
+ db-data:
+networks:
+ backend:
+  driver: bridge
+ database:
+  driver: bridge

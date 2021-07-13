@@ -1,0 +1,61 @@
+var convict = require('convict')
+
+var config = convict({
+	env: {
+		doc: 'The application environment.',
+		format: ['production', 'development', 'test'],
+		default: 'development',
+		env: 'NODE_ENV'
+	},
+	ip: {
+		doc: 'The IP address to bind.',
+		default: '127.0.0.1',
+		env: 'IP_ADDRESS',
+	},
+	port: {
+		doc: 'The port to bind.',
+		format: 'port',
+		default: 5000,
+		env: 'PORT',
+		arg: 'port'
+	},
+	db: {
+		host: {
+			doc: 'Database host name/IP',
+			format: '*',
+			default: 'server1.dev.test'
+		},
+		name: {
+			doc: 'Database name',
+			format: String,
+			default: 'users'
+		},
+		username: {
+			doc: 'Database username',
+			format: String,
+			default: 'admin'
+		},
+		password: {
+			doc: 'Database password for user',
+			format: String,
+			sensitive: true,
+			default: '123456',
+			env: 'DB_PASSWORD'
+		}
+	},
+	admins: {
+		doc: 'Users with write access, or null to grant full access without login.',
+		format: Array,
+		nullable: true,
+		default: null
+	}
+})
+
+// Load environment dependent configuration
+var env = config.get('env')
+config.loadFile('./configs/' + env + '.json')
+
+// Perform validation
+config.validate({ allowed: 'strict' })
+
+module.exports = config
