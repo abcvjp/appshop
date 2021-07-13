@@ -41,6 +41,24 @@ var config = convict({
 			sensitive: true,
 			default: '123456',
 			env: 'DB_PASSWORD'
+		},
+		pool: {
+			max: {
+				format: Number,
+				default: 10
+			},
+			min: {
+				format: Number,
+				default: 0
+			},
+			acquire: {
+				format: Number,
+				default: 30000
+			},
+			idle: {
+				format: Number,
+				default: 10000
+			}
 		}
 	},
 	admins: {

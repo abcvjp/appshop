@@ -22,7 +22,17 @@ services:
    - ./webshop-app:/app
    - /app/node_modules
   networks:
+   - frontend
+ proxy:
+  depends_on:
+   - frontend
    - backend
+  build: './proxy'
+  ports:
+   - 80:80
+  networks:
+   - backend
+   - frontend
  db:
   image: mysql:latest
   ports:
@@ -36,6 +46,8 @@ services:
    - MYSQL_DATABASE=webshop_db
    - MYSQL_USER=hoaideptrai
    - MYSQL_PASSWORD=123456
+  cap_add:
+   - CAP_SYS_NICE
  phpmyadmin:
   depends_on:
    - db
@@ -51,6 +63,8 @@ services:
 volumes:
  db-data:
 networks:
+ frontend:
+  driver: bridge
  backend:
   driver: bridge
  database:
