@@ -1,0 +1,1 @@
+export const isArrayEmpty = (arr) => (!((typeof arr !== 'undefined') && arr.length > 0))
