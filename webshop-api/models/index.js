@@ -1,45 +1,39 @@
-const config = require('../configs')
-const Sequelize = require('sequelize')
+'use strict';
 
-const UserModel = require('./user')
-const CategoryModel = require('./category')
-const OrderModel = require('./order')
-const OrderItemModel = require('./order_item')
-const PaymentMethodModel = require('./payment_method')
-const ShippingMethodModel = require('./shipping_method')
-const ProductModel = require('./product')
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const basename = path.basename(__filename);
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../configs/sequelize.json')[env];
+const db = {};
 
-const dbConfig = config.get('db')
-const sequelize = new Sequelize({
-	host: dbConfig.host,
-	dialect: 'mysql',
-	username: dbConfig.username,
-	password: dbConfig.password,
-	database: dbConfig.name,
-	pool: dbConfig.pool
-})
-
-const User = UserModel(sequelize, Sequelize)
-const Category = CategoryModel(sequelize, Sequelize)
-const Product = ProductModel(sequelize, Sequelize)
-const Order = OrderModel(sequelize, Sequelize)
-const OrderItem = OrderItemModel(sequelize, Sequelize)
-const PaymentMethod = PaymentMethodModel(sequelize, Sequelize)
-const ShippingMethod = ShippingMethodModel(sequelize, Sequelize)
-
-Category.belongsTo(Category, { foreignKey: 'parent_id' })
-OrderItem.belongsTo(Order, { foreignKey: 'order_id' })
-Order.belongsTo(PaymentMethod, { foreignKey: 'payment_method_id' })
-Order.belongsTo(ShippingMethod, { foreignKey: 'shipping_method_id' })
-Product.belongsTo(Category, { foreignKey: 'category_id' })
-
-
-sequelize.sync()
-	.then(() => {
-		console.log(`Database & tables created!`)
-	})
-
-module.exports = {
-	User,
-	Category
+let sequelize;
+if (config.use_env_variable) {
+	sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+	sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
+
+fs
+	.readdirSync(__dirname)
+	.filter(file => {
+		return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+	})
+	.forEach(file => {
+		const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+		db[model.name] = model;
+	});
+
+Object.keys(db).forEach(modelName => {
+	if (db[modelName].associate) {
+		db[modelName].associate(db);
+	}
+});
+
+// sequelize.sync({ alter: true })
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
