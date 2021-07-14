@@ -11,6 +11,19 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+    return queryInterface.bulkInsert('PaymentMethods', [{
+      name: 'COD',
+      detail: 'Thanh toán bằng tiền mặt khi nhận hàng',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      name: 'Chuyển khoản ngân hàng',
+      detail: 'Chuyển khoản ngân hàng tới nơi nào có em',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -20,5 +33,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
+    return queryInterface.bulkDelete('PaymentMethods', null, {});
   }
 };

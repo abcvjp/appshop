@@ -12,13 +12,44 @@ module.exports = {
      * }], {});
      * 
     */
-    await queryInterface.bulkInsert('Category', [
+    await queryInterface.bulkInsert('Categories', [
       {
-        name: 'Laptop',
-        description: 'Laptop description',
-        path: 'Laptop',
-        slug: 'laptop',
-        meta_title: 'Mua laptop gia re'
+        name: 'Thời trang nam',
+        description: 'Thời trang dành riêng cho nam giới',
+        path: 'Thời trang nam',
+        slug: 'thoi-trang-nam',
+        meta_title: 'Thời trang nam',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Thời trang nữ',
+        description: 'Thời trang dành riêng cho nữ giới',
+        path: 'Thời trang nữ',
+        slug: 'thoi-trang-nu',
+        meta_title: 'Thời trang nữ',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Áo khoác nam',
+        description: 'Áo khoác dành riêng cho nam giới',
+        path: 'Thời trang nam - Áo khoác nam',
+        slug: 'ao-khoac-nam',
+        meta_title: 'Áo khoác nam',
+        parent_id: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Váy nữ',
+        description: 'Váy dành riêng cho nữa giới',
+        path: 'Thời trang nữ - Váy nữ',
+        slug: 'vay-nu',
+        meta_title: 'Váy nữ',
+        parent_id: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ])
   },
@@ -30,6 +61,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkInsert('Category', null, {})
+    await queryInterface.bulkInsert('Categories', null, {})
   }
 };

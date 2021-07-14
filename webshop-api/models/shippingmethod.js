@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      ShippingMethod.hasMany(models.Order, { foreignKey: 'shipping_method_id' })
+      ShippingMethod.hasMany(models.Order, { foreignKey: { name: 'shipping_method_id', allowNull: false } })
     }
   };
   ShippingMethod.init({

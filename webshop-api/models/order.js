@@ -10,16 +10,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Order.hasMany(models.OrderItem, { foreignKey: 'order_id' })
-      Order.belongsTo(models.PaymentMethod, { foreignKey: 'payment_method_id' })
-      Order.belongsTo(models.ShippingMethod, { foreignKey: 'shipping_method_id' })
+      Order.hasMany(models.OrderItem, { foreignKey: { name: 'order_id', allowNull: false } })
+      Order.belongsTo(models.PaymentMethod, { foreignKey: { name: 'payment_method_id', allowNull: false } })
+      Order.belongsTo(models.ShippingMethod, { foreignKey: { name: 'shipping_method_id', allowNull: false } })
     }
   };
   Order.init({
     status: {
       type: DataTypes.STRING,
       allowNull: false,
-      default: "Chờ xác nhận"
+      defaultValue: "Chờ xác nhận"
     },
     cost: {
       type: DataTypes.DOUBLE,
@@ -31,12 +31,12 @@ module.exports = (sequelize, DataTypes) => {
     payment_status: {
       type: DataTypes.STRING,
       allowNull: false,
-      default: "Chưa thanh toán"
+      defaultValue: "Chưa thanh toán"
     },
     shipping_status: {
       type: DataTypes.STRING,
       allowNull: false,
-      default: "Chưa vận chuyển"
+      defaultValue: "Chưa vận chuyển"
     },
     customer_name: {
       type: DataTypes.STRING,
