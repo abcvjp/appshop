@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     title: {
       type: DataTypes.STRING,
@@ -66,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
     slug: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         isLowercase: true
       }

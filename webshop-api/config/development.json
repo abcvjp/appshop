@@ -1,0 +1,26 @@
+{
+	"env": "development",
+	"port": "5000",
+	"db": {
+		"host": "db",
+		"name": "webshop_db",
+		"username": "hoaideptrai",
+		"password": "123456",
+		"pool": {
+			"max": 10,
+			"min": 0,
+			"acquire": 30000,
+			"idle": 10000
+		}
+	},
+	"jwt": {
+		"secret": "Ysg$fG&DG",
+		"secret_options": {
+			"expiresIn": "3d"
+		},
+		"refresh_secret": "123asdfasd",
+		"refresh_secret_options": {
+			"expiresIn": "10d"
+		}
+	}
+}

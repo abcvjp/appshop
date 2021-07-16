@@ -14,10 +14,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   User.init({
+    id: {
+      primaryKey: true,
+      allowNull: false,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
     username: {
       type: DataTypes.STRING,
       field: 'username',
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     full_name: {
       type: DataTypes.STRING,
@@ -28,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       field: 'email',
       allowNull: false,
+      unique: true,
       validate: {
         isEmail: true
       }
@@ -35,11 +43,6 @@ module.exports = (sequelize, DataTypes) => {
     hash: {
       type: DataTypes.STRING,
       field: 'hash',
-      allowNull: false
-    },
-    salt: {
-      type: DataTypes.STRING,
-      field: 'salt',
       allowNull: false
     }
   }, {

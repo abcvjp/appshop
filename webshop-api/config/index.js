@@ -61,6 +61,28 @@ var config = convict({
 			}
 		}
 	},
+	jwt: {
+		secret: {
+			format: String,
+			default: 'Ysg$fG&DG'
+		},
+		secret_options: {
+			expiresIn: {
+				format: String,
+				default: '3d'
+			}
+		},
+		refresh_secret: {
+			format: String,
+			default: 'Ysg$fG&DG'
+		},
+		refresh_secret_options: {
+			expiresIn: {
+				format: String,
+				default: '10d'
+			}
+		}
+	},
 	admins: {
 		doc: 'Users with write access, or null to grant full access without login.',
 		format: Array,
@@ -71,7 +93,7 @@ var config = convict({
 
 // Load environment dependent configuration
 var env = config.get('env')
-config.loadFile('./configs/' + env + '.json')
+config.loadFile('./config/' + env + '.json')
 
 // Perform validation
 config.validate({ allowed: 'strict' })

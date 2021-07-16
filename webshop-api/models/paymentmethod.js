@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   PaymentMethod.init({
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     detail: {
       type: DataTypes.STRING,

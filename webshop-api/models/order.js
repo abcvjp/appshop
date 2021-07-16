@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   Order.init({
     status: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM('Chờ xác nhận', 'Đang chạy đơn', 'Đã hoàn thành', 'Đã hủy'),
       allowNull: false,
       defaultValue: "Chờ xác nhận"
     },
@@ -29,12 +29,12 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     payment_status: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM('Chưa thanh toán', 'Đã thanh toán'),
       allowNull: false,
       defaultValue: "Chưa thanh toán"
     },
     shipping_status: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM('Chưa vận chuyển', 'Đang vận chuyển', 'Đã vận chuyển'),
       allowNull: false,
       defaultValue: "Chưa vận chuyển"
     },

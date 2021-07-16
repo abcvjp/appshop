@@ -5,8 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors')
 const bodyParser = require('body-parser')
-
-const { OrderItem } = require('./models')
+const debug = require('debug')
 
 var mainRouter = require('./routes/index');
 
@@ -34,8 +33,13 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
+  // debug(err)
+  console.log(err.stack)
   res.status(err.status || 500);
-  res.send('Error: ' + err.message);
+  res.json({
+    success: false,
+    error: err.message
+  });
 });
 
 module.exports = app;

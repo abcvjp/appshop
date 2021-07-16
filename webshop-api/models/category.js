@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
   Category.init({
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     description: {
       type: DataTypes.STRING,
@@ -25,11 +26,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     path: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     slug: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         isLowercase: true
       }
