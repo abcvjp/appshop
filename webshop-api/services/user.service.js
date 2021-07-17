@@ -3,7 +3,7 @@ const createError = require('http-errors')
 const { Bcrypt, JWT } = require('../helpers')
 const { uuid } = require('uuidv4')
 
-const login = async ({ username, password }) => {
+exports.login = async ({ username, password }) => {
 	try {
 		const user = await User.findOne({ where: { username } })
 		if (!user) {
@@ -28,7 +28,7 @@ const login = async ({ username, password }) => {
 	}
 }
 
-const signup = async ({ username, password, email, fullname }) => {
+exports.signup = async ({ username, password, email, fullname }) => {
 	try {
 		const userByName = await User.findOne({ where: { username } })
 		if (userByName) {
@@ -49,12 +49,12 @@ const signup = async ({ username, password, email, fullname }) => {
 			fullname,
 			email
 		}
-	} catch (err) {
-		throw err
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
 	}
 }
 
-const authenticate = async ({ accessToken }) => {
+exports.authenticate = async ({ accessToken }) => {
 	try {
 		const user = JWT.verifyToken(accessToken)
 		if (user) {
@@ -63,39 +63,32 @@ const authenticate = async ({ accessToken }) => {
 			throw createError(401, 'acessToken is not valid')
 		}
 	} catch (error) {
-		throw error
+		throw createError(error.statusCode || 500, error.message)
 	}
 }
 
-const getOneByName = async ({ username }) => {
+exports.getOneByName = async ({ username }) => {
 	try {
 		const userByName = await User.findOne({ where: { username } })
+		if (!userByName) throw createError(404, "User does not exist")
 		return {
 			success: true,
 			data: userByName
 		}
-	} catch (err) {
-		throw err
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
 	}
 }
 
-const getAll = async () => {
+exports.getAll = async () => {
 	try {
 		const users = await User.findAll()
-		console.log(users)
+		if (!users) throw createError(404, "Can not find any user")
 		return {
 			success: true,
 			data: users
 		}
-	} catch (err) {
-		throw err
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
 	}
-}
-
-module.exports = {
-	getAll,
-	login,
-	signup,
-	authenticate,
-	getOneByName
 }

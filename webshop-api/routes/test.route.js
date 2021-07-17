@@ -1,8 +1,8 @@
 var express = require('express')
 var router = express.Router()
-const testMiddleware = require('../middlewares/test.middleware')
+const testController = require('../controllers/test.controller')
 
-router.get('/', testMiddleware.getAll)
+router.get('/', testController.getAll)
 
 
 module.exports = router
