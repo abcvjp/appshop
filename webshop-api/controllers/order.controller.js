@@ -32,3 +32,9 @@ exports.getOrderById = asyncHandler(async (req, res, next) => {
 	const result = await orderService.getOrderById({ id: orderId })
 	res.status(200).json(result)
 })
+
+exports.cancelOrder = asyncHandler(async (req, res, next) => {
+	const { orderId } = req.params
+	const result = await orderService.cancelOrder({ id: orderId })
+	res.status(200).json(result)
+})

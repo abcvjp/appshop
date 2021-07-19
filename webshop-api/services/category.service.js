@@ -110,13 +110,6 @@ exports.updateCategory = async ({ id, name, description, meta_title, meta_descri
 			})
 		} else {
 			await sequelize.transaction(async (t) => {
-				// update path or relate categories
-				await Promise.all(relateCategories.map(async (category) => {
-					await category.update({
-						path: category.path.replace(oldName, name)
-					})
-				}))
-
 				await categoryToUpdate.update({
 					name,
 					description,
@@ -126,6 +119,17 @@ exports.updateCategory = async ({ id, name, description, meta_title, meta_descri
 					meta_description,
 					meta_keywords
 				})
+
+				// update path or relate categories
+				await Promise.all(relateCategories.map(async (category) => {
+					try {
+						await category.update({
+							path: category.path.replace(oldName, name)
+						})
+					} catch (err) {
+						throw err
+					}
+				}))
 			})
 		}
 		return {

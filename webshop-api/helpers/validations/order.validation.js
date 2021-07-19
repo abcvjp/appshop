@@ -12,13 +12,15 @@ module.exports = {
 			address: Joi.string().trim().min(10).max(200).required(),
 			email: Joi.string().trim().email().required(),
 			phone_number: Joi.string().length(10).pattern(/^[0-9]+$/).required(),
-			shipping_note: Joi.string().length(255),
+			shipping_note: Joi.string().max(255),
 			payment_method_id: Joi.number().integer().min(1).required(),
 			shipping_method_id: Joi.number().integer().min(1).required(),
-			order_items: Joi.array().items(Joi.object({
+			order_items: Joi.array().min(1).items(Joi.object({
 				product_id: Joi.string().guid({ version: 'uuidv4' }).required(),
-				quantity: Joi.number().integer().min(1).required()
-			})).required()
+				price: Joi.number().precision(3).min(0).required(),
+				quantity: Joi.number().integer().min(1).required(),
+				product_name: Joi.string().trim().min(1).max(200).required(),
+			})).unique('product_id').required()
 		})
 	},
 	updateOrder: {
