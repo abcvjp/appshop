@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      ShippingMethod.hasMany(models.Order, { foreignKey: { name: 'shipping_method_id', allowNull: false } })
+      ShippingMethod.hasMany(models.Order, {
+        foreignKey: { name: 'shipping_method_id', allowNull: false },
+        onDelete: 'RESTRICT'
+      })
     }
   };
   ShippingMethod.init({
@@ -18,6 +21,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true
+    },
+    enable: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
     },
     detail: {
       type: DataTypes.STRING,

@@ -28,7 +28,7 @@ exports.login = async ({ username, password }) => {
 	}
 }
 
-exports.signup = async ({ username, password, email, fullname }) => {
+exports.signup = async ({ username, password, email, full_name }) => {
 	try {
 		const userByName = await User.findOne({ where: { username } })
 		if (userByName) {
@@ -38,15 +38,15 @@ exports.signup = async ({ username, password, email, fullname }) => {
 		if (userByEmail) {
 			throw createError(409, 'Email already exists')
 		}
-
+		const id = uuid()
 		const hash = Bcrypt.hashPassword(password)
 		await User.create({
-			username, hash, email, full_name: fullname
+			id, username, hash, email, full_name
 		})
 		return {
 			success: true,
 			username,
-			fullname,
+			full_name,
 			email
 		}
 	} catch (error) {
@@ -67,13 +67,13 @@ exports.authenticate = async ({ accessToken }) => {
 	}
 }
 
-exports.getOneByName = async ({ username }) => {
+exports.getUserById = async ({ id }) => {
 	try {
-		const userByName = await User.findOne({ where: { username } })
-		if (!userByName) throw createError(404, "User does not exist")
+		const userById = await User.findOne({ where: { id } })
+		if (!userById) throw createError(404, "User does not exist")
 		return {
 			success: true,
-			data: userByName
+			data: userById
 		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)

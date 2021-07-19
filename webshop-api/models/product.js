@@ -11,10 +11,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Product.belongsTo(models.Category, { foreignKey: { name: 'category_id', allowNull: false } })
-      Product.hasMany(models.OrderItem, { foreignKey: { name: 'product_id', allowNull: false } })
+      Product.hasMany(models.OrderItem, {
+        foreignKey: { name: 'product_id', allowNull: false },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
+      })
     }
   };
   Product.init({
+    id: {
+      primaryKey: true,
+      allowNull: false,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
     enable: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

@@ -12,6 +12,7 @@ module.exports = {
      * }], {});
     */
     return queryInterface.bulkInsert('Orders', [{
+      id: '9e648f69-8381-4f67-b7d7-4743a78f7f34',
       cost: 10,
       customer_name: 'Hoai dep trai',
       address: '85 Xuan Thuy, Dich Vong Hau, Cau Giay, Ha Noi',

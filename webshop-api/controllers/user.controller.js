@@ -14,8 +14,8 @@ exports.login = asyncHandler(async (req, res, next) => {
 })
 
 exports.signup = asyncHandler(async (req, res, next) => {
-	const { username, password, email, fullname } = req.body
-	const result = await userService.signup({ username, password, email, fullname })
+	const { username, password, email, full_name } = req.body
+	const result = await userService.signup({ username, password, email, full_name })
 	res.status(200).json(result)
 })
 
@@ -39,8 +39,8 @@ exports.getAll = asyncHandler(async (req, res, next) => {
 	res.json(data)
 })
 
-exports.getOneByName = asyncHandler(async (req, res, next) => {
-	const username = req.params.username
-	const result = await userService.getOneByName({ username })
+exports.getUserById = asyncHandler(async (req, res, next) => {
+	const userId = req.params.userId
+	const result = await userService.getUserById({ id: userId })
 	res.status(200).json(result)
 })

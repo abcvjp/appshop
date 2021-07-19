@@ -16,10 +16,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Order.init({
-    status: {
-      type: DataTypes.ENUM('Chờ xác nhận', 'Đang chạy đơn', 'Đã hoàn thành', 'Đã hủy'),
+    id: {
+      primaryKey: true,
       allowNull: false,
-      defaultValue: "Chờ xác nhận"
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
+    status: {
+      type: DataTypes.ENUM('Pending', 'Handling', 'Completed', 'Canceled'),
+      allowNull: false,
+      defaultValue: "Pending"
     },
     cost: {
       type: DataTypes.DOUBLE,
@@ -29,14 +35,14 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     payment_status: {
-      type: DataTypes.ENUM('Chưa thanh toán', 'Đã thanh toán'),
+      type: DataTypes.ENUM('Unpaid', 'Paid'),
       allowNull: false,
-      defaultValue: "Chưa thanh toán"
+      defaultValue: "Unpaid"
     },
     shipping_status: {
-      type: DataTypes.ENUM('Chưa vận chuyển', 'Đang vận chuyển', 'Đã vận chuyển'),
+      type: DataTypes.ENUM('Undelivered', 'Delivering', 'Successfully delivered', 'Delivery failed'),
       allowNull: false,
-      defaultValue: "Chưa vận chuyển"
+      defaultValue: "Undelivered"
     },
     customer_name: {
       type: DataTypes.STRING,

@@ -2,18 +2,20 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const debug = require('debug')
+const logger = require('./helpers/logger.helper')
 
 var mainRouter = require('./routes/index');
+const morgan = require('morgan');
 
 var app = express();
 
 app.use(cors())
 app.use(bodyParser.json())
-app.use(logger('dev'));
+
+app.use(logger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

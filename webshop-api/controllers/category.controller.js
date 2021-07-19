@@ -14,9 +14,9 @@ exports.getCategoryById = asyncHandler(async (req, res, next) => {
 })
 
 exports.createCategory = asyncHandler(async (req, res, next) => {
-	const { name, description, parentId, meta_title, meta_description, meta_keywords } = req.body
+	const { name, description, parent_id, meta_title, meta_description, meta_keywords } = req.body
 	const result = await categoryService.createCategory({
-		name, description, parentId, meta_title, meta_description, meta_keywords
+		name, description, parent_id, meta_title, meta_description, meta_keywords
 	})
 	res.status(200).json(result)
 })
@@ -30,6 +30,6 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 
 exports.deleteCategory = asyncHandler(async (req, res, next) => {
 	const { categoryId } = req.params
-	const result = await categoryService.deleteCategory({ categoryId })
+	const result = await categoryService.deleteCategory({ id: categoryId })
 	res.status(200).json(result)
 })

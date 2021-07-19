@@ -3,11 +3,12 @@ const createError = require('http-errors')
 const slug = require('slug')
 const { sequelize, Sequelize } = require('../models')
 const { isEmptyArray } = require('../helpers/js.helper')
+const { uuid } = require('uuidv4')
 
 exports.getCategories = async () => {
 	try {
 		const categories = await Category.findAll()
-		if (!category) throw createError(404, "Can not find any category")
+		if (!categories) throw createError(404, "Can not find any category")
 		return {
 			success: true,
 			data: categories
@@ -30,18 +31,20 @@ exports.getCategoryById = async ({ id }) => {
 	}
 }
 
-exports.createCategory = async ({ name, description, parentId, meta_title, meta_description, meta_keywords }) => {
+exports.createCategory = async ({ name, description, parent_id, meta_title, meta_description, meta_keywords }) => {
 	try {
+		const id = uuid()
 		const slugName = slug(name)
 		let path = name
-		if (parentId) {
-			const parentCategory = await Category.findByPk(parentId, { attributes: ['path'] })
+		if (parent_id) {
+			const parentCategory = await Category.findByPk(parent_id, { attributes: ['path'] })
 			path = parentCategory.path + ' - ' + path
 		}
 		const newCategory = {
+			id,
 			name,
 			description,
-			parent_id: parentId,
+			parent_id,
 			slug: slugName,
 			path,
 			meta_title,
@@ -126,19 +129,18 @@ exports.updateCategory = async ({ id, name, description, meta_title, meta_descri
 			})
 		}
 		return {
-			success: true
+			success: true,
+			result: categoryToUpdate
 		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)
 	}
 }
-exports.deleteCategory = async ({ categoryId }) => {
+exports.deleteCategory = async ({ id }) => {
 	try {
-		await Category.destroy({
-			where: {
-				id: categoryId
-			}
-		})
+		const categoryToUpdate = await Category.findByPk(id)
+		if (!categoryToUpdate) throw createError(404, 'Category does not exist')
+		await categoryToUpdate.destroy()
 		return {
 			success: true
 		}

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       OrderItem.belongsTo(models.Order, { foreignKey: { name: 'order_id', allowNull: false } })
-      OrderItem.belongsTo(models.Product, { foreignKey: { name: 'product_id', allowNull: false } })
+      OrderItem.belongsTo(models.Product, { foreignKey: { name: 'product_id', allowNull: true } })
     }
   };
   OrderItem.init({
@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         min: 0
       }
+    },
+    product_name: {
+      type: DataTypes.STRING,
+      allowNull: false
     }
   }, {
     sequelize,
