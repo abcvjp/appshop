@@ -15,7 +15,7 @@ exports.updateOrder = asyncHandler(async (req, res, next) => {
 	const { orderId } = req.params
 	const { customer_name, address, email, phone_number, shipping_note,
 		payment_status, shipping_status } = req.body
-	const result = orderService.updateOrder({
+	const result = await orderService.updateOrder({
 		id: orderId, customer_name, address, email, phone_number, shipping_note,
 		payment_status, shipping_status
 	})

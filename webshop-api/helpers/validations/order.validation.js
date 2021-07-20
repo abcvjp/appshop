@@ -28,19 +28,33 @@ module.exports = {
 			orderId: Joi.string().guid({ version: 'uuidv4' }).required()
 		}),
 		body: Joi.object({
-			status: Joi.string().trim().valid('Pending', 'Handling', 'Completed', 'Canceled').required(),
 			payment_status: Joi.string().trim().valid('Unpaid', 'Paid').required(),
 			shipping_status: Joi.string().trim().valid('Undelivered', 'Delivering', 'Successfully delivered', 'Delivery failed').required(),
 			customer_name: Joi.string().trim().min(1).max(100).required(),
 			address: Joi.string().trim().min(10).max(200).required(),
 			email: Joi.string().trim().email().required(),
 			phone_number: Joi.string().length(10).pattern(/^[0-9]+$/).required(),
-			shipping_note: Joi.string().length(255),
+			shipping_note: Joi.string().max(255),
 		})
 	},
 	deleteOrder: {
 		params: Joi.object({
 			orderId: Joi.string().guid({ version: 'uuidv4' }).required()
 		})
-	}
+	},
+	cancelOrder: {
+		params: Joi.object({
+			orderId: Joi.string().guid({ version: 'uuidv4' }).required()
+		})
+	},
+	confirmOrder: {
+		params: Joi.object({
+			orderId: Joi.string().guid({ version: 'uuidv4' }).required()
+		})
+	},
+	completeOrder: {
+		params: Joi.object({
+			orderId: Joi.string().guid({ version: 'uuidv4' }).required()
+		})
+	},
 }

@@ -2,14 +2,18 @@ const Product = require('../models').Product
 const createError = require('http-errors')
 const slug = require('slug')
 const { uuid } = require('uuidv4')
+const { calculateLimitAndOffset, paginate } = require('paginate-info')
 
-exports.getProducts = async () => {
+exports.getProducts = async ({ currentPage, pageSize }) => {
 	try {
-		const products = await Product.findAll()
-		if (!products) throw createError(404, "Can't find any product")
+		const { limit, offset } = calculateLimitAndOffset(currentPage, pageSize)
+		const { rows, count } = await Product.findAndCountAll({ limit, offset })
+		if (!rows) throw createError(404, "Can't find any product")
+		const pagination = paginate(currentPage, count, rows, pageSize)
 		return {
 			success: true,
-			data: products
+			data: rows,
+			pagination
 		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)

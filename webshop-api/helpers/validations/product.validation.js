@@ -1,6 +1,12 @@
 const Joi = require('joi')
 
 module.exports = {
+	getProducts: {
+		query: Joi.object({
+			currentPage: Joi.number().integer().min(1),
+			pageSize: Joi.number().integer().min(1)
+		})
+	},
 	getProductById: {
 		params: Joi.object({
 			productId: Joi.string().guid({ version: 'uuidv4' }).required()

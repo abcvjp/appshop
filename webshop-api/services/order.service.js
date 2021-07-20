@@ -144,14 +144,17 @@ exports.updateOrder = async ({ id, customer_name, address, email, phone_number, 
 		if (payment_status === 'Paid' && shipping_status === 'Successfully delivered') {
 			status = 'Completed'
 		}
+		if (orderToUpdate.status === "Completed") {
+			payment_status = shipping_status = null
+		}
 		await orderToUpdate.update({
 			...status,
 			customer_name,
 			address, email,
 			phone_number,
 			shipping_note,
-			payment_status,
-			shipping_status
+			...payment_status,
+			...shipping_status
 		})
 		return {
 			success: true,
@@ -164,9 +167,20 @@ exports.updateOrder = async ({ id, customer_name, address, email, phone_number, 
 
 exports.deleteOrder = async ({ id }) => {
 	try {
-		const orderToDelete = await Order.findByPk(id)
+		const orderToDelete = await Order.findByPk(id, {
+			include: {
+				association: 'order_items',
+				attributes: ['id']
+			}
+		})
 		if (!orderToDelete) throw createError(404, 'Order does not exist')
-		await orderToDelete.destroy()
+		await sequelize.transaction(async (t) => {
+			await Promise.all([
+				orderToDelete.destroy(),
+				...orderToDelete.order_items.map(item => item.destroy())
+			])
+		})
+
 		return { success: true }
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)

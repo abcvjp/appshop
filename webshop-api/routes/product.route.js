@@ -4,7 +4,7 @@ const productController = require('../controllers/product.controller')
 const productValidation = require('../helpers/validations/product.validation')
 const { validate } = require('express-validation')
 
-router.get('/', productController.getProducts)
+router.get('/', validate(productValidation.getProducts), productController.getProducts)
 router.post('/', validate(productValidation.createProduct), productController.createProduct)
 router.get('/:productId', validate(productValidation.getProductById), productController.getProductById)
 router.put('/:productId', validate(productValidation.updateProduct), productController.updateProduct)

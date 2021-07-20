@@ -10,8 +10,8 @@ router.post('/', validate(orderValidation.createOrder), orderController.createOr
 router.get('/:orderId', validate(orderValidation.getOrderById), orderController.getOrderById)
 router.put('/:orderId', validate(orderValidation.updateOrder), orderController.updateOrder)
 router.delete('/:orderId', validate(orderValidation.deleteOrder), orderController.deleteOrder)
-router.get('/:orderId/cancel', orderController.cancelOrder)
-router.get('/:orderId/confirm', orderController.confirmOrder)
-router.get('/:orderId/complete', orderController.completeOrder)
+router.get('/:orderId/cancel', validate(orderValidation.cancelOrder), orderController.cancelOrder)
+router.get('/:orderId/confirm', validate(orderValidation.confirmOrder), orderController.confirmOrder)
+router.get('/:orderId/complete', validate(orderValidation.completeOrder), orderController.completeOrder)
 
 module.exports = router

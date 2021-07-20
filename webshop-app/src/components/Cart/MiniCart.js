@@ -7,7 +7,7 @@ import CartIcon from './CartIcon'
 import MiniCartDetail from './MiniCartDetail'
 
 const MiniCart = () => {
-	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [anchorEl, setAnchorEl] = React.useState(null)
 	const items = useSelector(state => state.cart)
 	const handlePopoverOpen = (event) => {
 		setAnchorEl(event.currentTarget)

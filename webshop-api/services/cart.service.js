@@ -41,7 +41,7 @@ exports.checkCartValid = async ({ cart_items }) => {
 			order: ['id']
 		})
 		if (productsToBuy.length !== cart_items.length) throw createError(409, "Any or some product ordered no longer exist")
-		let subTotal = 0
+		// let subTotal = 0
 		cart_items.forEach((cartItem, i) => {
 			if (!productsToBuy[i].enable) {
 				throw createError(409, `Product ${cartItem.product_name} is disabled`)
@@ -55,11 +55,11 @@ exports.checkCartValid = async ({ cart_items }) => {
 			if (productsToBuy[i].name !== cartItem.product_name) {
 				throw createError(409, `Name of ${cartItem.product_name} has changed`)
 			}
-			subTotal += productsToBuy[i].price * cartItem.quantity
+			// subTotal += productsToBuy[i].price * cartItem.quantity
 		})
 		return {
-			success: true,
-			subTotal: Math.round(subTotal * 100) / 100
+			success: true
+			// subTotal: Math.round(subTotal * 100) / 100
 		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)
