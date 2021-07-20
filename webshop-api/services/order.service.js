@@ -1,6 +1,4 @@
-const Order = require('../models').Order
-const Product = require('../models').Product
-const OrderItem = require('../models').OrderItem
+const { Order, Product, OrderItem, ShippingMethod } = require('../models')
 const { sequelize } = require('../models')
 const createError = require('http-errors')
 const slug = require('slug')
@@ -65,19 +63,24 @@ exports.getOrderById = async ({ id }) => {
 exports.createOrder = async ({ customer_name, address, email, phone_number, shipping_note,
 	payment_method_id, shipping_method_id, order_items }) => {
 	try {
-		// VALID AND CACULATE TOTAL
+		// VALID AND CACULATE TOTAL COST
 		order_items.sort((a, b) => {
 			return a.product_id < b.product_id ? -1 : 1
 		})
-		const productsToOrder = await Product.findAll({
-			where: {
-				id: order_items.map(item => item.product_id)
-			},
-			attributes: ['id', 'enable', 'price', 'quantity', 'name'],
-			order: ['id']
-		})
+		// fetch product and shipping method
+		const [productsToOrder, shippingMethod] = await Promise.all([
+			Product.findAll({
+				where: {
+					id: order_items.map(item => item.product_id)
+				},
+				attributes: ['id', 'enable', 'price', 'quantity', 'name'],
+				order: ['id']
+			}),
+			ShippingMethod.findByPk(shipping_method_id, { attributes: ['id', 'fee'] })
+		])
 		if (productsToOrder.length !== order_items.length) throw createError(409, "Any or some product ordered no longer exist")
-		let cost = 0
+
+		let cost = shippingMethod.fee
 		order_items.forEach((orderItem, i) => {
 			if (!productsToOrder[i].enable) {
 				throw createError(409, `Product ${orderItem.name} is disabled`)

@@ -27,6 +27,14 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: true
     },
+    fee: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        min: 0
+      }
+    },
     detail: {
       type: DataTypes.STRING,
       allowNull: true
