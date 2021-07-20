@@ -8,7 +8,22 @@ const { uuid } = require('uuidv4')
 
 exports.getOrders = async () => {
 	try {
-		const orders = await Order.findAll()
+		const orders = await Order.findAll({
+			include: [
+				{
+					association: 'payment_method',
+					attributes: ['name']
+				},
+				{
+					association: 'shipping_method',
+					attributes: ['name']
+				},
+				{
+					association: 'order_items',
+					attributes: ['product_id', 'product_name', 'price', 'quantity']
+				}
+			]
+		})
 		if (!orders) throw createError(404, "Can't find any order")
 		return {
 			success: true,
@@ -25,11 +40,11 @@ exports.getOrderById = async ({ id }) => {
 			include: [
 				{
 					association: 'payment_method',
-					attributes: ['name', 'detail']
+					attributes: ['name']
 				},
 				{
 					association: 'shipping_method',
-					attributes: ['name', 'detail']
+					attributes: ['name']
 				},
 				{
 					association: 'order_items',
@@ -119,30 +134,29 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 	}
 }
 
-exports.updateProduct = async ({ id, enable, name, title, price, quantity, discount, short_description, description,
-	images, meta_title, meta_description, meta_keywords }) => {
+exports.updateOrder = async ({ id, customer_name, address, email, phone_number, shipping_note,
+	payment_status, shipping_status }) => {
 	try {
-		const productToUpdate = await Product.findByPk(id)
-		if (!productToUpdate) throw createError(404, 'Product does not exist')
-		if (productToUpdate.name !== name) {
-			var slugName = slug(name)
+		const orderToUpdate = await Order.findByPk(id)
+		if (!orderToUpdate) throw createError(404, 'Order does not exist')
+
+		let status
+		if (payment_status === 'Paid' && shipping_status === 'Successfully delivered') {
+			status = 'Completed'
 		}
-		await productToUpdate.update({
-			enable,
-			name,
-			title,
-			price,
-			quantity,
-			discount,
-			short_description,
-			description,
-			slug: slugName,
-			images,
-			meta_title,
-			meta_description,
-			meta_keywords
+		await orderToUpdate.update({
+			...status,
+			customer_name,
+			address, email,
+			phone_number,
+			shipping_note,
+			payment_status,
+			shipping_status
 		})
-		return { success: true, result: productToUpdate }
+		return {
+			success: true,
+			result: orderToUpdate
+		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)
 	}
@@ -161,26 +175,27 @@ exports.deleteOrder = async ({ id }) => {
 
 exports.cancelOrder = async ({ id }) => {
 	try {
-		const orderToCancel = await Order.findByPk(id)
-		const orderItems = await OrderItem.findAll({
-			where: {
-				order_id: id
-			},
-			attributes: ['product_id', 'quantity'],
+		const orderToCancel = await Order.findByPk(id, {
+			include: {
+				association: 'order_items',
+				attributes: ['product_id', 'quantity']
+			}
 		})
+		if (!orderToCancel) throw createError(404, 'Order does not exist')
+		if (orderToCancel.status === 'Canceled') throw createError(409, 'Order is already canceled')
+		if (orderToCancel.status === 'Completed') throw createError(409, 'Order is completed')
+
 		const productsToRestore = await Product.findAll({
 			where: {
-				id: orderItems.map(orderItem => orderItem.product_id)
+				id: orderToCancel.order_items.map(orderItem => orderItem.product_id)
 			},
 			attributes: ['id'],
 		})
 
 		// convert orderItems to set(dictionary) productId - quantity
 		const set_productId_quantity = {}
-		orderItems.forEach((item) => {
-			const product_id = item.product_id
-			set_productId_quantity.product_id = product_id
-			set_productId_quantity[product_id] = item.quantity
+		orderToCancel.order_items.forEach((item) => {
+			set_productId_quantity[item.product_id] = item.quantity
 		})
 
 		await sequelize.transaction(async (t) => {
@@ -188,9 +203,38 @@ exports.cancelOrder = async ({ id }) => {
 				// CANCEL ORDER AND RESTORE PRODUCT QUANTITY IF PRODUCT EXIST
 				orderToCancel.update({ status: 'Canceled' }),
 				productsToRestore.map((product) => {
-					product.increment('quantity', { by: set_productId_quantity[product.product_id] })
+					product.increment('quantity', { by: set_productId_quantity[product.id] })
 				})
 			])
+		})
+		return { success: true }
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
+	}
+}
+
+exports.confirmlOrder = async ({ id }) => {
+	try {
+		const orderToConfirm = await Order.findByPk(id, { attributes: ['id', 'status'] })
+		if (!orderToConfirm) throw createError(404, 'Order does not exist')
+		if (orderToConfirm.status !== 'Pending') throw createError(409, 'Order is already confirmed')
+		await orderToConfirm.update({ status: 'Handling' })
+		return { success: true }
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
+	}
+}
+
+exports.completelOrder = async ({ id }) => {
+	try {
+		const orderToComplete = await Order.findByPk(id, { attributes: ['id', 'status'] })
+		if (!orderToComplete) throw createError(404, 'Order does not exist')
+		if (orderToComplete.status === 'Completed') throw createError(409, 'Order is already completed')
+		if (orderToComplete.status === 'Canceled') throw createError(409, 'Order is canceled')
+		await orderToComplete.update({
+			status: 'Completed',
+			payment_status: 'Paid',
+			shipping_status: 'Successfully delivered'
 		})
 		return { success: true }
 	} catch (error) {

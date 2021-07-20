@@ -12,7 +12,13 @@ exports.createOrder = asyncHandler(async (req, res, next) => {
 })
 
 exports.updateOrder = asyncHandler(async (req, res, next) => {
-	const result = ''
+	const { orderId } = req.params
+	const { customer_name, address, email, phone_number, shipping_note,
+		payment_status, shipping_status } = req.body
+	const result = orderService.updateOrder({
+		id: orderId, customer_name, address, email, phone_number, shipping_note,
+		payment_status, shipping_status
+	})
 	res.status(200).json(result)
 })
 
@@ -36,5 +42,17 @@ exports.getOrderById = asyncHandler(async (req, res, next) => {
 exports.cancelOrder = asyncHandler(async (req, res, next) => {
 	const { orderId } = req.params
 	const result = await orderService.cancelOrder({ id: orderId })
+	res.status(200).json(result)
+})
+
+exports.confirmOrder = asyncHandler(async (req, res, next) => {
+	const { orderId } = req.params
+	const result = await orderService.confirmlOrder({ id: orderId })
+	res.status(200).json(result)
+})
+
+exports.completeOrder = asyncHandler(async (req, res, next) => {
+	const { orderId } = req.params
+	const result = await orderService.completelOrder({ id: orderId })
 	res.status(200).json(result)
 })
