@@ -1,30 +1,36 @@
 import HeaderBar from './components/HeaderBar'
 import Footer from './components/Footer'
 import AlertMessage from './components/AlertMessage'
-import Home from './pages/Home'
+import HomePage from './pages/HomePage'
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from "react-router-dom"
-import { Provider } from 'react-redux'
-import store from './store'
+import { Container } from '@material-ui/core'
 
+import CategoryPage from './pages/CategoryPage'
 
 function App() {
+
   return (
-    <Provider store={store}>
-      <Router>
-        <HeaderBar />
+
+    <Router>
+      <HeaderBar />
+      <Container maxWidth="lg">
         <Switch>
-          <Route path="/">
-            <Home />
+          <Route path="/" exact>
+            <HomePage />
+          </Route>
+          <Route path="/:categorySlug">
+            <CategoryPage />
           </Route>
         </Switch>
-        <Footer />
-        <AlertMessage />
-      </Router>
-    </Provider>
+      </Container>
+      <Footer />
+      <AlertMessage />
+
+    </Router>
   );
 }
 

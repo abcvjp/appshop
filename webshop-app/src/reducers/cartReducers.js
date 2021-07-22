@@ -1,35 +1,38 @@
 import { DELETE_ITEM_CART } from "../constants/actionTypes"
 import { ADD_TO_CART } from "../constants/actionTypes"
 import { CHANGE_QUANTITY_ITEM_CART } from "../constants/actionTypes"
+import { isArrayEmpty } from "../utils/utilFuncs"
 
 const initialState = []
 
-export default function cartReducers(state = initialState, action) {
+export default function cartReducer(state = initialState, action) {
+	const cart_items = [...state]
 	switch (action.type) {
 		case ADD_TO_CART:
-			const items = [...state]
-			const isProductContained = items.some((product) => product.id === action.payload.id)
-			if (items === undefined || !isProductContained) {
-				items.push({
-					quantity: 1,
-					...action.payload
+			const productToAdd = action.payload.product
+			const isProductContained = () => cart_items.some((item) => item.product.id === productToAdd.id)
+			if (isArrayEmpty(cart_items) || !isProductContained()) {
+				cart_items.push({
+					product: productToAdd,
+					quantity: 1
 				})
 			} else {
-				const product = items.find((product) => product.id === action.payload.id)
-				if (product) {
-					product.quantity += 1
+				const item = cart_items.find((item) => item.product.id === productToAdd.id)
+				if (item) {
+					item.quantity += 1
 				}
 			}
-			return items
+			return cart_items
 		case DELETE_ITEM_CART:
-			return state.filter((item) => item.id !== action.payload.id)
+			const iIndex = action.payload.itemIndex
+			return cart_items.filter((item, index) => { return index !== iIndex })
 		case CHANGE_QUANTITY_ITEM_CART:
-			if (action.payload.quantity > 0) {
-				return state.map((item) => (item.id === action.payload.id ?
-					{ ...item, quantity: parseInt(action.payload.quantity) } : item))
-			} else {
-				return state
+			const { itemIndex, quantity } = action.payload
+			if (quantity < 1 || quantity > cart_items[itemIndex].product.quantity) {
+				return cart_items
 			}
+			cart_items[itemIndex].quantity = quantity
+			return cart_items
 		default:
 			return state
 	}

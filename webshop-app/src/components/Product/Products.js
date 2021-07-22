@@ -2,13 +2,13 @@ import React from 'react'
 import { Grid } from '@material-ui/core'
 import ProductCard from './ProductCard'
 import { addToCart } from '../../actions/cartActions'
-import { useSelector, useDispatch } from 'react-redux'
 import { Pagination } from '@material-ui/lab'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core'
-import { DEFAULT_PRODUCT_PAGE_LENGTH } from '../../constants/ui'
 import { DEFAULT_COLOR } from '../../constants/ui'
-import { showMessage } from '../../actions/messageActions'
+import { showAlertMessage } from '../../actions/alertMessageActions'
+import API from '../../utils/apiClient'
+import { useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -18,45 +18,72 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Products = () => {
-	const products = useSelector(state => state.products)
+	const classes = useStyles()
 	const dispatch = useDispatch()
-	const [currentPage, setCurrentPage] = useState(1)
-	const pageLength = DEFAULT_PRODUCT_PAGE_LENGTH
-	const itemCount = products.length
-	const pageCount = (itemCount < pageLength) ? 1 :
-		((itemCount % pageLength === 0) ? (itemCount / pageLength) : (itemCount / pageLength + 1))
+	const [data, setData] = useState({
+		products: [],
+		currentPage: 1,
+		pageSize: 6,
+		pageCount: 1,
+	})
 
 	const handleAddtoCart = (product) => () => {
-		dispatch(addToCart(product))
-		dispatch(showMessage({ type: "success", content: "Added cart successfully" }))
+		dispatch(addToCart({ product }))
+		dispatch(showAlertMessage({ type: "success", content: "Added cart successfully" }))
 	}
 
-	const classes = useStyles()
+	useEffect(() => {
+		const fetchProducts = async () => {
+			try {
+				const response = await API.get(`/product?currentPage=${data.currentPage}&pageSize=${data.pageSize}`)
+				setData(data => ({
+					...data,
+					products: response.data.data,
+					currentPage: response.data.pagination.currentPage,
+					pageCount: response.data.pagination.pageCount
+				}))
+			} catch (error) {
+				if (error.response) {
+					// Request made and server responded
+					console.log(error.response.data)
+					console.log(error.response.status)
+					console.log(error.response.headers)
+				} else if (error.request) {
+					// The request was made but no response was received
+					console.log(error.request)
+				} else {
+					// Something happened in setting up the request that triggered an Error
+					console.log('Error', error.message)
+				}
+			}
+		}
+		fetchProducts()
+	}, [data.currentPage, data.pageSize])
+
 	return (
 		<>
 			<Grid
 				className={classes.root}
 				container
 				direction="row"
-				justify="center"
+				justifyContent="center"
 				alignItems="stretch"
 			>
-				{products.filter((product, index) => (index + 1 > (currentPage - 1) * pageLength) && (index + 1 <= currentPage * pageLength))
-					.map((product) => (
-						<Grid item style={{ display: "flex" }} key={product.id}>
-							<ProductCard
-								product={product}
-								handleAddToCart={handleAddtoCart(product)}
-							/>
-						</Grid>
-					))}
+				{data.products.map((product) => (
+					<Grid item style={{ display: "flex" }} key={product.id}>
+						<ProductCard
+							product={product}
+							handleAddToCart={handleAddtoCart(product)}
+						/>
+					</Grid>
+				))}
 			</Grid>
 
 			{// Pagination
-				<Grid container className={classes.root} direction="row" justify="center" alignItems="center">
+				<Grid container className={classes.root} direction="row" justifyContent="center" alignItems="center">
 					<Pagination size="large" color={DEFAULT_COLOR}
-						count={pageCount} page={currentPage} onChange={(e, page) => {
-							setCurrentPage(page)
+						count={data.pageCount} page={data.currentPage} onChange={(e, page) => {
+							setData({ ...data, currentPage: page })
 						}} />
 				</Grid>}
 		</>

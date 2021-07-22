@@ -3,12 +3,8 @@ import List from '@material-ui/core/List'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import CartItem from './CartItem'
+import MiniCartItem from './MiniCartItem'
 import { deleteItemCart } from '../../actions/cartActions'
-import { changeQuantityItemCart } from '../../actions/cartActions'
-import { Typography } from '@material-ui/core'
-import { Box } from '@material-ui/core'
-import { Divider } from '@material-ui/core'
 import { Button } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
@@ -28,29 +24,23 @@ const MiniCartDetail = () => {
 	const classes = useStyles()
 	const dispatch = useDispatch()
 
-	const deleteItem = ({ id }) => () => dispatch(deleteItemCart({ id: id }))
-	const changeQuantity = ({ id, quantity }) => dispatch(changeQuantityItemCart({ id, quantity }))
+	const deleteItem = (itemIndex) => () => dispatch(deleteItemCart({ itemIndex }))
 
-	const items = useSelector(state => state.cart)
+	const cart_items = useSelector(state => state.cart)
 
-	const subTotal = items.reduce((accumul, cur) => (accumul + cur.quantity * cur.price), 0)
 	return (
 		<>
-			<List className={classes.root} disablePadding>
-				{items.map((item) => {
+			<List className={classes.root} disablePadding dense>
+				{cart_items.map((item, itemIndex) => {
 					return (
-						<CartItem key={item.id} item={item}
-							changeQuantity={changeQuantity} deleteItem={deleteItem}
+						<MiniCartItem key={item.product.id} item={item}
+							deleteItem={deleteItem(itemIndex)}
 						/>
 					)
 				})}
 			</List>
-			<Divider variant="middle" />
-			<Box p={1.5}>
-				<Typography align="right">Subtotal: {subTotal}$</Typography>
-			</Box>
-			<Button className={classes.checkOut} variant="contained" color="secondary" size="large" href="/checkout" fullWidth>
-				CHECK OUT
+			<Button className={classes.checkOut} variant="contained" color="primary" size="large" href="/cart" fullWidth>
+				VIEW CART & CHECK OUT
 			</Button>
 		</>
 	)

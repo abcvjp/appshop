@@ -1,12 +1,14 @@
 import { combineReducers } from "redux"
-import productReducers from "./productReducers"
-import cartReducers from "./cartReducers"
-import messageReducers from "./messageReducer"
+import cartReducer from "./cartReducers"
+import alertMessageReducer from "./alertMessageReducer"
+import categoryReducer from "./categoryReducer"
+import breadcrumbsReducer from "./breadcrumbsReducer"
 
 export default combineReducers({
-	products: productReducers,
-	cart: cartReducers,
+	categories: categoryReducer,
+	cart: cartReducer,
 	ui: combineReducers({
-		message: messageReducers
+		alertMessage: alertMessageReducer,
+		breadcrumbs: breadcrumbsReducer
 	})
 })

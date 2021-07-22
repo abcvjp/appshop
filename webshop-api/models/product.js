@@ -53,6 +53,14 @@ module.exports = (sequelize, DataTypes) => {
         min: 0
       }
     },
+    sold: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        min: 0
+      }
+    },
     discount: {
       type: DataTypes.DOUBLE,
       allowNull: true,

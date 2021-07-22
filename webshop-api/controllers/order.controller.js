@@ -11,13 +11,12 @@ exports.createOrder = asyncHandler(async (req, res, next) => {
 	res.status(200).json(result)
 })
 
-exports.updateOrder = asyncHandler(async (req, res, next) => {
+exports.updateOrderInfo = asyncHandler(async (req, res, next) => {
 	const { orderId } = req.params
 	const { customer_name, address, email, phone_number, shipping_note,
 		payment_status, shipping_status } = req.body
-	const result = await orderService.updateOrder({
-		id: orderId, customer_name, address, email, phone_number, shipping_note,
-		payment_status, shipping_status
+	const result = await orderService.updateOrderInfo({
+		id: orderId, customer_name, address, email, phone_number, shipping_note
 	})
 	res.status(200).json(result)
 })
@@ -54,5 +53,19 @@ exports.confirmOrder = asyncHandler(async (req, res, next) => {
 exports.completeOrder = asyncHandler(async (req, res, next) => {
 	const { orderId } = req.params
 	const result = await orderService.completelOrder({ id: orderId })
+	res.status(200).json(result)
+})
+
+exports.updateShippingStatus = asyncHandler(async (req, res, next) => {
+	const { orderId } = req.params
+	const { shipping_status } = req.body
+	const result = await orderService.updateShippingStatus({ id: orderId, shipping_status })
+	res.status(200).json(result)
+})
+
+exports.updatePaymentStatus = asyncHandler(async (req, res, next) => {
+	const { orderId } = req.params
+	const { payment_status } = req.body
+	const result = await orderService.updatePaymentStatus({ id: orderId, payment_status })
 	res.status(200).json(result)
 })

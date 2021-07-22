@@ -1,16 +1,22 @@
 import { createStore } from "redux"
 import rootReducer from './reducers'
-import PRODUCTS_DATA from "./constants/products"
 
 const initialState = {
 	cart: [],
-	products: PRODUCTS_DATA,
+	categories: {
+		all: [],
+		tree: [],
+		map_slug_id: {},
+		map_name_slug: {},
+		map_name_id: {}
+	},
 	ui: {
-		message: {
+		alertMessage: {
 			isShown: false,
 			type: null,
 			content: null
-		}
+		},
+		breadcrumbs: []
 	}
 }
 

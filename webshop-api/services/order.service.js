@@ -137,27 +137,16 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 	}
 }
 
-exports.updateOrder = async ({ id, customer_name, address, email, phone_number, shipping_note,
-	payment_status, shipping_status }) => {
+exports.updateOrderInfo = async ({ id, customer_name, address, email, phone_number, shipping_note }) => {
 	try {
 		const orderToUpdate = await Order.findByPk(id)
 		if (!orderToUpdate) throw createError(404, 'Order does not exist')
 
-		let status
-		if (payment_status === 'Paid' && shipping_status === 'Successfully delivered') {
-			status = 'Completed'
-		}
-		if (orderToUpdate.status === "Completed") {
-			payment_status = shipping_status = null
-		}
 		await orderToUpdate.update({
-			...status,
 			customer_name,
 			address, email,
 			phone_number,
-			shipping_note,
-			...payment_status,
-			...shipping_status
+			shipping_note
 		})
 		return {
 			success: true,
@@ -244,16 +233,93 @@ exports.confirmlOrder = async ({ id }) => {
 
 exports.completelOrder = async ({ id }) => {
 	try {
-		const orderToComplete = await Order.findByPk(id, { attributes: ['id', 'status'] })
+		const orderToComplete = await Order.findByPk(id, {
+			attributes: ['id', 'status'],
+			include: {
+				association: 'order_items',
+				attributes: ['product_id', 'quantity']
+			}
+		})
 		if (!orderToComplete) throw createError(404, 'Order does not exist')
+		if (orderToComplete.status === 'Pending') throw createError(409, 'Order is not comfirmed yet')
 		if (orderToComplete.status === 'Completed') throw createError(409, 'Order is already completed')
 		if (orderToComplete.status === 'Canceled') throw createError(409, 'Order is canceled')
-		await orderToComplete.update({
-			status: 'Completed',
-			payment_status: 'Paid',
-			shipping_status: 'Successfully delivered'
+
+		const productsToUpdateSold = await Product.findAll({
+			where: {
+				id: orderToComplete.order_items.map(orderItem => orderItem.product_id)
+			},
+			attributes: ['id'],
 		})
+
+		// convert orderItems to set(dictionary) productId - quantity
+		const set_productId_quantity = {}
+		orderToComplete.order_items.forEach((item) => {
+			set_productId_quantity[item.product_id] = item.quantity
+		})
+
+		await sequelize.transaction(async (t) => {
+			await Promise.all([
+				// COMPLETE ORDER AND UPDATE PRODUCT SOLD IF PRODUCT EXIST
+				orderToComplete.update({
+					status: 'Completed',
+					payment_status: 'Paid',
+					shipping_status: 'Successfully delivered'
+				}),
+				productsToUpdateSold.map((product) => {
+					product.increment('sold', { by: set_productId_quantity[product.id] })
+				})
+			])
+		})
+
 		return { success: true }
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
+	}
+}
+
+exports.updateShippingStatus = async ({ id, shipping_status }) => {
+	try {
+		const orderToUpdate = await Order.findByPk(id, {
+			attributes: ['id', 'status', 'shipping_status', 'payment_status']
+		})
+		if (!orderToUpdate) throw createError(404, 'Order does not exist')
+		if (orderToUpdate.status !== 'Handling' || orderToUpdate.shipping_status === 'Successfully delivered')
+			throw createError(409, 'This order is not allowed to change shipping status')
+
+		if (orderToUpdate.payment_status === 'Paid' && shipping_status == 'Successfully delivered') {
+			var status = 'Completed'
+		}
+
+		await orderToUpdate.update({
+			shipping_status,
+			...status
+		})
+		return {
+			success: true,
+			result: orderToUpdate
+		}
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
+	}
+}
+
+exports.updatePaymentStatus = async ({ id, payment_status }) => {
+	try {
+		const orderToUpdate = await Order.findByPk(id, {
+			attributes: ['id', 'status', 'shipping_status', 'payment_status']
+		})
+		if (!orderToUpdate) throw createError(404, 'Order does not exist')
+		if (orderToUpdate.payment_status === 'Completed' || orderToUpdate.status == 'Canceled')
+			throw createError(409, 'This order is not allowed to change payment status')
+
+		await orderToUpdate.update({
+			payment_status
+		})
+		return {
+			success: true,
+			result: orderToUpdate
+		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)
 	}

@@ -9,7 +9,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const Home = () => {
+const HomePage = () => {
 	const classes = useStyles()
 	return (
 		<>
@@ -20,4 +20,4 @@ const Home = () => {
 	)
 }
 
-export default Home
+export default HomePage

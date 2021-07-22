@@ -6,10 +6,9 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import { Grid } from '@material-ui/core'
+import { Box } from '@material-ui/core'
 import { Rating } from '@material-ui/lab'
-import { DEFAULT_COLOR } from '../../constants/ui'
-
+import { blue } from '@material-ui/core/colors'
 const useStyles = makeStyles((theme) => ({
 	root: {
 		maxWidth: 300,
@@ -29,8 +28,32 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: "column",
 	},
 	media: {
-		height: 180,
+		maxHeight: 300
 	},
+	content: {
+		padding: theme.spacing(2)
+	},
+	price: {
+		fontWeight: 600
+	},
+	discount: {
+		color: "white",
+		backgroundColor: "red",
+		padding: theme.spacing(0.3)
+	},
+	marginRight: {
+		marginRight: theme.spacing(1)
+	},
+	addbutton: {
+		backgroundColor: '#fff',
+		color: blue[700],
+		borderColor: blue[700],
+		'&:hover': {
+			backgroundColor: blue[700],
+			color: '#fff',
+			border: 0
+		}
+	}
 }));
 
 const ProductCard = ({ product, handleAddToCart }) => {
@@ -40,32 +63,32 @@ const ProductCard = ({ product, handleAddToCart }) => {
 		<Card className={classes.root}>
 			<CardMedia
 				className={classes.media}
-				image={product.productImgUrl}
-				title="Contemplative Reptile"
+				component="img"
+				image='https://salt.tikicdn.com/cache/w444/ts/product/56/dd/e2/2612def5999d6417d9916a828cf054df.jpg'
+				alt={product.name}
 			/>
-			<CardContent>
-				<Typography gutterBottom variant="subtitle1">
-					{product.productName}
+			<CardContent className={classes.content}>
+				<Typography variant="subtitle1">
+					{product.name}
 				</Typography>
-				<Grid
-					container
-					direction="row"
-					justify="space-between"
-					alignItems="center"
-				>
-					<Rating name="half-rating-read" defaultValue={2.5} precision={0.5} readOnly />
-					<Typography gutterBottom variant="subtitle1">
-						$32
+				<Box display="flex" flexDirection="row" justifyContent="flex-start"
+					alignItems="center">
+					<Box mr={0.5} mt={0.5}><Rating size="small" defaultValue={2.5} precision={0.5} readOnly /></Box>
+					<Typography variant="body2">Sold 1</Typography>
+				</Box>
+				<Box display="flex" flexDirection="row" justifyContent="flex-start"
+					alignItems="center">
+					<Typography variant="h6" style={{ marginRight: 8 }}>
+						${product.price}
 					</Typography>
+					<Typography variant="button" className={classes.discount}>
+						{product.discount > 0 ? `-${product.discount * 100}%` : null} -32%
+					</Typography>
+				</Box>
 
-				</Grid>
-				<Typography variant="body2" color="textSecondary" component="p">
-					Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-					across all continents except Antarctica
-				</Typography>
 			</CardContent>
 			<CardActions>
-				<Button fullWidth variant="outlined" size="small" color={DEFAULT_COLOR}
+				<Button className={classes.addbutton} fullWidth variant="outlined" size="small"
 					onClick={handleAddToCart}>
 					ADD TO CART
 				</Button>
