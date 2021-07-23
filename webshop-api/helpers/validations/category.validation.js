@@ -6,6 +6,12 @@ module.exports = {
 			categoryId: Joi.string().guid({ version: 'uuidv4' }).required()
 		})
 	},
+	getCategory: {
+		query: Joi.object({
+			id: Joi.string().guid({ version: 'uuidv4' }),
+			slug: Joi.string().min(1)
+		}).min(1)
+	},
 	createCategory: {
 		body: Joi.object({
 			name: Joi.string().trim().min(1).max(30).required(),

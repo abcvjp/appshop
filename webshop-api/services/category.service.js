@@ -31,6 +31,23 @@ exports.getCategoryById = async ({ id }) => {
 	}
 }
 
+exports.getCategoryBySlug = async ({ slug }) => {
+	try {
+		const category = await Category.findOne({
+			where: {
+				slug
+			}
+		})
+		if (!category) throw createError(404, "Category does not exist")
+		return {
+			success: true,
+			data: category
+		}
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
+	}
+}
+
 exports.createCategory = async ({ name, description, parent_id, meta_title, meta_description, meta_keywords }) => {
 	try {
 		const id = uuid()

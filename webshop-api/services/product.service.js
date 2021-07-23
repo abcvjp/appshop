@@ -4,15 +4,16 @@ const slug = require('slug')
 const { uuid } = require('uuidv4')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
 
-exports.getProducts = async ({ currentPage, pageSize, sortBy, categoryId }) => {
+exports.getProducts = async ({ current_page, page_size, sort, category_id }) => {
 	try {
-		const { limit, offset } = calculateLimitAndOffset(currentPage, pageSize)
+		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		const { rows, count } = await Product.findAndCountAll({
+			where: category_id ? { category_id } : {},
 			limit, offset,
-			order: ['createdAt']
+			order: sort ? [sort.split('.')] : ['createdAt']
 		})
 		if (!rows) throw createError(404, "Can't find any product")
-		const pagination = paginate(currentPage, count, rows, pageSize)
+		const pagination = paginate(current_page, count, rows, page_size)
 		return {
 			success: true,
 			data: rows,

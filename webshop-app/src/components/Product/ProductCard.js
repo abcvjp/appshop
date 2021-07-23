@@ -11,12 +11,9 @@ import { Rating } from '@material-ui/lab'
 import { blue } from '@material-ui/core/colors'
 const useStyles = makeStyles((theme) => ({
 	root: {
-		maxWidth: 300,
-		maxHeight: 500,
-		margin: theme.spacing(1, 0),
+		boxShadow: "none",
 		display: "flex",
 		flexDirection: "column",
-		boxShadow: "none",
 		justifyContent: "space-between",
 		'&:hover': {
 			transform: "scale(1.01)",
@@ -74,7 +71,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
 				<Box display="flex" flexDirection="row" justifyContent="flex-start"
 					alignItems="center">
 					<Box mr={0.5} mt={0.5}><Rating size="small" defaultValue={2.5} precision={0.5} readOnly /></Box>
-					<Typography variant="body2">Sold 1</Typography>
+					<Typography variant="body2">| Sold 1</Typography>
 				</Box>
 				<Box display="flex" flexDirection="row" justifyContent="flex-start"
 					alignItems="center">

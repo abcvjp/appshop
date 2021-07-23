@@ -3,8 +3,10 @@ const Joi = require('joi')
 module.exports = {
 	getProducts: {
 		query: Joi.object({
-			currentPage: Joi.number().integer().min(1),
-			pageSize: Joi.number().integer().min(1)
+			current_page: Joi.number().integer().min(1),
+			page_size: Joi.number().integer().min(1),
+			sort: Joi.string().min(1),
+			category_id: Joi.string().min(1)
 		})
 	},
 	getProductById: {

@@ -17,10 +17,13 @@ const HeaderCategories = () => {
 	const dispatch = useDispatch()
 	const categories = useSelector(state => state.categories.tree)
 	useEffect(() => {
-		API.get('/category').then(response => response.data.data)
-			.then(categories => dispatch(setCategories(categories)))
-			.catch(error => console.log(error))
-	}, [])
+		const fetchCategories = () => {
+			return API.get('/category/all').then(response => response.data.data)
+				.then(categories => dispatch(setCategories(categories)))
+				.catch(error => console.log(error))
+		}
+		fetchCategories()
+	}, [dispatch])
 	return (
 		!isArrayEmpty(categories) && <Box className={classes.root} display="flex" flexDirection="row" justifyContent="space-around" alignItems="center">
 			{categories.map((category) =>

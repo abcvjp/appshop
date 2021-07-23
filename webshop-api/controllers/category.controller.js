@@ -13,6 +13,12 @@ exports.getCategoryById = asyncHandler(async (req, res, next) => {
 	res.status(200).json(result)
 })
 
+exports.getCategory = asyncHandler(async (req, res, next) => {
+	const { id, slug } = req.query
+	const result = id ? await categoryService.getCategoryById({ id }) : await categoryService.getCategoryBySlug({ slug })
+	res.status(200).json(result)
+})
+
 exports.createCategory = asyncHandler(async (req, res, next) => {
 	const { name, description, parent_id, meta_title, meta_description, meta_keywords } = req.body
 	const result = await categoryService.createCategory({

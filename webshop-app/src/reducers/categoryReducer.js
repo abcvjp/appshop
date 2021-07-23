@@ -18,11 +18,11 @@ export default function categoryReducer(state = initialState, action) {
 			const map_name_slug = {}
 			const map_name_id = {}
 			action.categories.forEach(category => {
+				const { id, ...newCategory } = category
+				all[category.id] = newCategory
 				map_slug_id[category.slug] = category.id
 				map_name_slug[category.name] = category.slug
 				map_name_id[category.name] = category.id
-				const { id, ...newCategory } = category
-				all[category.id] = newCategory
 			})
 
 			return {
