@@ -4,3 +4,7 @@ exports.isEmptyArray = (arr) => {
 	}
 	return true
 }
+
+exports.isObjectEmpty = obj => {
+	return Object.keys(obj).length === 0
+}

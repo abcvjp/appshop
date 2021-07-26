@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Link from '@material-ui/core/Link';
+import { Link } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import HomeIcon from '@material-ui/icons/Home';
 
@@ -17,25 +17,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function handleClick(event) {
-  event.preventDefault();
-}
 
 export default function BreadcrumbsMe({ breadcrumbs = [] }) {
   const classes = useStyles();
 
   return (
     <Breadcrumbs aria-label="breadcrumb">
-      <Link color="inherit" href="/" className={classes.link}>
+      <Link color="inherit" component={RouterLink} to="/" className={classes.link}>
         <HomeIcon className={classes.icon} />
         Home
       </Link>
       {breadcrumbs.map((breadcrumb, index) =>
         index !== breadcrumbs.length - 1 ? <Link
           color="inherit"
-          to={breadcrumb.path}
           component={RouterLink}
-          onClick={handleClick}
+          to={`${breadcrumb.path}`}
           className={classes.link}
           key={index}
         >

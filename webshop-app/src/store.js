@@ -4,7 +4,8 @@ import rootReducer from './reducers'
 const initialState = {
 	cart: [],
 	categories: {
-		all: [],
+		list_all: [],
+		all: {},
 		tree: [],
 		map_slug_id: {},
 		map_name_slug: {},

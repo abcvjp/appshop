@@ -56,6 +56,7 @@ export default function SortSelector({ sortBy, handleSortChange }) {
 				onChange={handleSortChange}
 				input={<BootstrapInput />}
 			>
+				<option value='createdAt.desc'>New</option>
 				<option value='price.asc'>Price (Low to High)</option>
 				<option value='price.desc'>Price (High to Low)</option>
 				<option value='createdAt.asc'>Discount</option>

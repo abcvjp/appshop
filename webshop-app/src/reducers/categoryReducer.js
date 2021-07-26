@@ -2,7 +2,8 @@ import { SET_CATEGORIES } from "../constants/actionTypes"
 import { createDataTree } from '../utils/utilFuncs'
 
 const initialState = {
-	all: [],
+	list_all: [],
+	all: {},
 	tree: [],
 	map_slug_id: {},
 	map_name_slug: {},
@@ -18,14 +19,14 @@ export default function categoryReducer(state = initialState, action) {
 			const map_name_slug = {}
 			const map_name_id = {}
 			action.categories.forEach(category => {
-				const { id, ...newCategory } = category
-				all[category.id] = newCategory
+				all[category.id] = category
 				map_slug_id[category.slug] = category.id
 				map_name_slug[category.name] = category.slug
 				map_name_id[category.name] = category.id
 			})
 
 			return {
+				list_all: action.categories,
 				all,
 				tree,
 				map_slug_id,

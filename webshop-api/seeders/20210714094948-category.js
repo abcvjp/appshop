@@ -54,6 +54,17 @@ module.exports = {
         parent_id: '47a7e2d8-a1bb-4efd-a532-7b4a7dc2cde3',
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        id: 'd649137e-2e01-45cf-8ef7-50b737fd8548',
+        name: 'Áo khoác sơ mi nam',
+        description: 'Áo khoác sơ mi nam sieu cap vjp pro',
+        path: 'Thời trang nam - Áo khoác nam - Áo khoác sơ mi nam',
+        slug: 'ao-khoac-so-mi-nam',
+        meta_title: 'Áo khoác sơ mi nam',
+        parent_id: 'd278a1cb-d2e9-47a0-afd2-36925ca84e60',
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ])
   },

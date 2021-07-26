@@ -13,7 +13,10 @@ const useStyles = makeStyles((theme) => ({
 	headerbar: {
 		position: 'fixed',
 	},
-	toolbar: theme.mixins.toolbar,
+	toolbar: {
+		margin: 0,
+		padding: 0
+	},
 	grow: {
 		flexGrow: 1,
 	},
@@ -62,7 +65,7 @@ const HeaderBar = () => {
 			<CssBaseline />
 			<AppBar position="sticky" color="inherit" elevation={0}>
 				<Container maxWidth="lg">
-					<Toolbar>
+					<Toolbar className={classes.toolbar}>
 						<Typography variant="h6" noWrap>
 							WEBSHOP APP
 						</Typography>

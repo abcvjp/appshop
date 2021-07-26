@@ -18,9 +18,18 @@ exports.getCategories = async () => {
 	}
 }
 
-exports.getCategoryById = async ({ id }) => {
+exports.getCategoryById = async ({ id, include_products, include_childs }) => {
 	try {
-		const category = await Category.findByPk(id)
+		const temp = []
+		if (include_products) {
+			temp.push({ association: 'products' })
+		}
+		if (include_products) {
+			temp.push({ association: 'childs' })
+		}
+		const category = await Category.findByPk(id, {
+			include: temp
+		})
 		if (!category) throw createError(404, "Category does not exist")
 		return {
 			success: true,
@@ -31,7 +40,7 @@ exports.getCategoryById = async ({ id }) => {
 	}
 }
 
-exports.getCategoryBySlug = async ({ slug }) => {
+exports.getCategoryBySlug = async ({ slug, include_product, include_childs }) => {
 	try {
 		const category = await Category.findOne({
 			where: {

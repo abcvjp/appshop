@@ -1,19 +1,48 @@
 const Product = require('../models').Product
+const Category = require('../models').Category
+const { sequelize } = require('../models')
 const createError = require('http-errors')
 const slug = require('slug')
 const { uuid } = require('uuidv4')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
+const { isEmptyArray } = require('../helpers/js.helper')
 
-exports.getProducts = async ({ current_page, page_size, sort, category_id }) => {
+exports.getProducts = async ({ current_page, page_size, sort, category_id, category_slug }) => {
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
-		const { rows, count } = await Product.findAndCountAll({
-			where: category_id ? { category_id } : {},
-			limit, offset,
-			order: sort ? [sort.split('.')] : ['createdAt']
-		})
-		if (!rows) throw createError(404, "Can't find any product")
-		const pagination = paginate(current_page, count, rows, page_size)
+		let rows
+		if (category_id !== undefined) {
+			[rows] = await sequelize.query(`
+				WITH RECURSIVE cte (id, name, parent_id) AS
+				(
+					SELECT id, name, parent_id FROM Categories WHERE id = '${category_id}'
+					UNION
+					SELECT c.id, c.name, c.parent_id FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
+				)
+				SELECT p.* FROM Products p INNER JOIN cte ON p.category_id = cte.id
+					ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt'}
+					LIMIT ${offset}, ${limit};
+			`)
+		} else if (category_slug !== undefined) {
+			[rows] = await sequelize.query(`
+				WITH RECURSIVE cte (id, name, parent_id) AS
+				(
+					SELECT id, name, parent_id FROM Categories WHERE slug = '${category_slug}'
+					UNION
+					SELECT c.id, c.name, c.parent_id FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
+				)
+				SELECT p.* FROM Products p INNER JOIN cte ON p.category_id = cte.id
+					ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt'}
+					LIMIT ${offset}, ${limit};
+			`)
+		} else {
+			rows = await Product.findAll({
+				limit, offset,
+				order: sort ? [sort.split('.')] : ['createdAt']
+			})
+		}
+		if (rows.length < 1) throw createError(404, "Can't find any product")
+		const pagination = paginate(current_page, rows.length, rows, page_size)
 		return {
 			success: true,
 			data: rows,

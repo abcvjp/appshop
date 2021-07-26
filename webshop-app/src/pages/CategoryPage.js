@@ -1,67 +1,76 @@
 import React from 'react'
-import { makeStyles, Typography } from '@material-ui/core'
+import { Grid, Divider, makeStyles, Paper, ThemeProvider } from '@material-ui/core'
 import Products from '../components/Product/Products'
 import Breadcrumbs from '../components/Breadcrumb'
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setBreadcrumbs } from '../actions/breadcrumbsActions'
+import { Box } from '@material-ui/core'
+import { useEffect, useState, useRef } from 'react'
+import { useSelector } from 'react-redux'
 import { generateBreadCrumbs, isArrayEmpty, isObjectEmpty } from '../utils/utilFuncs'
 import { useParams } from 'react-router'
 import API from '../utils/apiClient'
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
 	root: {
 
 	},
-	container: {
+	main: {
 	},
-})
+
+	bar: {
+		padding: theme.spacing(1.5)
+	},
+}))
 
 const CategoryPage = () => {
 	const classes = useStyles()
-	const dispatch = useDispatch()
 	const { categorySlug } = useParams()
-	const [category, setCategory] = useState(null)
+
+	const data = useRef({
+		category: null,
+		childs: [],
+		breadcrumbs: []
+	})
+	const [, forceRerender] = useState(Date.now())
 
 	const categoriesStore = useSelector(state => state.categories)
 
-	console.log('categories store')
+	console.log(`render`)
+	console.log(categorySlug)
+	console.log(data)
+	console.log('store: ')
 	console.log(categoriesStore)
 
 	useEffect(() => {
-		const fetchCategoryBySlug = async (slug) => {
-			try {
-				const response = await API.get(`/category?slug=${slug}`)
-				console.log('Fetch category ')
-				setCategory(response.data.data)
-			} catch (error) {
-				if (error.response) {
-					// Request made and server responded
-					console.log(error.response.data)
-					console.log(error.response.status)
-					console.log(error.response.headers)
-				} else if (error.request) {
-					// The request was made but no response was received
-					console.log(error.request)
-				} else {
-					// Something happened in setting up the request that triggered an Error
-					console.log('Error', error.message)
-				}
-			}
-		}
 		// CHECK CATEGORY IN STORE OTHERWISE FETCH CATEGORY BY SLUG
 		if (!isObjectEmpty(categoriesStore.map_slug_id)) {
 			const categoryId = categoriesStore.map_slug_id[categorySlug]
-			setCategory(categoriesStore.all[categoryId])
-		} else fetchCategoryBySlug(categorySlug)
+			const category = categoriesStore.all[categoryId]
+			const childs = categoriesStore.list_all.filter(child => child.parent_id === categoryId)
+			data.current = {
+				category,
+				childs,
+				breadcrumbs: generateBreadCrumbs(category.path, categoriesStore.map_name_slug)
+			}
+			forceRerender(Date.now())
+			console.log('rerendered by effect')
+		}
+	}, [categorySlug, categoriesStore])
 
-	}, [categorySlug])
-
-	const breadcrumbs = !isObjectEmpty(categoriesStore.map_name_slug) && category ?
-		generateBreadCrumbs(category.path, categoriesStore.map_name_slug) : []
-	console.log(breadcrumbs)
 	return (
 		<>
-			<Breadcrumbs breadcrumbs={breadcrumbs} />
+			<Box mt={2} mb={2}>
+				{!isArrayEmpty(data.current.breadcrumbs) && <Breadcrumbs breadcrumbs={data.current.breadcrumbs} />}
+			</Box>
+			<Paper elevation={1} square>
+				<Grid container spacing={0} wrap="nowrap">
+					<Grid item xs={2} className={classes.bar}>
+						{`HOAI DEP TRAI VAI LON`}
+					</Grid>
+					<Divider orientation="vertical" flexItem light />
+					<Grid item xs={10} className={classes.main}>
+						<Products categorySlug={categorySlug} />
+					</Grid>
+				</Grid>
+			</Paper>
 		</>
 	)
 }
