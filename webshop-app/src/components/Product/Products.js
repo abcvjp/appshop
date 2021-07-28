@@ -1,13 +1,12 @@
 import React from 'react'
-import { Container, Grid, Typography } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 import ProductCard from './ProductCard'
-import { addToCart } from '../../actions/cartActions'
+import { checkAndAddToCart } from '../../actions/cartActions'
 import { Pagination } from '@material-ui/lab'
 import { Box } from '@material-ui/core'
 import { useState, useEffect, useRef } from 'react'
 import { makeStyles } from '@material-ui/core'
 import { DEFAULT_COLOR } from '../../constants/ui'
-import { showAlertMessage } from '../../actions/alertMessageActions'
 import API from '../../utils/apiClient'
 import { useDispatch } from 'react-redux'
 import SortSelector from './SortSelector'
@@ -41,11 +40,15 @@ const Products = ({ categoryId, categorySlug }) => {
 		sort: '',
 	}
 	const [state, setState] = useState(initialState)
-	const [, forceRerender] = useState(Date.now())
 
 	const handleAddtoCart = (product) => () => {
-		dispatch(addToCart({ product }))
-		dispatch(showAlertMessage({ type: "success", content: "Added cart successfully" }))
+		dispatch(checkAndAddToCart({
+			product_id: product.id,
+			product_name: product.name,
+			product_slug: product.slug,
+			price: product.price,
+			quantity: 1
+		}))
 	}
 
 	const handleSortChange = (e) => {
@@ -81,7 +84,13 @@ const Products = ({ categoryId, categorySlug }) => {
 				}))
 			} catch (error) {
 				products.current = []
-				setState(initialState)
+				setState({
+					currentPage: 1,
+					pageSize: 8,
+					pageCount: 1,
+					itemCount: 0,
+					sort: '',
+				})
 				if (error.response) {
 					// Request made and server responded
 					console.log(error.response.data)

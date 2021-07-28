@@ -3,11 +3,13 @@ import { useSelector } from 'react-redux'
 import { makeStyles, Popover } from '@material-ui/core'
 import { Typography } from '@material-ui/core'
 import { Box } from '@material-ui/core'
+import { Link as RouterLink } from 'react-router-dom'
 import MiniCartDetail from './MiniCartDetail'
 import { useState } from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import Badge from '@material-ui/core/Badge'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
+import { Button } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
 	popover: {
@@ -16,6 +18,10 @@ const useStyles = makeStyles(theme => ({
 	paper: {
 		pointerEvents: "auto",
 		padding: theme.spacing(1)
+	},
+	checkOut: {
+		borderTopLeftRadius: 0,
+		borderTopRightRadius: 0
 	}
 }))
 const MiniCart = () => {
@@ -36,7 +42,7 @@ const MiniCart = () => {
 	const itemCount = cart_items.reduce((accumul, cur) => (accumul + cur.quantity), 0)
 	return (
 		<div onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
-			<IconButton color="inherit">
+			<IconButton component={RouterLink} to="/cart" color="inherit">
 				<Badge badgeContent={itemCount} color="secondary">
 					<ShoppingCartIcon />
 				</Badge>
@@ -61,7 +67,10 @@ const MiniCart = () => {
 				disableRestoreFocus
 				onClose={handlePopoverClose}
 			>
-				{itemCount > 0 ? <MiniCartDetail />
+				{itemCount > 0 ?
+					<><MiniCartDetail cart_items={cart_items} /><Button className={classes.checkOut} variant="contained" color="primary" size="large" href="/cart" fullWidth>
+						VIEW CART & CHECK OUT
+					</Button></>
 					: <Box m={1}><Typography>Your cart is current empty, let buy some product!</Typography></Box>}
 			</Popover>
 		</div>

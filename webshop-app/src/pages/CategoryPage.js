@@ -1,13 +1,13 @@
 import React from 'react'
-import { Grid, Divider, makeStyles, Paper, ThemeProvider } from '@material-ui/core'
+import { Grid, Divider, makeStyles, Paper, List, ListItem, Link } from '@material-ui/core'
 import Products from '../components/Product/Products'
 import Breadcrumbs from '../components/Breadcrumb'
 import { Box } from '@material-ui/core'
+import { Link as RouterLink } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { generateBreadCrumbs, isArrayEmpty, isObjectEmpty } from '../utils/utilFuncs'
 import { useParams } from 'react-router'
-import API from '../utils/apiClient'
 const useStyles = makeStyles((theme) => ({
 	root: {
 
@@ -62,11 +62,17 @@ const CategoryPage = () => {
 			</Box>
 			<Paper elevation={1} square>
 				<Grid container spacing={0} wrap="nowrap">
-					<Grid item xs={2} className={classes.bar}>
-						{`HOAI DEP TRAI VAI LON`}
+					<Grid key="childs_category" item xs={2} className={classes.bar}>
+						<List>
+							{data.current.childs.length > 0 && data.current.childs.map(child =>
+								<ListItem key={child.name}>
+									<Link to={`${child.slug}`} component={RouterLink}>{child.name}</Link>
+								</ListItem>
+							)}
+						</List>
 					</Grid>
 					<Divider orientation="vertical" flexItem light />
-					<Grid item xs={10} className={classes.main}>
+					<Grid key="product_list" item xs={10} className={classes.main}>
 						<Products categorySlug={categorySlug} />
 					</Grid>
 				</Grid>

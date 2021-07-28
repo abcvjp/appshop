@@ -4,9 +4,9 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import { Delete } from '@material-ui/icons'
 import { IconButton, ListItemSecondaryAction } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
-import { DEFAULT_COLOR } from '../../constants/ui'
 
 const useStyles = makeStyles((theme) => ({
 	textField: {
@@ -14,6 +14,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 	itemText: {
 		maxWidth: 300
+	},
+	deleteButton: {
+		'&:hover': {
+			background: 'none',
+		}
 	}
 }))
 const MiniCartItem = ({ item, deleteItem }) => {
@@ -22,13 +27,13 @@ const MiniCartItem = ({ item, deleteItem }) => {
 		<ListItem button>
 			<ListItemAvatar>
 				<Avatar
-					src={item.product.images[0]}
+					src={item.product_thumbnail}
 				/>
 			</ListItemAvatar>
-			<ListItemText className={classes.itemText} primary={item.product.name}
-				secondary={item.product.price + '$ - Qty: ' + item.quantity} />
+			<ListItemText className={classes.itemText} primary={<Link to={`${item.product_slug}`}>{item.product_name}</Link>}
+				secondary={item.price + '$ - Qty: ' + item.quantity} />
 			<ListItemSecondaryAction>
-				<IconButton color={DEFAULT_COLOR} edge="end" onClick={deleteItem}>
+				<IconButton onClick={deleteItem} className={classes.deleteButton} edge="end" disableRipple disableFocusRipple disableTouchRipple>
 					<Delete />
 				</IconButton>
 			</ListItemSecondaryAction>

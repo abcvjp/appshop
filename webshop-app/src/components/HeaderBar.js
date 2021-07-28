@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
+import { Link as RouterLink } from 'react-router-dom'
 import MiniCart from './Cart/MiniCart'
 import { Container, CssBaseline, Divider } from '@material-ui/core'
 import HeaderCategories from './Category/HeaderCategories'
@@ -66,7 +67,7 @@ const HeaderBar = () => {
 			<AppBar position="sticky" color="inherit" elevation={0}>
 				<Container maxWidth="lg">
 					<Toolbar className={classes.toolbar}>
-						<Typography variant="h6" noWrap>
+						<Typography variant="h6" color="inherit" noWrap component={RouterLink} to='/' style={{ textDecoration: 'none' }}>
 							WEBSHOP APP
 						</Typography>
 

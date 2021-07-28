@@ -17,7 +17,7 @@ exports.caculateSubTotal = async ({ cart_items }) => {
 		if (productsToBuy.length !== cart_items.length) throw createError(409, "Any or some product ordered no longer exist")
 		let subTotal = 0
 		cart_items.forEach((cartItem, i) => {
-			subTotal += productsToBuy[i].price * cartItem.quantity
+			subTotal += serverProducts[cartItem.product_id].price * cartItem.quantity
 		})
 		return {
 			success: true,
@@ -30,36 +30,68 @@ exports.caculateSubTotal = async ({ cart_items }) => {
 
 exports.checkCartValid = async ({ cart_items }) => {
 	try {
-		cart_items.sort((a, b) => {
-			return a.product_id < b.product_id ? -1 : 1
-		})
-		const productsToBuy = await Product.findAll({
+		const serverProducts = {}
+		const fetchedProducts = await Product.findAll({
 			where: {
 				id: cart_items.map(item => item.product_id)
 			},
-			attributes: ['id', 'enable', 'price', 'quantity', 'name'],
+			attributes: ['id', 'enable', 'name', 'slug', 'images', 'price', 'quantity'],
 			order: ['id']
 		})
-		if (productsToBuy.length !== cart_items.length) throw createError(409, "Any or some product ordered no longer exist")
-		// let subTotal = 0
-		cart_items.forEach((cartItem, i) => {
-			if (!productsToBuy[i].enable) {
-				throw createError(409, `Product ${cartItem.product_name} is disabled`)
-			}
-			if (productsToBuy[i].quantity < cartItem.quantity) {
-				throw createError(409, `Stock quantity of ${cartItem.product_name} is not enough`)
-			}
-			if (productsToBuy[i].price !== cartItem.price) {
-				throw createError(409, `Price of ${cartItem.product_name} has changed`)
-			}
-			if (productsToBuy[i].name !== cartItem.product_name) {
-				throw createError(409, `Name of ${cartItem.product_name} has changed`)
-			}
-			// subTotal += productsToBuy[i].price * cartItem.quantity
+		fetchedProducts.forEach(product => {
+			serverProducts[product.id] = product
 		})
+		// CHECK ERROR
+		let errors = {}
+		const valid_items = cart_items.map((cartItem, i) => {
+			temp = []
+			let valid_item = { ...cartItem }
+			const serverProduct = serverProducts[cartItem.product_id]
+			let buy_able = true
+			if (!serverProduct) {
+				temp.push('Product is no longer exist')
+				buy_able = false
+			} else {
+				if (!serverProduct.enable) {
+					temp.push('Product is disabled')
+					buy_able = false
+				}
+				if (serverProduct.quantity === 0) {
+					temp.push('Product is sold out')
+					buy_able = false
+				} else if (serverProduct.quantity < cartItem.quantity) {
+					temp.push(`You can only buy up to ${serverProducts[cartItem.product_id].quantity} products`)
+					valid_item.quantity = serverProduct.quantity
+				}
+				if (serverProduct.price !== cartItem.price) {
+					temp.push(`Price of product has been changed, you should check again`)
+					valid_item.price = serverProduct.price
+				}
+				if (serverProduct.name !== cartItem.product_name) {
+					temp.push(`Name of product has been changed, you should check again`)
+					valid_item.product_name = serverProduct.name
+					valid_item.product_slug = serverProduct.slug
+				}
+
+			}
+			if (temp.length > 0) errors[i] = temp
+			valid_item.buy_able = buy_able
+			valid_item.product_thumbnail = serverProduct.images[0]
+			return valid_item
+		})
+
+		if (Object.keys(errors).length > 0) {
+			return {
+				success: false,
+				errors,
+				valid_items: valid_items
+			}
+		}
+
+		const subTotal = valid_items.reduce((accumul, cur) => (accumul + cur.quantity * cur.price), 0)
 		return {
-			success: true
-			// subTotal: Math.round(subTotal * 100) / 100
+			success: true,
+			subTotal: Math.round(subTotal * 100) / 100
 		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)

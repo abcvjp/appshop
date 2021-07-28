@@ -1,39 +1,65 @@
-import { DELETE_ITEM_CART } from "../constants/actionTypes"
+import { DELETE_CART, DELETE_ITEM_CART, UPDATE_CART } from "../constants/actionTypes"
 import { ADD_TO_CART } from "../constants/actionTypes"
 import { CHANGE_QUANTITY_ITEM_CART } from "../constants/actionTypes"
+import { SET_CART } from "../constants/actionTypes"
 import { isArrayEmpty } from "../utils/utilFuncs"
 
 const initialState = []
 
 export default function cartReducer(state = initialState, action) {
-	const cart_items = [...state]
 	switch (action.type) {
-		case ADD_TO_CART:
-			const productToAdd = action.payload.product
-			const isProductContained = () => cart_items.some((item) => item.product.id === productToAdd.id)
-			if (isArrayEmpty(cart_items) || !isProductContained()) {
-				cart_items.push({
-					product: productToAdd,
-					quantity: 1
-				})
+		case UPDATE_CART: {
+			const curCart = [...state]
+			const itemsToUpdate = action.payload.items
+			let new_cart
+			if (itemsToUpdate.length === curCart.length) {
+				new_cart = curCart.map((item, index) => ({ ...item, ...itemsToUpdate[index] }))
 			} else {
-				const item = cart_items.find((item) => item.product.id === productToAdd.id)
-				if (item) {
-					item.quantity += 1
+				new_cart = curCart.map(item => itemsToUpdate.find(i => i.product_id === item.product_id) || item)
+			}
+			window.localStorage.setItem("cart", JSON.stringify(new_cart))
+			return new_cart
+		}
+		case SET_CART:
+			return action.payload.cart
+		case ADD_TO_CART: {
+			const cart_items = [...state]
+			const item = action.payload.item
+			const isProductContained = () => cart_items.some((cartItem) => cartItem.product_id === item.product_id)
+			if (isArrayEmpty(cart_items) || !isProductContained()) {
+				cart_items.push(item)
+			} else {
+				const cartItem = cart_items.find((cartItem) => cartItem.product_id === item.product_id)
+				if (cartItem) {
+					cartItem.quantity += item.quantity
 				}
 			}
+			window.localStorage.setItem("cart", JSON.stringify(cart_items))
 			return cart_items
-		case DELETE_ITEM_CART:
+		}
+
+		case DELETE_ITEM_CART: {
+			let cart_items = [...state]
 			const iIndex = action.payload.itemIndex
-			return cart_items.filter((item, index) => { return index !== iIndex })
-		case CHANGE_QUANTITY_ITEM_CART:
-			const { itemIndex, quantity } = action.payload
-			if (quantity < 1 || quantity > cart_items[itemIndex].product.quantity) {
-				return cart_items
-			}
-			cart_items[itemIndex].quantity = quantity
+			cart_items = cart_items.filter((item, index) => { return index !== iIndex })
+			window.localStorage.setItem("cart", JSON.stringify(cart_items))
 			return cart_items
+		}
+
+		case CHANGE_QUANTITY_ITEM_CART: {
+			const cart_items = [...state]
+			const { itemIndex, quantity } = action.payload
+			cart_items[itemIndex].quantity = quantity
+			window.localStorage.setItem("cart", JSON.stringify(cart_items))
+			return cart_items
+		}
+
+		case DELETE_CART: {
+			return []
+		}
+
 		default:
 			return state
 	}
 }
+
