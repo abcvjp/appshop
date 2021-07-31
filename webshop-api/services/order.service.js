@@ -1,4 +1,4 @@
-const { Order, Product, OrderItem, ShippingMethod } = require('../models')
+const { Order, Product, OrderItem, ShippingMethod, PaymentMethod } = require('../models')
 const { sequelize } = require('../models')
 const createError = require('http-errors')
 const slug = require('slug')
@@ -68,7 +68,7 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 			return a.product_id < b.product_id ? -1 : 1
 		})
 		// fetch product and shipping method
-		const [productsToOrder, shippingMethod] = await Promise.all([
+		const [productsToOrder, shippingMethod, paymentMethod] = await Promise.all([
 			Product.findAll({
 				where: {
 					id: order_items.map(item => item.product_id)
@@ -76,8 +76,11 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 				attributes: ['id', 'enable', 'price', 'quantity', 'name'],
 				order: ['id']
 			}),
-			ShippingMethod.findByPk(shipping_method_id, { attributes: ['id', 'fee'] })
+			ShippingMethod.findByPk(shipping_method_id, { attributes: ['id', 'fee'] }),
+			PaymentMethod.findByPk(payment_method_id, { attributes: ['id'] })
 		])
+		if (!shippingMethod) throw createError(404, "Shipping method does not exist")
+		if (!paymentMethod) throw createError(404, "Payment method does not exist")
 		if (productsToOrder.length !== order_items.length) throw createError(409, "Any or some product ordered no longer exist")
 
 		let cost = shippingMethod.fee
@@ -128,7 +131,7 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 		return {
 			success: true,
 			result: {
-				order: newOrder,
+				...newOrder,
 				order_items
 			}
 		}

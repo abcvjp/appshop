@@ -42,9 +42,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <Switch>
-          <Route path="/checkout" exact>
-            <CheckoutPage />
-          </Route>
+          <Route path="/checkout" exact component={CheckoutPage} />
           <Route path="/">
             <HeaderBar />
             <Container maxWidth="lg">

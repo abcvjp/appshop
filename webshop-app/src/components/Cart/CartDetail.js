@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const CartDetail = ({ cart_items, errors, setSelectedItem, setUnselectedItem }) => {
+const CartDetail = ({ cart_items, errors, isSelectedAll, setSelectedItem, setUnselectedItem, handleSelectedAllChange }) => {
 	const classes = useStyles()
 	const dispatch = useDispatch()
 
@@ -65,9 +65,10 @@ const CartDetail = ({ cart_items, errors, setSelectedItem, setUnselectedItem }) 
 		<Paper elevation={0}>
 			<Grid key="header" className={classes.itemsHeader} container>
 				<Grid key="item" className={`${classes.margin} ${classes.itemsHeaderLeft}`} item container sm={6} spacing={3}>
-					<Checkbox disableRipple>
-
-					</Checkbox>
+					<Checkbox disableRipple
+						checked={isSelectedAll}
+						onChange={handleSelectedAllChange}
+					/>
 					{`All (${cart_items.length} items)`}
 				</Grid>
 				<Grid key="other" className={`${classes.margin} ${classes.itemsHeaderRight}`} item container sm={6}>
