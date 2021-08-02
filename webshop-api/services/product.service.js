@@ -53,6 +53,26 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 	}
 }
 
+exports.getProductBySlug = async ({ slug }) => {
+	try {
+		const productBySlug = await Product.findOne({
+			where: { slug },
+			include: {
+				association: 'category',
+				required: true,
+				attributes: ['id', 'name', 'path', 'slug']
+			}
+		})
+		if (!productBySlug) throw createError(404, 'Product does not exist')
+		return {
+			success: true,
+			data: productBySlug
+		}
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
+	}
+}
+
 exports.getProductById = async ({ id }) => {
 	try {
 		const productById = await Product.findByPk(id)

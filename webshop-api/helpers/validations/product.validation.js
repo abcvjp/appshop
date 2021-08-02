@@ -10,6 +10,12 @@ module.exports = {
 			category_slug: Joi.string().min(1)
 		})
 	},
+	getProduct: {
+		query: Joi.object({
+			id: Joi.string().guid({ version: 'uuidv4' }),
+			slug: Joi.string().min(1),
+		}).min(1)
+	},
 	getProductById: {
 		params: Joi.object({
 			productId: Joi.string().guid({ version: 'uuidv4' }).required()

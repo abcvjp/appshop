@@ -9,6 +9,10 @@ import Typography from '@material-ui/core/Typography'
 import { Box } from '@material-ui/core'
 import { Rating } from '@material-ui/lab'
 import { blue } from '@material-ui/core/colors'
+
+import { Link as RouterLink } from 'react-router-dom'
+import { Link } from '@material-ui/core'
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		boxShadow: "none",
@@ -42,14 +46,17 @@ const useStyles = makeStyles((theme) => ({
 		marginRight: theme.spacing(1)
 	},
 	addbutton: {
-		backgroundColor: '#fff',
-		color: blue[700],
+		fontWeight: 'bold',
+		background: blue[700],
+		color: '#ffffff',
+		border: 'solid 2px',
 		borderColor: blue[700],
+		transition: 'all 0.5s ease-in-out 0s',
 		'&:hover': {
-			backgroundColor: blue[700],
-			color: '#fff',
-			border: 0
+			background: 'transparent',
+			color: blue[700],
 		}
+
 	}
 }));
 
@@ -58,16 +65,20 @@ const ProductCard = ({ product, handleAddToCart }) => {
 
 	return (
 		<Card className={classes.root}>
-			<CardMedia
-				className={classes.media}
-				component="img"
-				image='https://salt.tikicdn.com/cache/w444/ts/product/56/dd/e2/2612def5999d6417d9916a828cf054df.jpg'
-				alt={product.name}
-			/>
+			<RouterLink to={`/product/${product.slug}`}>
+				<CardMedia
+					className={classes.media}
+					component="img"
+					image='https://salt.tikicdn.com/cache/w444/ts/product/56/dd/e2/2612def5999d6417d9916a828cf054df.jpg'
+					alt={product.name}
+				/>
+			</RouterLink>
 			<CardContent className={classes.content}>
-				<Typography variant="subtitle1">
-					{product.name}
-				</Typography>
+				<Link component={RouterLink} to={`/product/${product.slug}`} color="inherit">
+					<Typography variant="subtitle1">
+						{product.name}
+					</Typography>
+				</Link>
 				<Box display="flex" flexDirection="row" justifyContent="flex-start"
 					alignItems="center">
 					<Box mr={0.5} mt={0.5}><Rating size="small" defaultValue={2.5} precision={0.5} readOnly /></Box>
@@ -85,8 +96,9 @@ const ProductCard = ({ product, handleAddToCart }) => {
 
 			</CardContent>
 			<CardActions>
-				<Button className={classes.addbutton} fullWidth variant="outlined" size="small"
-					onClick={handleAddToCart}>
+				<Button className={classes.addbutton} variant="contained" color="primary" size="medium" fullWidth disableElevation
+					onClick={handleAddToCart}
+				>
 					ADD TO CART
 				</Button>
 			</CardActions>

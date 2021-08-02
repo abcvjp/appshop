@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, Divider, makeStyles, Paper, List, ListItem, Link } from '@material-ui/core'
 import Products from '../components/Product/Products'
-import Breadcrumbs from '../components/Breadcrumb'
+import Breadcrumbs from '../components/Breadcrumbs'
 import { Box } from '@material-ui/core'
 import { Link as RouterLink } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
@@ -32,12 +32,6 @@ const CategoryPage = () => {
 	const [, forceRerender] = useState(Date.now())
 
 	const categoriesStore = useSelector(state => state.categories)
-
-	console.log(`render`)
-	console.log(categorySlug)
-	console.log(data)
-	console.log('store: ')
-	console.log(categoriesStore)
 
 	useEffect(() => {
 		// CHECK CATEGORY IN STORE OTHERWISE FETCH CATEGORY BY SLUG

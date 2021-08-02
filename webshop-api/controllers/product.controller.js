@@ -34,6 +34,13 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
 	res.status(200).json(result)
 })
 
+exports.getProduct = asyncHandler(async (req, res, next) => {
+	const { id, slug } = req.query
+	const result = id ? await productService.getProductById({ id })
+		: await productService.getProductBySlug({ slug })
+	res.status(200).json(result)
+})
+
 exports.getProductById = asyncHandler(async (req, res, next) => {
 	const productId = req.params.productId
 	const result = await productService.getProductById({ id: productId })

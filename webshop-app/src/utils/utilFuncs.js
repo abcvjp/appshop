@@ -19,7 +19,7 @@ export const generateBreadCrumbs = (string, map_name_slug) => {
 	return string.split(' - ').map(name => {
 		return {
 			name,
-			path: map_name_slug[name]
+			path: map_name_slug[name] ? map_name_slug[name] : ''
 		}
 	})
 }

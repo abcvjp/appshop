@@ -31,7 +31,7 @@ export default function BreadcrumbsMe({ breadcrumbs = [] }) {
         index !== breadcrumbs.length - 1 ? <Link
           color="inherit"
           component={RouterLink}
-          to={`${breadcrumb.path}`}
+          to={`/${breadcrumb.path}`}
           className={classes.link}
           key={index}
         >

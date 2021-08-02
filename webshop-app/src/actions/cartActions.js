@@ -53,7 +53,8 @@ export const checkAndAddToCart = ({ product_id, product_name, price, quantity })
 				product_slug: productFromServer.slug,
 				product_thumbnail: productFromServer.images[0],
 				price: productFromServer.price,
-				quantity
+				quantity,
+				buy_able: true
 			}))
 			dispatch(showAlertMessage({ type: 'warning', content: 'Added successfully. But product info has been changed, you should check again' }))
 		} else {

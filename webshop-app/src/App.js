@@ -20,6 +20,7 @@ import { setCart } from './actions/cartActions'
 
 import { useDispatch } from 'react-redux'
 import CheckoutPage from './pages/CheckoutPage'
+import ProductPage from './pages/ProductPage'
 
 const theme = createTheme({
   palette: {
@@ -38,6 +39,7 @@ function App() {
   if (cartData) {
     dispatch(setCart({ cart: JSON.parse(cartData) }))
   }
+
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -54,6 +56,9 @@ function App() {
                   <CartPage />
                 </Route>
 
+                <Route path="/product/:productSlug">
+                  <ProductPage />
+                </Route>
                 <Route path="/:categorySlug">
                   <CategoryPage />
                 </Route>

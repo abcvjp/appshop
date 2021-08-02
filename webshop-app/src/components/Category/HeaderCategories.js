@@ -25,7 +25,7 @@ const HeaderCategories = () => {
 		fetchCategories()
 	}, [dispatch])
 	return (
-		!isArrayEmpty(categories) && <Box className={classes.root} display="flex" flexDirection="row" justifyContent="space-around" alignItems="center">
+		!isArrayEmpty(categories) && <Box className={classes.root} display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center">
 			{categories.map((category) =>
 				<HeaderCategory key={category.id} category={category} />
 			)}

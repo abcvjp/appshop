@@ -40,7 +40,10 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.json({
     success: false,
-    error: err.message
+    error: {
+      message: err.message,
+      details: err.details
+    }
   });
 });
 

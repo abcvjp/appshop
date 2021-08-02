@@ -73,7 +73,7 @@ const Products = ({ categoryId, categorySlug }) => {
 				const sort = state.sort ? `&sort=${state.sort}` : ''
 				const category_id = categoryId ? `&category_id=${categoryId}` : ''
 				const category_slug = categorySlug ? `&category_slug=${categorySlug}` : ''
-				const response = await API.get(`/product?current_page=${state.currentPage}&page_size=${state.pageSize}`
+				const response = await API.get(`/product/all?current_page=${state.currentPage}&page_size=${state.pageSize}`
 					+ sort + category_id + category_slug)
 				products.current = response.data.data
 				setState(state => ({

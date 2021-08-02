@@ -25,14 +25,12 @@ export default function cartReducer(state = initialState, action) {
 		case ADD_TO_CART: {
 			const cart_items = [...state]
 			const item = action.payload.item
-			const isProductContained = () => cart_items.some((cartItem) => cartItem.product_id === item.product_id)
-			if (isArrayEmpty(cart_items) || !isProductContained()) {
+			const index = cart_items.findIndex((cartItem) => cartItem.product_id === item.product_id)
+			if (isArrayEmpty(cart_items) || index === -1) {
 				cart_items.push(item)
-			} else {
-				const cartItem = cart_items.find((cartItem) => cartItem.product_id === item.product_id)
-				if (cartItem) {
-					cartItem.quantity += item.quantity
-				}
+			} else if (index !== -1) {
+				const itemToUpdate = cart_items[index]
+				cart_items[index] = { ...itemToUpdate, quantity: itemToUpdate.quantity + item.quantity }
 			}
 			window.localStorage.setItem("cart", JSON.stringify(cart_items))
 			return cart_items
