@@ -10,9 +10,8 @@ const { isEmptyArray } = require('../helpers/js.helper')
 exports.getProducts = async ({ current_page, page_size, sort, category_id, category_slug }) => {
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
-		let rows
 		if (category_id !== undefined) {
-			[rows] = await sequelize.query(`
+			const [rows] = await sequelize.query(`
 				WITH RECURSIVE cte (id, name, parent_id) AS
 				(
 					SELECT id, name, parent_id FROM Categories WHERE id = '${category_id}'
@@ -20,11 +19,12 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					SELECT c.id, c.name, c.parent_id FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
 				)
 				SELECT p.* FROM Products p INNER JOIN cte ON p.category_id = cte.id
-					ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt'}
-					LIMIT ${offset}, ${limit};
+					ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'}
 			`)
+			var count = rows.length
+			var result = rows.slice(offset, offset + limit)
 		} else if (category_slug !== undefined) {
-			[rows] = await sequelize.query(`
+			const [rows] = await sequelize.query(`
 				WITH RECURSIVE cte (id, name, parent_id) AS
 				(
 					SELECT id, name, parent_id FROM Categories WHERE slug = '${category_slug}'
@@ -32,20 +32,22 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					SELECT c.id, c.name, c.parent_id FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
 				)
 				SELECT p.* FROM Products p INNER JOIN cte ON p.category_id = cte.id
-					ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt'}
-					LIMIT ${offset}, ${limit};
+					ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`)
+			var count = rows.length
+			var result = rows.slice(offset, offset + limit)
 		} else {
-			rows = await Product.findAll({
+			var { rows, count } = await Product.findAndCountAll({
 				limit, offset,
 				order: sort ? [sort.split('.')] : ['createdAt']
 			})
+			var result = rows
 		}
-		if (rows.length < 1) throw createError(404, "Can't find any product")
-		const pagination = paginate(current_page, rows.length, rows, page_size)
+		if (result.length < 1) throw createError(404, "Can't find any product")
+		const pagination = paginate(current_page, count, result, page_size)
 		return {
 			success: true,
-			data: rows,
+			data: result,
 			pagination
 		}
 	} catch (error) {

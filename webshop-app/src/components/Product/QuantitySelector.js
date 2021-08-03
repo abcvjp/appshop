@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-const QuantitySelect = ({ qty, handleQtyChange }) => {
+const QuantitySelector = ({ qty, handleQtyChange }) => {
 	const classes = useStyles()
 
 	return (
@@ -28,4 +28,4 @@ const QuantitySelect = ({ qty, handleQtyChange }) => {
 	)
 }
 
-export default QuantitySelect
+export default QuantitySelector

@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core'
 import {
 	Container
 } from '@material-ui/core'
-import Products from '../components/Product/Products'
+import ProductList from '../components/Product/ProductList'
 const useStyles = makeStyles({
 	container: {
 	},
@@ -14,7 +14,7 @@ const HomePage = () => {
 	return (
 		<>
 			<Container className={classes.container}>
-				<Products />
+				<ProductList />
 			</Container>
 		</>
 	)

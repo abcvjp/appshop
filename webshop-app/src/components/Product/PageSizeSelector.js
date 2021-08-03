@@ -1,8 +1,10 @@
 import React from 'react'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
+
 import NativeSelect from '@material-ui/core/NativeSelect'
 import InputBase from '@material-ui/core/InputBase'
 import { Typography } from '@material-ui/core'
+
 const BootstrapInput = withStyles((theme) => ({
 	root: {
 		'label + &': {

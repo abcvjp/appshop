@@ -22,10 +22,7 @@ const useStyles = makeStyles((theme) => ({
 		'&:hover': {
 			boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
 		},
-	},
-	area: {
-		display: "flex",
-		flexDirection: "column",
+		height: '100%'
 	},
 	media: {
 		maxHeight: 300
@@ -57,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 		}
 
 	}
-}));
+}))
 
 const ProductCard = ({ product, handleAddToCart }) => {
 	const classes = useStyles()

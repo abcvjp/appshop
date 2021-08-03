@@ -6,9 +6,8 @@ const { calculateLimitAndOffset, paginate } = require('paginate-info')
 exports.searchProducts = async ({ keyword, category_id, current_page, page_size, sort }) => {
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
-		let result = []
 		if (category_id !== undefined) {
-			[result] = await sequelize.query(`
+			const [rows] = await sequelize.query(`
 				WITH RECURSIVE cte (id, name, parent_id) AS
 				(
 					SELECT id, name, parent_id FROM Categories WHERE id = '${category_id}'
@@ -18,21 +17,22 @@ exports.searchProducts = async ({ keyword, category_id, current_page, page_size,
 				SELECT p.*, MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
 					FROM Products p INNER JOIN cte ON p.category_id = cte.id
 					WHERE p.enable = 1 AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
-					ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'}
-					LIMIT ${offset}, ${limit};
+					ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
 			`)
+			var count = rows.length
+			var result = rows.slice(offset, offset + limit)
 		} else {
-			[result] = await sequelize.query(`
+			const [rows] = await sequelize.query(`
 				SELECT *, MATCH (name,title,meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
 					FROM Products
 					WHERE enable = 1 AND MATCH (name,title,meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)
-					ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'}
-					LIMIT ${offset}, ${limit};
+					ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
 			`)
-
+			var count = rows.length
+			var result = rows.slice(offset, offset + limit)
 		}
 		if (result.length < 1) throw createError(404, `No result found`)
-		const pagination = paginate(current_page, result.length, result, page_size)
+		const pagination = paginate(current_page, count, result, page_size)
 		return {
 			success: true,
 			data: result,

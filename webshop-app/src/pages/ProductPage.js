@@ -13,7 +13,7 @@ import API from '../utils/apiClient'
 import { Grid, makeStyles, Box, Paper, Divider, Button } from '@material-ui/core'
 import Breadcrumbs from '../components/Breadcrumbs'
 import ProductDetail from '../components/Product/ProductDetail'
-import QuantitySelect from '../components/Product/QuantitySelect'
+import QuantitySelector from '../components/Product/QuantitySelector'
 import ProductImages from '../components/Product/ProductImages'
 import ProductDescription from '../components/Product/ProductDescription'
 
@@ -138,7 +138,7 @@ const ProductPage = () => {
 								<ProductDetail product={product} />
 								<Divider light />
 								<div className={classes.marginBlock}>
-									<QuantitySelect qty={qty} handleQtyChange={handleQtyChange} />
+									<QuantitySelector qty={qty} handleQtyChange={handleQtyChange} />
 								</div>
 								<Box display="flex">
 									<Button className={classes.addcart} variant="contained" color="primary" size="medium" disableElevation

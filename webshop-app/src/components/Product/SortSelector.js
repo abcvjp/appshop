@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-export default function SortSelector({ sortBy, handleSortChange }) {
+export default function SortSelector({ sortBy, handleSortChange, sortElemnents }) {
 	const classes = useStyles()
 	return (
 		<div className={classes.justify}>
@@ -56,11 +56,11 @@ export default function SortSelector({ sortBy, handleSortChange }) {
 				onChange={handleSortChange}
 				input={<BootstrapInput />}
 			>
-				<option value='createdAt.desc'>New</option>
-				<option value='price.asc'>Price (Low to High)</option>
-				<option value='price.desc'>Price (High to Low)</option>
-				<option value='createdAt.asc'>Discount</option>
-				<option value='sold.desc'>Best Selling</option>
+				{
+					sortElemnents.map(element =>
+						<option key={element.name} value={element.value}>{element.name}</option>
+					)
+				}
 			</NativeSelect>
 		</div>
 	)

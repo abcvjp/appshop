@@ -1,10 +1,8 @@
 import React from 'react'
-import { Button, makeStyles } from '@material-ui/core'
-import { Typography, Box, Paper, Divider, TextField, IconButton } from '@material-ui/core'
-import AddIcon from '@material-ui/icons/Add'
+import { makeStyles } from '@material-ui/core'
+import { Typography, Box } from '@material-ui/core'
 import { grey } from '@material-ui/core/colors'
 import { Rating } from '@material-ui/lab'
-import QuantitySelect from './QuantitySelect'
 
 const useStyles = makeStyles((theme) => ({
 	root: {

@@ -1,22 +1,26 @@
 import React from 'react'
 import { Grid, Divider, makeStyles, Paper, List, ListItem, Link, Typography } from '@material-ui/core'
-import Products from '../components/Product/Products'
+import ProductList from '../components/Product/ProductList'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { Link as RouterLink } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { generateBreadCrumbs, isArrayEmpty, isObjectEmpty } from '../utils/utilFuncs'
 import { useParams } from 'react-router'
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 
 	},
 	main: {
 	},
-
-	bar: {
-		padding: theme.spacing(1.5)
+	margin: {
+		margin: theme.spacing(2)
 	},
+	bar: {
+		padding: theme.spacing(1.5),
+		borderRight: '1px solid #e6e6e6'
+	}
 }))
 
 const CategoryPage = () => {
@@ -48,12 +52,14 @@ const CategoryPage = () => {
 		}
 	}, [categorySlug, categoriesStore])
 
+	const fetchProductQuery = `/product/all?category_slug=${categorySlug}`
+
 	return (
 		<>
 			{!isArrayEmpty(data.current.breadcrumbs) && <Breadcrumbs breadcrumbs={data.current.breadcrumbs} />}
 			<Paper elevation={1} square>
-				<Grid container spacing={0} wrap="nowrap">
-					<Grid key="childs_category" item xs={2} className={classes.bar}>
+				<Grid container spacing={0}>
+					<Grid key="childs_category" item xs={12} sm={2} className={classes.bar}>
 						<List>
 							{data.current.childs.length > 0 && data.current.childs.map(child =>
 								<ListItem key={child.name}>
@@ -62,13 +68,12 @@ const CategoryPage = () => {
 							)}
 						</List>
 					</Grid>
-					<Divider orientation="vertical" flexItem light />
-					<Grid key="product_list" item xs={10} className={classes.main}>
+					<Grid key="product_list" item sm={10} className={classes.main}>
 						{data.current.category &&
-							<Typography variant="h4">
+							<Typography className={classes.margin} variant="h4">
 								{data.current.category.name}
 							</Typography>}
-						<Products categorySlug={categorySlug} />
+						<ProductList fetchQuery={fetchProductQuery} />
 					</Grid>
 				</Grid>
 			</Paper>

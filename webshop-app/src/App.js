@@ -21,6 +21,7 @@ import { setCart } from './actions/cartActions'
 import { useDispatch } from 'react-redux'
 import CheckoutPage from './pages/CheckoutPage'
 import ProductPage from './pages/ProductPage'
+import SearchPage from './pages/SearchPage'
 
 const theme = createTheme({
   palette: {
@@ -55,7 +56,9 @@ function App() {
                 <Route path="/cart" exact>
                   <CartPage />
                 </Route>
-
+                <Route path="/search">
+                  <SearchPage />
+                </Route>
                 <Route path="/product/:productSlug">
                   <ProductPage />
                 </Route>
