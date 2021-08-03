@@ -10,8 +10,8 @@ services:
    - ./webshop-api:/api
    - /api/node_modules
   networks:
-   - backend
-   - database
+   - proxy_backend
+   - database_backend
   env_file:
    - ./webshop-api/.env
  frontend:
@@ -22,25 +22,41 @@ services:
    - ./webshop-app:/app
    - /app/node_modules
   networks:
-   - frontend
+   - proxy_frontend
+   - frontend_backend
+ admin:
+  build: './webshop-admin'
+  expose:
+   - 3000
+  volumes:
+   - ./webshop-admin:/app
+   - /app/node_modules
+  networks:
+   - proxy_admin
+   - admin_backend
  proxy:
   depends_on:
    - frontend
    - backend
+   - admin
+   - phpmyadmin
   build: './proxy'
   ports:
    - 80:80
   networks:
-   - backend
-   - frontend
+   - proxy_frontend
+   - proxy_backend
+   - proxy_admin
+   - proxy_phpmyadmin
  db:
-  image: mysql:latest
+  image: mysql:8.0.26
   expose:
    - 3306
   volumes:
    - db-data:/var/lib/mysql
   networks:
-   - database
+   - database_backend
+   - database_phpmyadmin
   environment:
    - MYSQL_ROOT_PASSWORD=123456
    - MYSQL_DATABASE=webshop_db
@@ -53,9 +69,10 @@ services:
    - db
   image: phpmyadmin/phpmyadmin
   networks:
-   - database
-  ports:
-   - 8081:80
+   - database_phpmyadmin
+   - proxy_phpmyadmin
+  expose:
+   - 80
   environment:
    - PMA_HOST=db
    - PMA_PORT=3306
@@ -63,9 +80,19 @@ services:
 volumes:
  db-data:
 networks:
- frontend:
+ proxy_backend:
   driver: bridge
- backend:
+ proxy_frontend:
   driver: bridge
- database:
+ proxy_admin:
+  driver: bridge
+ proxy_phpmyadmin:
+  driver: bridge
+ database_backend:
+  driver: bridge
+ database_phpmyadmin:
+  driver: bridge
+ frontend_backend:
+  driver: bridge
+ admin_backend:
   driver: bridge
