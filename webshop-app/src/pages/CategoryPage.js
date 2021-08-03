@@ -1,8 +1,7 @@
 import React from 'react'
-import { Grid, Divider, makeStyles, Paper, List, ListItem, Link } from '@material-ui/core'
+import { Grid, Divider, makeStyles, Paper, List, ListItem, Link, Typography } from '@material-ui/core'
 import Products from '../components/Product/Products'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { Box } from '@material-ui/core'
 import { Link as RouterLink } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
@@ -51,9 +50,7 @@ const CategoryPage = () => {
 
 	return (
 		<>
-			<Box mt={2} mb={2}>
-				{!isArrayEmpty(data.current.breadcrumbs) && <Breadcrumbs breadcrumbs={data.current.breadcrumbs} />}
-			</Box>
+			{!isArrayEmpty(data.current.breadcrumbs) && <Breadcrumbs breadcrumbs={data.current.breadcrumbs} />}
 			<Paper elevation={1} square>
 				<Grid container spacing={0} wrap="nowrap">
 					<Grid key="childs_category" item xs={2} className={classes.bar}>
@@ -67,6 +64,10 @@ const CategoryPage = () => {
 					</Grid>
 					<Divider orientation="vertical" flexItem light />
 					<Grid key="product_list" item xs={10} className={classes.main}>
+						{data.current.category &&
+							<Typography variant="h4">
+								{data.current.category.name}
+							</Typography>}
 						<Products categorySlug={categorySlug} />
 					</Grid>
 				</Grid>

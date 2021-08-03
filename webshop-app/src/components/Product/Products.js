@@ -116,7 +116,7 @@ const Products = ({ categoryId, categorySlug }) => {
 				<SortSelector handleSortChange={handleSortChange} />
 			</Box>
 
-			<Grid className={classes.root} container direction="row" justifyContent="flex-start" alignItems="stretch" spacing={0}>
+			<Grid className={classes.root} container direction="row" justifyContent="flex-start" alignItems="stretch" spacing={1}>
 				{
 					!isArrayEmpty(products.current) > 0 ? products.current.map((product) => (
 						<Grid item key={product.id} className={classes.item}>

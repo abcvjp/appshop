@@ -126,9 +126,7 @@ const ProductPage = () => {
 
 	return (
 		<div>
-			<Box className={classes.marginBlock}>
-				{!isArrayEmpty(data.current.breadcrumbs) && <Breadcrumbs breadcrumbs={data.current.breadcrumbs} />}
-			</Box>
+			{!isArrayEmpty(data.current.breadcrumbs) && <Breadcrumbs breadcrumbs={data.current.breadcrumbs} />}
 			{product &&
 				<div>
 					<Paper elevation={0} style={{ padding: 16 }}>

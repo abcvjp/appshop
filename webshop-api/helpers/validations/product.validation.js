@@ -6,7 +6,7 @@ module.exports = {
 			current_page: Joi.number().integer().min(1),
 			page_size: Joi.number().integer().min(1),
 			sort: Joi.string().min(1),
-			category_id: Joi.string().min(1),
+			category_id: Joi.string().guid({ version: 'uuidv4' }),
 			category_slug: Joi.string().min(1)
 		})
 	},

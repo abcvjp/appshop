@@ -37,9 +37,11 @@ const HeaderCategory = ({ category }) => {
 
 	return (
 		<div>
-			<Button color="default" {...bindHover(popupState)}>
-				<Link underline="none" component={RouterLink}
-					to={`${category.slug}`} key={category.id} style={{ fontWeight: 600 }}>{category.name}</Link>
+			<Button {...bindHover(popupState)}>
+				<Link underline="none" component={RouterLink} style={{ fontWeight: 600, color: '#595959' }}
+					to={`/${category.slug}`} key={category.id}>
+					{category.name}
+				</Link>
 
 			</Button>
 			<ParentPopupState.Provider value={popupState}>

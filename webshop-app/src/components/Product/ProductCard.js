@@ -20,8 +20,7 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: "column",
 		justifyContent: "space-between",
 		'&:hover': {
-			transform: "scale(1.01)",
-			backgroundColor: "#f5f5f5"
+			boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
 		},
 	},
 	area: {
@@ -46,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 		marginRight: theme.spacing(1)
 	},
 	addbutton: {
-		fontWeight: 'bold',
+		fontWeight: 600,
 		background: blue[700],
 		color: '#ffffff',
 		border: 'solid 2px',
@@ -96,10 +95,10 @@ const ProductCard = ({ product, handleAddToCart }) => {
 
 			</CardContent>
 			<CardActions>
-				<Button className={classes.addbutton} variant="contained" color="primary" size="medium" fullWidth disableElevation
+				<Button className={classes.addbutton} variant="contained" color="primary" size="medium" disableElevation
 					onClick={handleAddToCart}
 				>
-					ADD TO CART
+					Add to Cart
 				</Button>
 			</CardActions>
 		</Card>
