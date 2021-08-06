@@ -4,14 +4,21 @@ const slug = require('slug')
 const { sequelize, Sequelize } = require('../models')
 const { isEmptyArray } = require('../helpers/js.helper')
 const { uuid } = require('uuidv4')
+const { calculateLimitAndOffset, paginate } = require('paginate-info')
 
-exports.getCategories = async () => {
+exports.getCategories = async ({current_page, page_size, sort}) => {
 	try {
-		const categories = await Category.findAll()
-		if (!categories) throw createError(404, "Can not find any category")
+		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
+		const {rows, count} = await Category.findAndCountAll({
+			limit, offset,
+			order: sort ? [sort.split('.')] : ['createdAt']
+		})
+		if (rows.length < 1) throw createError(404, "Can not find any category")
+		const pagination = paginate(current_page, count, rows, page_size)
 		return {
 			success: true,
-			data: categories
+			data: rows,
+			pagination
 		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)
@@ -57,8 +64,16 @@ exports.getCategoryBySlug = async ({ slug, include_product, include_childs }) =>
 	}
 }
 
-exports.createCategory = async ({ name, description, parent_id, meta_title, meta_description, meta_keywords }) => {
+exports.createCategory = async ({ name, description, parent_id, published, meta_title, meta_description, meta_keywords }) => {
 	try {
+		const checkExist = await Category.findOne({
+			where: {
+				name
+			}
+		})
+		if (checkExist) {
+			throw createError(409, `Category ${name} is already exist`)
+		}
 		const id = uuid()
 		const slugName = slug(name)
 		let path = name
@@ -71,6 +86,7 @@ exports.createCategory = async ({ name, description, parent_id, meta_title, meta
 			name,
 			description,
 			parent_id,
+			published,
 			slug: slugName,
 			path,
 			meta_title,
@@ -86,7 +102,7 @@ exports.createCategory = async ({ name, description, parent_id, meta_title, meta
 		throw createError(error.statusCode || 500, error.message)
 	}
 }
-exports.updateCategory = async ({ id, name, description, meta_title, meta_description, meta_keywords }) => {
+exports.updateCategory = async ({ id, name, description, published, meta_title, meta_description, meta_keywords }) => {
 	try {
 		// find category to be updated
 		const categoryToUpdate = await Category.findByPk(id)
@@ -128,6 +144,7 @@ exports.updateCategory = async ({ id, name, description, meta_title, meta_descri
 			result = await categoryToUpdate.update({
 				name,
 				description,
+				published,
 				slug: slugName,
 				path: newPath,
 				meta_title,
@@ -139,6 +156,7 @@ exports.updateCategory = async ({ id, name, description, meta_title, meta_descri
 				await categoryToUpdate.update({
 					name,
 					description,
+					published,
 					slug: slugName,
 					path: newPath,
 					meta_title,

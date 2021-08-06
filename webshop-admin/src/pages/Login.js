@@ -11,8 +11,10 @@ import {
   TextField,
   Typography
 } from '@material-ui/core';
-import FacebookIcon from 'src/icons/Facebook';
-import GoogleIcon from 'src/icons/Google';
+import FacebookIcon from '../icons/Facebook';
+import GoogleIcon from '../icons/Google';
+
+import API from '../utils/apiClient';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -41,8 +43,14 @@ const Login = () => {
               username: Yup.string().min(4).max(255).required('Username is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
+            onSubmit={async (values) => {
+              const response = await API.post('/user/login', values).then((res) => res.data);
+              if (response.success) {
+                navigate('/app/dashboard', { replace: true });
+              } else {
+                console.log('login error');
+                alert(`${response.error.message}`); // eslint-disable-line
+              }
             }}
           >
             {({

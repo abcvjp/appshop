@@ -1,14 +1,23 @@
 import React from 'react'
-import { Grid, makeStyles, Typography } from '@material-ui/core'
-import CartDetail from '../components/Cart/CartDetail'
-import CartSummary from '../components/Cart/CartSummary'
 import { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router'
+
 import API from '../utils/apiClient'
+
 import { updateCart } from '../actions/cartActions'
 import { showAlertMessage } from '../actions/alertMessageActions'
+import { checkAndChangeQuantity } from '../actions/cartActions'
+import { deleteItemCart } from '../actions/cartActions'
+import { deleteCart } from '../actions/cartActions'
 
+import { Dialog, DialogActions, DialogContent, DialogContentText, Button } from '@material-ui/core'
+
+import CartItem from '../components/Cart/CartItem'
+import CartDetail from '../components/Cart/CartDetail'
+import CartSummary from '../components/Cart/CartSummary'
+
+import { Grid, makeStyles, Typography } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -37,24 +46,69 @@ const CartPage = () => {
 	const [, forceRerender] = useState(Date.now())
 
 	const cart_items = useSelector(state => state.cart)
+	const selectedItems = useRef([])
 	const cart_status = useRef({
 		isValid: true,
 		isSelectedAll: false,
 		errors: {}
 	})
-	const selectedItems = useRef([])
+	const [openDeleteAllConfirm, setOpenDeleteAllConfirm] = useState(false)
+	const [deleteItem, setDeleteItem] = useState({
+		isOpenConfirm: false,
+		itemIndex: null
+	})
 
-	const setSelectedItem = (item) => {
+	const handleDeleteAllConfirmOpen = () => {
+		setOpenDeleteAllConfirm(true)
+	}
+	const handleDeleteAllConfirmClose = () => {
+		setOpenDeleteAllConfirm(false)
+	}
+	const handleDeleteAllAgree = () => {
+		setOpenDeleteAllConfirm(false)
+		dispatch(deleteCart())
+	}
+	const handleDeleteAllDisagree = () => {
+		setOpenDeleteAllConfirm(false)
+	}
+	const handleDeleteItemConfirmOpen = (itemIndex) => () => {
+		setDeleteItem({
+			isOpenConfirm: true,
+			itemIndex: itemIndex
+		})
+	}
+	const handleDeleteItemConfirmClose = () => {
+		setDeleteItem({
+			isOpenConfirm: false,
+			itemIndex: null
+		})
+	}
+	const handleDeleteItemAgree = () => {
+		dispatch(deleteItemCart({ itemIndex: deleteItem.itemIndex }))
+		setDeleteItem({
+			isOpenConfirm: false,
+			itemIndex: null
+		})
+	}
+	const handleDeleteItemDisagree = () => {
+		setDeleteItem({
+			isOpenConfirm: false,
+			itemToDelete: null
+		})
+	}
+	const setSelectedItem = (item) => () => {
 		selectedItems.current.push(item)
 		if (selectedItems.current.length === cart_items.length) {
 			cart_status.current.isSelectedAll = true
 		}
 		forceRerender(Date.now())
 	}
-	const setUnselectedItem = (item) => {
+	const setUnselectedItem = (item) => () => {
 		const temp = selectedItems.current.filter(i => i.product_id !== item.product_id)
 		selectedItems.current = temp
-		if (cart_status.current.isSelectedAll) cart_status.current.isSelectedAll = false
+		if (cart_status.current.isSelectedAll) {
+			cart_status.current.isSelectedAll = false
+		}
 		forceRerender(Date.now())
 	}
 	const handleSelectAllChange = () => {
@@ -72,6 +126,10 @@ const CartPage = () => {
 			cart_status.current.isSelectedAll = false
 			forceRerender(Date.now())
 		}
+	}
+	const handleChangeQtyItem = (itemIndex) => (event) => {
+		const quantity = parseInt(event.target.value)
+		dispatch(checkAndChangeQuantity({ itemIndex, quantity: quantity }))
 	}
 
 	const checkValid = async (cart_items, success_callback, fail_callback) => {
@@ -110,7 +168,6 @@ const CartPage = () => {
 			dispatch(showAlertMessage({ type: 'warning', content: 'You must select items to order' }))
 		}
 	}
-	const subtotal = selectedItems.current.reduce((accumul, cur) => (accumul + cur.quantity * cur.price), 0)
 
 	useEffect(() => {
 		checkValid(cart_items, (respone) => {
@@ -122,27 +179,70 @@ const CartPage = () => {
 			dispatch(showAlertMessage({ type: 'warning', content: 'Something wrong with your cart, you should check again' }))
 			forceRerender(Date.now())
 		})
+		// eslint-disable-next-line
 	}, [])
+
+	const cartItemComponents = cart_items.length > 0 ? cart_items.map((item, index) =>
+		<CartItem
+			item={item}
+			error={cart_status.current.errors[index]}
+			handleDeleteItem={handleDeleteItemConfirmOpen(index)}
+			handleChangeQtyItem={handleChangeQtyItem(index)}
+			setSelectedItem={setSelectedItem}
+			setUnselectedItem={setUnselectedItem}
+		/>) : null
+
+	const subtotal = selectedItems.current.reduce((accumul, cur) => (accumul + cur.quantity * cur.price), 0)
 
 	return (
 		<div className={classes.root}>
 			<Typography variant="h5" className={classes.title}>Shopping Cart</Typography>
 			{cart_items.length > 0 ?
-				<Grid container className={classes.main} alignItems="flex-start" justifyContent="space-between" spacing={2}>
-					<Grid item xs={12} md={9} key="cart_detail" className={classes.detail}>
-						<CartDetail cart_items={cart_items} errors={cart_status.current.errors}
-							setSelectedItem={setSelectedItem}
-							setUnselectedItem={setUnselectedItem}
-							handleSelectAllChange={handleSelectAllChange}
-							isSelectedAll={cart_status.current.isSelectedAll}
-						/>
+				<>
+					<Grid container className={classes.main} alignItems="flex-start" justifyContent="space-between" spacing={2}>
+						<Grid item xs={12} md={9} key="cart_detail" className={classes.detail}>
+							<CartDetail
+								cartItems={cartItemComponents}
+								isSelectedAll={cart_status.current.isSelectedAll}
+								handleSelectedAllChange={handleSelectAllChange}
+								handleDeleteAllConfirmOpen={handleDeleteAllConfirmOpen}
+							/>
+						</Grid>
+						<Grid item md={3} key="cart_summary" className={classes.summary}>
+							<CartSummary subtotal={subtotal}
+								handleProceedToCheckout={handleProceedToCheckout}
+							/>
+						</Grid>
 					</Grid>
-					<Grid item md={3} key="cart_summary" className={classes.summary}>
-						<CartSummary subtotal={subtotal}
-							handleProceedToCheckout={handleProceedToCheckout}
-						/>
-					</Grid>
-				</Grid>
+
+					<Dialog open={openDeleteAllConfirm} onClose={handleDeleteAllConfirmClose}>
+						<DialogContent>
+							<DialogContentText>Are you sure want to delete ALL product from your cart?</DialogContentText>
+							<DialogActions>
+								<Button onClick={handleDeleteAllDisagree} color="primary" autoFocus>
+									Disagree
+								</Button>
+								<Button onClick={handleDeleteAllAgree} color="secondary">
+									Agree
+								</Button>
+							</DialogActions>
+						</DialogContent>
+					</Dialog>
+
+					<Dialog open={deleteItem.isOpenConfirm} onClose={handleDeleteItemConfirmClose}>
+						<DialogContent>
+							<DialogContentText>Are you sure want to delete this product from your cart?</DialogContentText>
+							<DialogActions>
+								<Button onClick={handleDeleteItemDisagree} color="primary" autoFocus>
+									Disagree
+								</Button>
+								<Button onClick={handleDeleteItemAgree} color="secondary">
+									Agree
+								</Button>
+							</DialogActions>
+						</DialogContent>
+					</Dialog>
+				</>
 				:
 				<Typography>Your cart is empty</Typography>}
 

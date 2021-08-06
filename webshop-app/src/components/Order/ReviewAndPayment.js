@@ -1,5 +1,5 @@
 import React from 'react'
-import { Typography, Divider, Radio, FormControlLabel, RadioGroup, Grid, Button, Box, makeStyles } from '@material-ui/core'
+import { Typography, Divider, Radio, FormControlLabel, RadioGroup, Grid, makeStyles } from '@material-ui/core'
 
 import { useState, useEffect } from 'react'
 import API from '../../utils/apiClient'
@@ -43,7 +43,9 @@ const ReviewAndPayment = ({ setPaymentMethod, paymentMethod }) => {
 		}
 
 		fetchPaymentMethods()
+		// eslint-disable-next-line
 	}, [])
+
 	return (
 		<div>
 			<div className={classes.title}>

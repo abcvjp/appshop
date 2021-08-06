@@ -39,7 +39,9 @@ export const updateCart = ({ items }) => ({
 })
 
 export const checkAndAddToCart = ({ product_id, product_name, price, quantity }) => async (dispatch, getState) => {
-	API.get(`/product/${product_id}`).then(response => response.data.data).then(productFromServer => {
+	if (!quantity || isNaN(quantity)) {
+		dispatch(showAlertMessage({ type: 'error', content: `Product quantity is invalid` }))
+	} else API.get(`/product/${product_id}`).then(response => response.data.data).then(productFromServer => {
 		if (productFromServer.disabled === true) {
 			dispatch(showAlertMessage({ type: 'error', content: 'This product has been disabled' }))
 		} else if (productFromServer.quantity === 0) {
@@ -75,7 +77,9 @@ export const checkAndAddToCart = ({ product_id, product_name, price, quantity })
 }
 
 export const checkAndChangeQuantity = ({ itemIndex, quantity }) => async (dispatch, getState) => {
-	if (quantity < 1) {
+	if (!quantity || isNaN(quantity)) {
+		dispatch(showAlertMessage({ type: 'error', content: `Product quantity is invalid` }))
+	} else if (quantity < 1) {
 		dispatch(showAlertMessage({ type: 'error', content: `Product quantity cann't be lower than 1` }))
 		dispatch(changeQuantityItemCart({ itemIndex, quantity: 1 }))
 	} else {

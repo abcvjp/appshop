@@ -1,12 +1,11 @@
 import React from 'react'
-import { Grid, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { Pagination } from '@material-ui/lab'
 import { Box } from '@material-ui/core'
 import { useState, useEffect, useRef } from 'react'
 import { makeStyles } from '@material-ui/core'
 import { DEFAULT_COLOR } from '../../constants/ui'
 import API from '../../utils/apiClient'
-import { useDispatch } from 'react-redux'
 import SortSelector from './SortSelector'
 import PageSizeSelector from './PageSizeSelector'
 import { isArrayEmpty } from '../../utils/utilFuncs'
@@ -30,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
 const ProductList = ({ fetchQuery, sortElemnents }) => {
 
 	const classes = useStyles()
-	const dispatch = useDispatch()
 	const products = useRef([])
 	const initialState = {
 		currentPage: 1,

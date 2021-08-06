@@ -2,9 +2,8 @@ import React from 'react'
 
 import { useLocation } from 'react-router'
 
-import { Link as RouterLink } from 'react-router-dom'
 
-import { Grid, Divider, makeStyles, Paper, List, ListItem, Link, Typography } from '@material-ui/core'
+import { Grid, makeStyles, Paper, List, Typography } from '@material-ui/core'
 
 import ProductList from '../components/Product/ProductList'
 import Breadcrumbs from '../components/Breadcrumbs'

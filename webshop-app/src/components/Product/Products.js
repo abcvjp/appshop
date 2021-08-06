@@ -6,7 +6,6 @@ import { checkAndAddToCart } from '../../actions/cartActions'
 
 import { makeStyles } from '@material-ui/core'
 import { Grid } from '@material-ui/core'
-import { isArrayEmpty } from '../../utils/utilFuncs'
 import ProductCard from './ProductCard'
 
 const useStyles = makeStyles((theme) => ({

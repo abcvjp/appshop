@@ -1,5 +1,5 @@
 import React from 'react'
-import { Typography, Divider, makeStyles, TextField, Radio, FormControlLabel, RadioGroup, Grid, Button, Box } from '@material-ui/core'
+import { Typography, Divider, makeStyles, TextField, Radio, FormControlLabel, RadioGroup, Grid } from '@material-ui/core'
 
 import { useState, useEffect } from 'react'
 import API from '../../utils/apiClient'
@@ -51,6 +51,7 @@ const ShippingInfo = ({ customer_name, email, phone_number, address, shipping_no
 		}
 
 		fetchShippingMethods()
+		// eslint-disable-next-line
 	}, [])
 
 	return (

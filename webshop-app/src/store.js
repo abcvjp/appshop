@@ -17,8 +17,7 @@ const initialState = {
 			isShown: false,
 			type: null,
 			content: null
-		},
-		breadcrumbs: []
+		}
 	}
 }
 

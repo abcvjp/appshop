@@ -64,13 +64,11 @@ module.exports = (sequelize, DataTypes) => {
         min: 0
       }
     },
-    discount: {
+    root_price: {
       type: DataTypes.DOUBLE,
-      allowNull: true,
-      defaultValue: 0,
+      allowNull: false,
       validate: {
-        min: 0,
-        max: 1
+        min: 0
       }
     },
     short_description: {

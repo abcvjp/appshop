@@ -1,9 +1,9 @@
 import React from 'react'
-import { Avatar, IconButton, makeStyles, TextField, Box, Typography, Checkbox } from '@material-ui/core'
+import { Avatar, IconButton, makeStyles, TextField, Box, Checkbox } from '@material-ui/core'
 import { Grid } from '@material-ui/core'
 import { Delete } from '@material-ui/icons'
-import { useRef, useState, useEffect } from 'react'
-import { isArrayEmpty } from '../../utils/utilFuncs'
+import { useEffect } from 'react'
+
 const useStyles = makeStyles(theme => ({
 	root: {
 
@@ -17,15 +17,23 @@ const useStyles = makeStyles(theme => ({
 		}
 	},
 	name: {
-		flexGrow: 1,
 		justifyContent: 'flex-start',
-		alignItems: "center"
+		alignItems: "center",
+	},
+	productName: {
+		alignSelf: 'flex-start',
+		flexGrow: 1,
+		maxWidth: theme.spacing(30)
 	},
 	metrics: {
-		justifyContent: 'space-between',
+		justifyContent: 'flex-end',
 		alignItems: 'center',
 		flexWrap: "nowrap",
-		flexGrow: 1
+	},
+	metricItem: {
+		width: '25%',
+		display: 'flex',
+		justifyContent: 'center'
 	},
 	margin: {
 		margin: theme.spacing(1)
@@ -51,50 +59,38 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const CartItem = ({ item, error, handleChangeQtyItem, handleDeleteItem, setSelectedItem, setUnselectedItem }) => {
+const CartItem = ({ item, error, isSelected,
+	handleChangeQtyItem, handleDeleteItem, setSelectedItem, setUnselectedItem
+}) => {
 	const classes = useStyles()
-	const [state, setState] = useState({
-		selected: false,
-		quantity: item.quantity
-	})
 
-	const handleQtyFieldChange = (event) => {
-		setState({ ...state, quantity: event.target.value })
-	}
-	const handleSelectedChange = (event) => {
-		if (item.buy_able) {
-			const selected = event.target.checked
-			setState({ ...state, selected })
-			if (selected) { setSelectedItem(item) }
-			else { setUnselectedItem(item) }
-		}
-	}
-	useEffect(() => {
-		setState({ ...state, quantity: item.quantity })
-	}, [item.quantity])
 	return (
 		<>
 			<Grid className={classes.main} container>
-				<Grid key="item" className={`${classes.margin} ${classes.name}`} item container sm={6} spacing={3}>
+				<Grid key="item" className={`${classes.margin} ${classes.name}`} item container xs={12} sm={7} spacing={3}>
 					<Checkbox disableRipple
-						checked={item.buy_able ? state.selected : false} onChange={handleSelectedChange} />
+						checked={item.buy_able ? isSelected : false} onChange={setSelectedItem} />
 					<Grid item key='thumbnail'>
 						<Avatar className={classes.avatar} src={item.product_thumbnail} alt={item.product_name} variant='square'></Avatar>
 					</Grid>
-					<Grid item key='item_name' style={{ alignSelf: 'flex-start' }}>{item.product_name}</Grid>
+					<Grid item key='item_name' className={classes.productName}>{item.product_name}</Grid>
 				</Grid>
-				<Grid key="other" className={`${classes.margin} ${classes.metrics}`} item container sm={6}>
-					<Grid key="price" item>{item.price}</Grid>
-					<Grid key="quantity" item>
+				<Grid key="other" className={`${classes.margin} ${classes.metrics}`} item container sm={5}>
+					<Grid key="price" item className={classes.metricItem}>{item.price}</Grid>
+					<Grid key="quantity" item className={classes.metricItem}>
 						<TextField className={classes.qtyfield} type="Number" variant="outlined" margin="none"
-							value={state.quantity}
-							onChange={handleQtyFieldChange}
+							defaultValue={item.quantity}
+							onChange={(e) => {
+								if (e.target.value < 1) {
+									e.target.value = 1
+								}
+							}}
 							onBlur={handleChangeQtyItem} />
 					</Grid>
-					<Grid key="subtotal" item>
+					<Grid key="subtotal" item className={classes.metricItem}>
 						{parseFloat(item.price * item.quantity)}
 					</Grid>
-					<Grid key="delete" item>
+					<Grid key="delete" item className={classes.metricItem}>
 						<IconButton className={classes.delete} disableFocusRipple disableRipple
 							onClick={handleDeleteItem}>
 							<Delete />

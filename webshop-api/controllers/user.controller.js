@@ -10,6 +10,9 @@ exports.login = asyncHandler(async (req, res, next) => {
 		throw createError(400, 'Username or password is not provided')
 	}
 	const result = await userService.login({ username, password })
+	if (result.success) {
+		res.cookie('accessToken', result.accessToken, { httpOnly: true })
+	}
 	res.status(200).json(result)
 })
 
@@ -20,11 +23,17 @@ exports.signup = asyncHandler(async (req, res, next) => {
 })
 
 exports.logout = asyncHandler(async (req, res, next) => {
+	const { accessToken } = req.cookies
+	if (accessToken) {
+		res.clearCookie("accessToken")
+		res.status(200).json({ success: true })
+	} else {
+		throw createError(409, 'You are not logged in')
+	}
 })
 
 exports.authenticate = asyncHandler(async (req, res, next) => {
-	const authHeader = req.headers.authorization
-	const accessToken = authHeader ? authHeader.split(' ')[1] : null
+	const { accessToken } = req.cookies
 	if (accessToken) {
 		const user = await userService.authenticate({ accessToken })
 		req.user = user

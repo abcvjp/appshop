@@ -1,11 +1,7 @@
 import React from 'react'
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, Divider, Grid, IconButton, makeStyles, Paper } from '@material-ui/core'
+import { Checkbox, Divider, Grid, IconButton, makeStyles, Paper } from '@material-ui/core'
 import { Delete } from '@material-ui/icons'
-import { useDispatch } from 'react-redux'
-import CartItem from './CartItem'
-import { checkAndChangeQuantity, deleteCart, deleteItemCart } from '../../actions/cartActions'
 
-import { useState } from 'react'
 const useStyles = makeStyles(theme => ({
 	root: {
 
@@ -17,9 +13,13 @@ const useStyles = makeStyles(theme => ({
 	},
 	itemsHeaderRight: {
 		alignItems: 'center',
-		justifyContent: 'space-between',
+		justifyContent: 'flex-end',
 		flexWrap: "nowrap",
-		flexGrow: 1
+	},
+	rightItem: {
+		width: '25%',
+		display: 'flex',
+		justifyContent: 'center'
 	},
 	itemsHeader: {
 		justifyContent: "space-between",
@@ -38,74 +38,39 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const CartDetail = ({ cart_items, errors, isSelectedAll, setSelectedItem, setUnselectedItem, handleSelectedAllChange }) => {
+const CartDetail = ({ cartItems, isSelectedAll, handleSelectedAllChange, handleDeleteAllConfirmOpen }) => {
 	const classes = useStyles()
-	const dispatch = useDispatch()
-
-	const handleDeleteItem = (itemIndex) => () => dispatch(deleteItemCart({ itemIndex }))
-	const handleChangeQtyItem = (itemIndex) => (event) => {
-		dispatch(checkAndChangeQuantity({ itemIndex, quantity: parseInt(event.target.value) }))
-	}
-	const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false)
-	const handleDeleteConfirmOpen = () => {
-		setOpenDeleteConfirm(true)
-	}
-	const handleDeleteConfirmClose = () => {
-		setOpenDeleteConfirm(false)
-	}
-	const handleDeleteAgree = () => {
-		setOpenDeleteConfirm(false)
-		dispatch(deleteCart())
-	}
-	const handleDeleteDisagree = () => {
-		setOpenDeleteConfirm(false)
-	}
 
 	return (
 		<Paper elevation={0}>
 			<Grid key="header" className={classes.itemsHeader} container>
-				<Grid key="item" className={`${classes.margin} ${classes.itemsHeaderLeft}`} item container sm={6} spacing={3}>
+				<Grid key="item" className={`${classes.margin} ${classes.itemsHeaderLeft}`} item container sm={7} spacing={3}>
 					<Checkbox disableRipple
 						checked={isSelectedAll}
 						onChange={handleSelectedAllChange}
 					/>
-					{`All (${cart_items.length} items)`}
+					{`All (${cartItems.length} items)`}
 				</Grid>
-				<Grid key="other" className={`${classes.margin} ${classes.itemsHeaderRight}`} item container sm={6}>
-					<Grid item key="price">Price</Grid>
-					<Grid item key="quantity">Qty</Grid>
-					<Grid item key="subtotal">Subtotal</Grid>
-					<Grid item key="delete">
-						<IconButton className={classes.delete} disableFocusRipple disableRipple onClick={handleDeleteConfirmOpen}>
+				<Grid key="other" className={`${classes.margin} ${classes.itemsHeaderRight}`} item container sm={5}>
+					<Grid item key="price" className={classes.rightItem}>Price</Grid>
+					<Grid item key="quantity" className={classes.rightItem}>Qty</Grid>
+					<Grid item key="subtotal" className={classes.rightItem}>Subtotal</Grid>
+					<Grid item key="delete" className={classes.rightItem}>
+						<IconButton className={classes.delete} disableFocusRipple disableRipple
+							onClick={handleDeleteAllConfirmOpen}
+						>
 							<Delete />
 						</IconButton>
 					</Grid>
 				</Grid>
 			</Grid>
-			{cart_items.map((item, index) =>
+			{cartItems.map((item, index) =>
 				<div key={`item ${index + 1}`}>
 					<Divider variant="middle" />
-					<CartItem item={item} error={errors[index]}
-						handleDeleteItem={handleDeleteItem(index)}
-						handleChangeQtyItem={handleChangeQtyItem(index)}
-						setSelectedItem={setSelectedItem}
-						setUnselectedItem={setUnselectedItem}
-					/>
+					{item}
 				</div>)}
 
-			<Dialog open={openDeleteConfirm} onClose={handleDeleteConfirmClose}>
-				<DialogContent>
-					<DialogContentText>Are you sure want to delete ALL item in your cart</DialogContentText>
-					<DialogActions>
-						<Button onClick={handleDeleteDisagree} color="primary" autoFocus>
-							Disagree
-						</Button>
-						<Button onClick={handleDeleteAgree} color="secondary">
-							Agree
-						</Button>
-					</DialogActions>
-				</DialogContent>
-			</Dialog>
+
 		</Paper>
 	)
 }

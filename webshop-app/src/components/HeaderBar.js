@@ -2,7 +2,6 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
 
 import { Link } from 'react-router-dom'
 import MiniCart from './Cart/MiniCart'
@@ -40,7 +39,7 @@ const HeaderBar = () => {
 					<Toolbar className={classes.toolbar}>
 
 						<Link to="/">
-							<img className={classes.logo} src={process.env.PUBLIC_URL + '/logo.jpg'} />
+							<img className={classes.logo} alt="logo" src={process.env.PUBLIC_URL + '/logo.jpg'} />
 						</Link>
 						<div className={classes.grow} />
 

@@ -1,8 +1,8 @@
 import React from 'react'
-import { Grid, Divider, makeStyles, Paper, List, ListItem, Link, Typography } from '@material-ui/core'
+import { Grid, makeStyles, Paper, List, ListItem, Typography } from '@material-ui/core'
 import ProductList from '../components/Product/ProductList'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { generateBreadCrumbs, isArrayEmpty, isObjectEmpty } from '../utils/utilFuncs'
@@ -63,7 +63,7 @@ const CategoryPage = () => {
 						<List>
 							{data.current.childs.length > 0 && data.current.childs.map(child =>
 								<ListItem key={child.name}>
-									<Link to={`${child.slug}`} component={RouterLink}>{child.name}</Link>
+									<Link to={`${child.slug}`}>{child.name}</Link>
 								</ListItem>
 							)}
 						</List>

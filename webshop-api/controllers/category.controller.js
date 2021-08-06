@@ -3,7 +3,8 @@ const createError = require('http-errors')
 const asyncHandler = require('express-async-handler')
 
 exports.getCategories = asyncHandler(async (req, res, next) => {
-	const result = await categoryService.getCategories()
+	const {current_page, page_size, sort} = req.query
+	const result = await categoryService.getCategories({current_page, page_size, sort})
 	res.status(200).json(result)
 })
 
@@ -21,9 +22,9 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 })
 
 exports.createCategory = asyncHandler(async (req, res, next) => {
-	const { name, description, parent_id, meta_title, meta_description, meta_keywords } = req.body
+	const { name, description, parent_id, published, meta_title, meta_description, meta_keywords } = req.body
 	const result = await categoryService.createCategory({
-		name, description, parent_id, meta_title, meta_description, meta_keywords
+		name, description, parent_id, published, meta_title, meta_description, meta_keywords
 	})
 	res.status(200).json(result)
 })

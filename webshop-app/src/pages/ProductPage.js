@@ -76,6 +76,7 @@ const ProductPage = () => {
 		if (qty > product.quantity) {
 			dispatch(showAlertMessage({ type: 'error', content: `You can only buy ${product.quantity} product` }))
 		} else setQty(qty)
+
 	}
 
 	const handleAddtoCart = () => {
