@@ -14,7 +14,7 @@ import {
 import FacebookIcon from '../icons/Facebook';
 import GoogleIcon from '../icons/Google';
 
-import API from '../utils/apiClient';
+import API from '../utils/api/apiClient';
 
 const Login = () => {
   const navigate = useNavigate();

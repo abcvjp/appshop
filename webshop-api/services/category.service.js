@@ -186,9 +186,32 @@ exports.updateCategory = async ({ id, name, description, published, meta_title, 
 }
 exports.deleteCategory = async ({ id }) => {
 	try {
-		const categoryToUpdate = await Category.findByPk(id)
-		if (!categoryToUpdate) throw createError(404, 'Category does not exist')
-		await categoryToUpdate.destroy()
+		const categoryToDelete = await Category.findByPk(id)
+		if (!categoryToDelete) throw createError(404, 'Category does not exist')
+		await categoryToDelete.destroy()
+		return {
+			success: true
+		}
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
+	}
+}
+
+exports.deleteCategories = async ({ categoryIds }) => {
+	try {
+		const categoriesToDelete = await Category.findAll({
+			where: {
+				id: {
+					[Sequelize.Op.in]: categoryIds
+				}
+			}
+		})
+		if (!categoriesToDelete) throw createError(404, 'One or more category does not exist')
+		await sequelize.transaction(async (t) => {
+			await categoriesToDelete.forEach(category => {
+				category.destroy()
+			})
+		})
 		return {
 			success: true
 		}

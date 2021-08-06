@@ -41,3 +41,9 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
 	const result = await categoryService.deleteCategory({ id: categoryId })
 	res.status(200).json(result)
 })
+
+exports.deleteCategories = asyncHandler(async (req, res, next) => {
+	const { categoryIds } = req.body
+	const result = await categoryService.deleteCategories({ categoryIds })
+	res.status(200).json(result)
+})

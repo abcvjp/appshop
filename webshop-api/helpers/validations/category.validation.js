@@ -49,5 +49,10 @@ module.exports = {
 		params: Joi.object({
 			categoryId: Joi.string().guid({ version: 'uuidv4' }).required()
 		})
+	},
+	deleteCategories: {
+		body: Joi.object({
+			categoryIds: Joi.array().min(1).items(Joi.string().guid({ version: 'uuidv4' })).required()
+		})
 	}
 }

@@ -19,7 +19,7 @@ import {
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import React, { useEffect, useState } from 'react';
-import API from '../../utils/apiClient';
+import { categoryApi } from '../../utils/api';
 
 const useStyles = makeStyles(() => ({
   select: {
@@ -45,7 +45,7 @@ const CreateCategory = () => {
 
   useEffect(() => {
     const fetchCategory = async () => {
-      const response = await API.get('category/all');
+      const response = await categoryApi.getAll();
       setState((prevState) => ({ ...prevState, categories: response.data.data }));
     };
     fetchCategory();
@@ -115,7 +115,7 @@ const CreateCategory = () => {
                       }
                     });
                     console.log(data);
-                    await API.post('/category', data).then((res) => res.data).then(() => {
+                    await categoryApi.createCategory(data).then((res) => res.data).then(() => {
                       handleResultOpen();
                     }).catch((err) => {
                       setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));

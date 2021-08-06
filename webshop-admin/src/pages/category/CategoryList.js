@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import CategoryListToolbar from '../../components/category/CategoryListToolbar';
-import API from '../../utils/apiClient';
+import { categoryApi } from '../../utils/api';
 import CategoryListResults from '../../components/category/CategoryListResult';
 
 const CategoryList = () => {
@@ -12,7 +12,7 @@ const CategoryList = () => {
 
   useEffect(() => {
     const fetchCategory = async () => {
-      const response = await API.get('category/all');
+      const response = await categoryApi.getAll();
       setState((prevState) => ({ ...prevState, categories: response.data.data }));
     };
     fetchCategory();

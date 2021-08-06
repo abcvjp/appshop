@@ -19,6 +19,8 @@ import {
 } from '@material-ui/core';
 import { openConfirmDialog } from '../../actions/confirmDialog';
 
+import { categoryApi } from '../../utils/api';
+
 const CategoryListResults = ({ categories, ...rest }) => {
   const dispatch = useDispatch();
   const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
@@ -59,7 +61,14 @@ const CategoryListResults = ({ categories, ...rest }) => {
 
   const handleDeleteSelected = () => {
     dispatch(openConfirmDialog({
-      message: 'Are you sure want to delete?'
+      message: 'Are you sure want to delete all selected categories and ALL OF ITS CHILDREN?',
+      onConfirm: async () => {
+        await categoryApi.deleteCategories(selectedCategoryIds);
+        selectedCategoryIds.forEach((id) => {
+          categories.splice(categories.findIndex((i) => i.id === id), 1);
+        });
+        setSelectedCategoryIds([]);
+      }
     }));
   };
 

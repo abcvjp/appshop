@@ -9,6 +9,7 @@ router.get('/', validate(categoryValidation.getCategory), categoryController.get
 router.post('/', validate(categoryValidation.createCategory), categoryController.createCategory)
 router.get('/:categoryId', validate(categoryValidation.getCategoryById), categoryController.getCategoryById)
 router.put('/:categoryId', validate(categoryValidation.updateCategory), categoryController.updateCategory)
+router.delete('/', validate(categoryValidation.deleteCategories), categoryController.deleteCategories)
 router.delete('/:categoryId', validate(categoryValidation.deleteCategory), categoryController.deleteCategory)
 
 module.exports = router
