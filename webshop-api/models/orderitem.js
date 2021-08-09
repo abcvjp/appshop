@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
     product_name: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    product_thumbnail: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     sequelize,

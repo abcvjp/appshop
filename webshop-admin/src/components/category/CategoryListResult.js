@@ -151,12 +151,18 @@ const CategoryListResults = ({ categories, ...rest }) => {
                         display: 'flex'
                       }}
                     >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
+                      <Link
+                        target="_blank"
+                        href={`${process.env.REACT_APP_APP_BASE}/${category.slug}`}
+                        rel="noreferrer"
                       >
-                        {category.name}
-                      </Typography>
+                        <Typography
+                          color="textPrimary"
+                          variant="body1"
+                        >
+                          {category.name}
+                        </Typography>
+                      </Link>
                     </Box>
                   </TableCell>
                   <TableCell>

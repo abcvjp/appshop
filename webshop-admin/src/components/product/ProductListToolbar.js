@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -9,8 +11,8 @@ import {
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 
-const ProductListToolbar = (props) => (
-  <Box {...props}>
+const ProductListToolbar = ({ searchValue, handleSearchChange, handleSearchSubmit }) => (
+  <Box>
     <Box
       sx={{
         display: 'flex',
@@ -26,6 +28,8 @@ const ProductListToolbar = (props) => (
       <Button
         color="primary"
         variant="contained"
+        omponent={RouterLink}
+        to="create"
       >
         Add product
       </Button>
@@ -50,6 +54,9 @@ const ProductListToolbar = (props) => (
               }}
               placeholder="Search product"
               variant="outlined"
+              value={searchValue}
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchSubmit}
             />
           </Box>
         </CardContent>
@@ -57,5 +64,11 @@ const ProductListToolbar = (props) => (
     </Box>
   </Box>
 );
+
+ProductListToolbar.propTypes = {
+  searchValue: PropTypes.string.isRequired,
+  handleSearchChange: PropTypes.func.isRequired,
+  handleSearchSubmit: PropTypes.func.isRequired
+};
 
 export default ProductListToolbar;

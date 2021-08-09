@@ -3,9 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 
-const cors = require('cors')
-const bodyParser = require('body-parser')
-const logger = require('./helpers/logger.helper')
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const boolParser = require('express-query-boolean');
+const logger = require('./helpers/logger.helper');
 
 var mainRouter = require('./routes/index');
 const morgan = require('morgan');
@@ -14,6 +15,7 @@ var app = express();
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use(boolParser())
 
 app.use(logger);
 app.use(express.json());

@@ -17,8 +17,8 @@ module.exports = {
 		query: Joi.object({
 			id: Joi.string().guid({ version: 'uuidv4' }),
 			slug: Joi.string().min(1),
-			include_products: Joi.string().valid('true', 'false'),
-			include_childs: Joi.string().valid('true', 'false')
+			include_products: Joi.bool(),
+			include_childs: Joi.bool()
 		}).min(1)
 	},
 	createCategory: {

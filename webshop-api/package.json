@@ -15,6 +15,7 @@
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "express-async-handler": "^1.1.4",
+    "express-query-boolean": "^2.0.0",
     "express-validation": "^3.0.8",
     "http-errors": "^1.6.3",
     "joi": "^17.4.1",

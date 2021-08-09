@@ -6,7 +6,7 @@ import CustomerList from './pages/CustomerList';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
-import ProductList from './pages/ProductList';
+import ProductList from './pages/product/ProductList';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
 import CategoryList from './pages/category/CategoryList';
@@ -36,7 +36,7 @@ const routes = [
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
       { path: '404', element: <NotFound /> },
-      { path: '/', element: <Navigate to="/app/dashboard" /> },
+      { path: '/', element: <Navigate to="/management/dashboard" /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   }

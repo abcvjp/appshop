@@ -7,27 +7,34 @@ exports.searchProducts = async ({ keyword, category_id, current_page, page_size,
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		if (category_id !== undefined) {
-			const [rows] = await sequelize.query(`
-				WITH RECURSIVE cte (id, name, parent_id) AS
+			const rows = await sequelize.query(`
+				WITH RECURSIVE cte (id, name, slug, parent_id) AS
 				(
-					SELECT id, name, parent_id FROM Categories WHERE id = '${category_id}'
+					SELECT id, name, parent_id, slug FROM Categories WHERE id = '${category_id}'
 					UNION
-					SELECT c.id, c.name, c.parent_id FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
+					SELECT c.id, c.name, c.parent_id, c.slug FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
 				)
-				SELECT p.*, MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
-					FROM Products p INNER JOIN cte ON p.category_id = cte.id
-					WHERE p.enable = 1 AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
-					ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
-			`)
+				SELECT p.id, p.name, p.enable, p.title, p.price, p.root_price, p.quantity, p.sold,
+					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
+					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug',
+					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
+				FROM Products p INNER JOIN cte ON p.category_id = cte.id
+				WHERE p.enable = 1 AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
+				ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
+			`, {nest: true})
 			var count = rows.length
 			var result = rows.slice(offset, offset + limit)
 		} else {
-			const [rows] = await sequelize.query(`
-				SELECT *, MATCH (name,title,meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
-					FROM Products
-					WHERE enable = 1 AND MATCH (name,title,meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)
-					ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
-			`)
+			const rows = await sequelize.query(`
+				SELECT p.id, p.name, p.enable, p.title, p.price, p.root_price, p.quantity, p.sold,
+					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
+					p.createdAt, p.updatedAt,
+					c.name as 'cateogory.name', c.id as 'category.id', c.name as 'category.name', c.slug as 'category.slug',
+					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
+				FROM Products p INNER JOIN Categories c ON p.category_id = c.id
+				WHERE p.enable = 1 AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)
+				ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
+			`, {nest: true})
 			var count = rows.length
 			var result = rows.slice(offset, offset + limit)
 		}

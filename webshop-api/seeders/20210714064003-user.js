@@ -14,6 +14,7 @@ module.exports = {
     return queryInterface.bulkInsert('Users', [{
       id: '9e432cf8-0fbf-4723-b89d-f071dee0a47b',
       username: 'admin',
+      role: 'admin',
       full_name: 'Hoai dep trai',
       email: 'example@example.com',
       hash: '123456',

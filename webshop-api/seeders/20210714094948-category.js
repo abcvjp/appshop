@@ -63,7 +63,7 @@ module.exports = {
         id: 'd649137e-2e01-45cf-8ef7-50b737fd8548',
         name: 'Áo khoác sơ mi nam',
         description: 'Áo khoác sơ mi nam sieu cap vjp pro',
-        published: false,
+        published: true,
         path: 'Thời trang nam - Áo khoác nam - Áo khoác sơ mi nam',
         slug: 'ao-khoac-so-mi-nam',
         meta_title: 'Áo khoác sơ mi nam',

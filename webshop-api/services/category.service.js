@@ -31,7 +31,7 @@ exports.getCategoryById = async ({ id, include_products, include_childs }) => {
 		if (include_products) {
 			temp.push({ association: 'products' })
 		}
-		if (include_products) {
+		if (include_childs) {
 			temp.push({ association: 'childs' })
 		}
 		const category = await Category.findByPk(id, {
@@ -47,12 +47,20 @@ exports.getCategoryById = async ({ id, include_products, include_childs }) => {
 	}
 }
 
-exports.getCategoryBySlug = async ({ slug, include_product, include_childs }) => {
+exports.getCategoryBySlug = async ({ slug, include_products, include_childs }) => {
 	try {
+		const temp = []
+		if (include_products) {
+			temp.push({ association: 'products' })
+		}
+		if (include_childs) {
+			temp.push({ association: 'childs' })
+		}
 		const category = await Category.findOne({
 			where: {
 				slug
-			}
+			},
+			include: temp
 		})
 		if (!category) throw createError(404, "Category does not exist")
 		return {
@@ -165,14 +173,10 @@ exports.updateCategory = async ({ id, name, description, published, meta_title, 
 				})
 
 				// update path or relate categories
-				await Promise.all(relateCategories.map(async (category) => {
-					try {
-						await category.update({
-							path: category.path.replace(oldName, name)
-						})
-					} catch (err) {
-						throw err
-					}
+				await Promise.all(relateCategories.map((category) => {
+					return category.update({
+						path: category.path.replace(oldName, name)
+					})
 				}))
 			})
 		}
@@ -208,9 +212,9 @@ exports.deleteCategories = async ({ categoryIds }) => {
 		})
 		if (!categoriesToDelete) throw createError(404, 'One or more category does not exist')
 		await sequelize.transaction(async (t) => {
-			await categoriesToDelete.forEach(category => {
-				category.destroy()
-			})
+			await Promise.all(categoriesToDelete.map(category => {
+				return category.destroy()
+			}))
 		})
 		return {
 			success: true

@@ -26,6 +26,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true
     },
+    role: {
+      type: DataTypes.STRING,
+      field: 'role',
+      defaultValue: 'user',
+      allowNull: false
+    },
     full_name: {
       type: DataTypes.STRING,
       field: 'full_name',
