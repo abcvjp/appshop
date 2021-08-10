@@ -99,8 +99,8 @@ const ProductListToolbar = () => {
           key="add product"
           color="primary"
           variant="contained"
-          omponent={RouterLink}
-          to="create"
+          component={RouterLink}
+          to="add"
         >
           Add product
         </Button>

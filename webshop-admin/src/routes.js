@@ -6,12 +6,13 @@ import CustomerList from './pages/CustomerList';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
-import ProductList from './pages/product/ProductList';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
 import CategoryList from './pages/category/CategoryList';
 import CreateCategory from './pages/category/CreateCategory';
 import EditCategory from './pages/category/EditCategory';
+import ProductList from './pages/product/ProductList';
+import AddProduct from './pages/product/AddProduct';
 
 const routes = [
   {
@@ -23,8 +24,9 @@ const routes = [
       { path: 'categories', element: <CategoryList /> },
       { path: 'categories/create', element: <CreateCategory /> },
       { path: 'categories/:categoryId/edit', element: <EditCategory /> },
-      { path: 'dashboard', element: <Dashboard /> },
       { path: 'products', element: <ProductList /> },
+      { path: 'products/add', element: <AddProduct /> },
+      { path: 'dashboard', element: <Dashboard /> },
       { path: 'settings', element: <Settings /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]

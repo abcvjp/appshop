@@ -1,8 +1,12 @@
+import React, { Component, useState } from 'react';
+import { Editor } from 'react-draft-wysiwyg';
+import '../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import {
   Box,
   Paper,
+  Grid,
   MenuItem,
   TextField,
   Typography,
@@ -15,9 +19,8 @@ import {
   makeStyles
 } from '@material-ui/core';
 
-import React, { useState } from 'react';
 import { useCategories } from 'src/utils/customHooks';
-import { categoryApi } from '../../utils/api';
+import { productApi } from 'src/utils/api';
 
 const useStyles = makeStyles(() => ({
   select: {
@@ -25,7 +28,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const CreateCategoryForm = () => {
+const AddProductForm = () => {
   const classes = useStyles();
   const [categories] = useCategories();
   const [state, setState] = useState({
@@ -48,7 +51,7 @@ const CreateCategoryForm = () => {
           color="textPrimary"
           variant="h2"
         >
-          Create Category
+          Add Category
         </Typography>
       </Box>
       {state.error && (
@@ -62,40 +65,48 @@ const CreateCategoryForm = () => {
       )}
       <Formik
         initialValues={{
+          enable: true,
           name: '',
-          parent_id: '',
+          category_id: '',
+          title: '',
+          price: '',
+          root_price: '',
+          quantity: '',
+          short_description: '',
           description: '',
-          published: true,
+          images: [],
           meta_title: '',
           meta_description: '',
           meta_keywords: ''
         }}
         validationSchema={Yup.object().shape({
-          name: Yup.string().trim().min(1).max(30)
-            .required('Category name is required'),
-          description: Yup.string().trim().min(20).max(100)
-            .required('Category description is required'),
-          parent_id: Yup.string().uuid(),
-          published: Yup.boolean(),
+          enable: Yup.boolean(),
+          name: Yup.string().trim().min(1).max(200)
+            .required('Name is required'),
+          category_id: Yup.string().uuid().required('Cateogory is required'),
+          title: Yup.string().trim().min(1).max(200)
+            .required('Title is requried'),
+          price: Yup.number().positive().min(0).required('Price is required'),
+          root_price: Yup.number().positive().min(0).required('Root price is required'),
+          quantity: Yup.number().integer().positive().min(1)
+            .required('Quantity is required'),
+          short_description: Yup.string().trim().min(20).max(300)
+            .required('Short description is required'),
+          description: Yup.string().min(20).max(2500).required('Description is required'),
+          images: Yup.array().of(Yup.string().trim().url()),
           meta_title: Yup.string().trim().min(1).max(100)
             .required('Meta title is required'),
           meta_description: Yup.string().trim().min(20).max(200),
           meta_keywords: Yup.string().trim().min(1).max(150)
-            .lowercase()
         })}
-        onSubmit={async (values) => {
+        onSubmit={(values) => {
+          console.log('submit');
           console.log(values);
-          const data = {};
-          Object.keys(values).forEach((key) => {
-            if (values[key] !== '') {
-              data[key] = values[key];
-            }
-          });
-          await categoryApi.createCategory(data).then((res) => res.data).then(() => {
-            handleResultOpen();
-          }).catch((err) => {
-            setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));
-          });
+          // await productApi.createProduct(values).then((res) => res.data).then(() => {
+          // handleResultOpen();
+          // }).catch((err) => {
+          // setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));
+          // });
         }}
       >
         {({
@@ -112,7 +123,7 @@ const CreateCategoryForm = () => {
               error={Boolean(touched.name && errors.name)}
               fullWidth
               helperText={touched.name && errors.name}
-              label="Category Name"
+              label="Product Name"
               margin="normal"
               name="name"
               onBlur={handleBlur}
@@ -123,18 +134,33 @@ const CreateCategoryForm = () => {
               required
             />
             <TextField
+              error={Boolean(touched.title && errors.title)}
+              fullWidth
+              helperText={touched.title && errors.title}
+              label="Product Title"
+              margin="normal"
+              name="title"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              type="title"
+              value={values.title}
+              variant="outlined"
+              required
+            />
+            <TextField
               className={classes.select}
-              error={Boolean(touched.parent_id && errors.parent_id)}
-              helperText={touched.parent_id && errors.parent_id}
-              label="Parent Category"
+              error={Boolean(touched.category_id && errors.category_id)}
+              helperText={touched.category_id && errors.category_id}
+              label="Category"
               margin="normal"
               fullWidth
-              name="parent_id"
+              name="category_id"
               select
               onBlur={handleBlur}
               onChange={handleChange}
-              value={values.parent_id}
+              value={values.category_id}
               variant="outlined"
+              required
             >
               {categories.map((category) => (
                 <MenuItem key={category.id} value={category.id}>
@@ -142,11 +168,74 @@ const CreateCategoryForm = () => {
                 </MenuItem>
               ))}
             </TextField>
+            <Grid container spacing={2} wrap="nowrap">
+              <Grid item>
+                <TextField
+                  error={Boolean(touched.price && errors.price)}
+                  helperText={touched.price && errors.price}
+                  label="Price"
+                  margin="normal"
+                  type="number"
+                  name="price"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.price}
+                  variant="outlined"
+                  required
+                />
+              </Grid>
+              <Grid item>
+                <TextField
+                  error={Boolean(touched.root_price && errors.root_price)}
+                  helperText={touched.root_price && errors.root_price}
+                  label="Root Price"
+                  margin="normal"
+                  type="number"
+                  name="root_price"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.root_price}
+                  variant="outlined"
+                  required
+                />
+              </Grid>
+              <Grid item>
+                <TextField
+                  error={Boolean(touched.quantity && errors.quantity)}
+                  helperText={touched.quantity && errors.quantity}
+                  label="Quantity"
+                  margin="normal"
+                  type="number"
+                  name="quantity"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.quantity}
+                  variant="outlined"
+                  required
+                />
+              </Grid>
+            </Grid>
+            <TextField
+              error={Boolean(touched.short_description && errors.short_description)}
+              fullWidth
+              helperText={touched.short_description && errors.short_description}
+              label="Short Description"
+              margin="normal"
+              name="short_description"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              type="short_description"
+              value={values.short_description}
+              variant="outlined"
+              multiline
+              minRows={3}
+              required
+            />
             <TextField
               error={Boolean(touched.description && errors.description)}
               fullWidth
               helperText={touched.description && errors.description}
-              label="Category Description"
+              label="Product Description"
               margin="normal"
               name="description"
               onBlur={handleBlur}
@@ -155,19 +244,19 @@ const CreateCategoryForm = () => {
               value={values.description}
               variant="outlined"
               multiline
-              minRows={3}
+              minRows={5}
               required
             />
             <FormControlLabel
               control={(
                 <Checkbox
-                  checked={values.published}
+                  checked={values.enable}
                   onChange={handleChange}
                   margin="normal"
-                  name="published"
+                  name="enable"
                 />
                 )}
-              label="Published?"
+              label="Enable?"
             />
             <TextField
               error={Boolean(touched.meta_title && errors.meta_title)}
@@ -196,6 +285,10 @@ const CreateCategoryForm = () => {
               value={values.meta_description}
               variant="outlined"
             />
+            <Editor
+              wrapperClassName="demo-wrapper"
+              editorClassName="demo-editor"
+            />
             <TextField
               error={Boolean(touched.meta_keywords && errors.meta_keywords)}
               fullWidth
@@ -217,7 +310,7 @@ const CreateCategoryForm = () => {
                 type="submit"
                 variant="contained"
               >
-                Create category
+                Add Product
               </Button>
             </Box>
           </form>
@@ -234,4 +327,4 @@ const CreateCategoryForm = () => {
   );
 };
 
-export default CreateCategoryForm;
+export default AddProductForm;

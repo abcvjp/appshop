@@ -10,7 +10,10 @@ const productApi = {
   deleteProducts: (productIds) => API.delete('/product', {
     data: { productIds }
   }),
-  createProduct: (body) => API.post('/product', body),
+  createProduct: (data) => {
+    const url = '/product';
+    return API.post(url, cleanObj(data));
+  },
   updateProducts: (products) => API.put('/product', { products }),
   editProduct: (id, body) => API.put(`/product/${id}`, body),
   searchProducts: (query) => {
