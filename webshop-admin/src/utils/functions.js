@@ -20,3 +20,22 @@ export const generateBreadCrumbs = (string, map_name_slug) => {
     path: map_name_slug[name] ? map_name_slug[name] : ''
   }));
 };
+
+export const convertObjToQuery = (query) => {
+  let url = '';
+  Object.keys(query).forEach((key, index) => {
+    if (index === 0) {
+      url = url.concat(`?${key}=${query[key]}`);
+    } else {
+      url = url.concat(`&${key}=${query[key]}`);
+    }
+  });
+  return url;
+};
+
+export const cleanObj = (obj) => {
+  Object.keys(obj).forEach((k) => {
+    if (obj[k] === null || obj[k] === undefined || obj[k] === '' || obj[k] === {} || obj[k] === []) delete obj[k];// eslint-disable-line
+  });
+  return obj;
+};

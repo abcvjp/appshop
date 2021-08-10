@@ -10,7 +10,8 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		if (category_id !== undefined) {
-			const [rows] = await sequelize.query(`
+			console.log(enable)
+			const rows = await sequelize.query(`
 				WITH RECURSIVE cte (id, name, slug, parent_id) AS
 				(
 					SELECT id, name, parent_id, slug FROM Categories WHERE id = '${category_id}'
@@ -21,32 +22,46 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
-				WHERE ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : true}
-					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : true}
+				WHERE ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
+					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`, {nest: true})
+			// console.log(rows)
 			var count = rows.length
 			var result = rows.slice(offset, offset + limit)
 		} else if (category_slug !== undefined) {
-			const [rows] = await sequelize.query(`
+			const rows = await sequelize.query(`
+				WITH RECURSIVE cte (id, name, slug, parent_id) AS
+				(
+					SELECT id, name, parent_id, slug FROM Categories WHERE slug = '${category_slug}'
+					UNION
+					SELECT c.id, c.name, c.parent_id, c.slug FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
+				)
 				SELECT p.id, p.name, p.enable, p.title, p.price, p.root_price, p.quantity, p.sold,
 					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
-					p.createdAt, p.updatedAt,
-					c.name as 'cateogory.name', c.id as 'category.id', c.name as 'category.name', c.slug as 'category.slug'
-				FROM Products p INNER JOIN Categories c ON p.category_id = c.id
-				WHERE p.enable = 1 AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)
+					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
+				FROM Products p INNER JOIN cte ON p.category_id = cte.id
+				WHERE ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
+					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`, {nest: true})
 			var count = rows.length
 			var result = rows.slice(offset, offset + limit)
 		} else {
+			const filter = {}
+			if (enable !== undefined) {
+				filter.enable = enable ? 1 : 0
+			}
+			if (in_stock !== undefined) {
+				filter.quantity = in_stock ? { [Sequelize.Op.gt]: 0 } : 0
+			}
 			var { rows, count } = await Product.findAndCountAll({
-
 				include: {
 					association: 'category',
 					required: true,
-					attributes: ['id','name','slug'],
+					attributes: ['id','name','slug']
 				},
+				where: filter,
 				attributes: {
 					exclude: ['category_id']
 				},

@@ -41,8 +41,8 @@ exports.deleteProducts = asyncHandler(async (req, res, next) => {
 })
 
 exports.getProducts = asyncHandler(async (req, res, next) => {
-	const { current_page, page_size, sort, category_id, category_slug } = req.query
-	const result = await productService.getProducts({ current_page, page_size, sort, category_id, category_slug })
+	const { current_page, page_size, sort, category_id, category_slug, enable, in_stock } = req.query
+	const result = await productService.getProducts({ current_page, page_size, sort, category_id, category_slug, enable, in_stock })
 	res.status(200).json(result)
 })
 

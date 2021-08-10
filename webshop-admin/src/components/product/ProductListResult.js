@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
+import { ListContext } from 'src/pages/product/ProductList';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -14,17 +14,32 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
+  LinearProgress
 } from '@material-ui/core';
 import { openConfirmDialog } from '../../actions/confirmDialog';
 
 import { productApi } from '../../utils/api';
 
-const ProductListResults = ({
-  products, pageSize, currentPage, count, handlePageChange, handleLimitChange, fetchProducts
-}) => {
-  const dispatch = useDispatch();
+const ProductListResults = () => {
+  const dispatchGlobal = useDispatch();
+  const { state, dispatch } = useContext(ListContext);
   const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const { products } = state;
+
+  const handleLimitChange = useCallback((event) => {
+    dispatch({
+      type: 'CHANGE_PAGE_SIZE',
+      pageSize: event.target.value
+    });
+  }, []);
+
+  const handlePageChange = useCallback((event, newPage) => {
+    dispatch({
+      type: 'CHANGE_CURRENT_PAGE',
+      currentPage: newPage
+    });
+  }, []);
 
   const handleSelectAll = (event) => {
     let newSelectedProductIds;
@@ -59,18 +74,20 @@ const ProductListResults = ({
   };
 
   const handleDeleteSelected = () => {
-    dispatch(openConfirmDialog({
+    dispatchGlobal(openConfirmDialog({
       message: 'Are you sure want to delete all selected products?',
       onConfirm: async () => {
         await productApi.deleteProducts(selectedProductIds);
         setSelectedProductIds([]);
-        await fetchProducts();
+        dispatch({
+          type: 'TRIGGER_FETCH'
+        });
       }
     }));
   };
 
   const handleDisableSelected = () => {
-    dispatch(openConfirmDialog({
+    dispatchGlobal(openConfirmDialog({
       message: 'Are you sure want to disable all selected products?',
       onConfirm: async () => {
         const productsToDisable = selectedProductIds.map((id) => ({
@@ -87,7 +104,7 @@ const ProductListResults = ({
   };
 
   const handleEnableSelected = () => {
-    dispatch(openConfirmDialog({
+    dispatchGlobal(openConfirmDialog({
       message: 'Are you sure want to enable all selected products?',
       onConfirm: async () => {
         const productsToEnable = selectedProductIds.map((id) => ({
@@ -106,6 +123,7 @@ const ProductListResults = ({
   return (
     <Card>
       <Box sx={{ minWidth: 1050 }}>
+        {state.isLoading && <LinearProgress />}
         <Table>
           <TableHead>
             <TableRow>
@@ -253,25 +271,15 @@ const ProductListResults = ({
       </Box>
       <TablePagination
         component="div"
-        count={count}
+        count={state.count}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
-        page={currentPage}
-        rowsPerPage={pageSize}
+        page={state.currentPage}
+        rowsPerPage={state.pageSize}
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
   );
-};
-
-ProductListResults.propTypes = {
-  products: PropTypes.array.isRequired,
-  pageSize: PropTypes.number.isRequired,
-  currentPage: PropTypes.number.isRequired,
-  count: PropTypes.number.isRequired,
-  handlePageChange: PropTypes.func.isRequired,
-  handleLimitChange: PropTypes.func.isRequired,
-  fetchProducts: PropTypes.func.isRequired
 };
 
 export default ProductListResults;

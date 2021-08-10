@@ -22,6 +22,7 @@ import { openConfirmDialog } from '../../actions/confirmDialog';
 import { categoryApi } from '../../utils/api';
 
 const CategoryListResults = ({ categories, ...rest }) => {
+  console.log('rerender');
   const dispatch = useDispatch();
   const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
   const [limit, setLimit] = useState(10);

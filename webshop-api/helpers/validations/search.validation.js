@@ -8,6 +8,8 @@ module.exports = {
 			current_page: Joi.number().integer().min(1),
 			page_size: Joi.number().integer().min(1),
 			sort: Joi.string().min(1),
+			enable: Joi.bool(),
+			in_stock: Joi.bool()
 		})
 	}
 }

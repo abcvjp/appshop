@@ -3,7 +3,7 @@ const { Sequelize, sequelize } = require('../models')
 const createError = require('http-errors')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
 
-exports.searchProducts = async ({ keyword, category_id, current_page, page_size, sort }) => {
+exports.searchProducts = async ({ keyword, category_id, current_page, page_size, sort, enable, in_stock }) => {
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		if (category_id !== undefined) {
@@ -19,7 +19,10 @@ exports.searchProducts = async ({ keyword, category_id, current_page, page_size,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug',
 					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
-				WHERE p.enable = 1 AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
+				WHERE
+					${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
+					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
+					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
 			`, {nest: true})
 			var count = rows.length
@@ -32,7 +35,10 @@ exports.searchProducts = async ({ keyword, category_id, current_page, page_size,
 					c.name as 'cateogory.name', c.id as 'category.id', c.name as 'category.name', c.slug as 'category.slug',
 					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
 				FROM Products p INNER JOIN Categories c ON p.category_id = c.id
-				WHERE p.enable = 1 AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)
+				WHERE
+					${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
+					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
+					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
 			`, {nest: true})
 			var count = rows.length

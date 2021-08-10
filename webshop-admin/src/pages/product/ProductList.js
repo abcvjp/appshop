@@ -1,4 +1,6 @@
-import { useEffect, useReducer } from 'react';
+import {
+  useEffect, useReducer, createContext
+} from 'react';
 import ProductListToolbar from 'src/components/product/ProductListToolbar';
 import { productApi } from 'src/utils/api';
 import ProductListResults from 'src/components/product/ProductListResult';
@@ -10,13 +12,14 @@ const initialState = {
   currentPage: 0,
   count: 10,
   searchValue: '',
-  triggerSearch: Date.now(),
-  filter: {
-    enable: null,
-    inStock: null,
-    categoryId: null
+  triggerFetch: Date.now(),
+  filters: {
+    enable: undefined,
+    inStock: undefined,
+    categoryId: undefined
   },
-  sort: []
+  sort: '',
+  isLoading: false
 };
 
 function productListReducer(state, action) {
@@ -37,61 +40,95 @@ function productListReducer(state, action) {
         ...state,
         searchValue: action.searchValue
       };
+    case 'SET_SEARCH':
+      return {
+        ...state,
+        searchValue: action.searchValue,
+        triggerSearch: Date.now()
+      };
+    case 'CHANGE_SORT':
+      return {
+        ...state,
+        sort: action.sort
+      };
+    case 'CHANGE_ENABLE':
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          enable: action.enable,
+        },
+        currentPage: 0
+      };
+    case 'CHANGE_INSTOCK':
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          inStock: action.inStock
+        },
+        currentPage: 0
+      };
+    case 'CHANGE_CATEGORY':
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          categoryId: action.categoryId
+        },
+        currentPage: 0
+      };
     case 'SET_PRODUCTS':
       return {
         ...state,
         products: action.products,
         count: action.count
       };
-    case 'TRIGGER_SEARCH':
+    case 'TRIGGER_FETCH':
       return {
         ...state,
         currentPage: 0,
-        triggerSearch: Date.now()
+        triggerFetch: Date.now()
+      };
+    case 'SET_LOADING':
+      return {
+        ...state,
+        isLoading: true
+      };
+    case 'SET_UNLOADING':
+      return {
+        ...state,
+        isLoading: false
       };
     default:
       return state;
   }
 }
+export const ListContext = createContext();
 
 const ProductList = () => {
   const [state, dispatch] = useReducer(productListReducer, initialState);
-  console.log(state);
-
-  const handleLimitChange = (event) => {
-    dispatch({
-      type: 'CHANGE_PAGE_SIZE',
-      pageSize: event.target.value
-    });
-  };
-
-  const handlePageChange = (event, newPage) => {
-    dispatch({
-      type: 'CHANGE_CURRENT_PAGE',
-      currentPage: newPage
-    });
-  };
-
-  const handleSearchChange = (event) => {
-    dispatch({
-      type: 'CHANGE_SEARCH_VALUE',
-      searchValue: event.target.value
-    });
-  };
 
   const fetchProducts = async () => {
+    dispatch({ type: 'SET_LOADING' });
     const response = await productApi.getAll({
       current_page: state.currentPage + 1,
-      page_size: state.pageSize
+      page_size: state.pageSize,
+      category_id: state.filters.categoryId,
+      enable: state.filters.enable,
+      in_stock: state.filters.inStock,
+      sort: state.sort
     });
     dispatch({
       type: 'SET_PRODUCTS',
       products: response.data.data,
       count: response.data.pagination.count
     });
+    dispatch({ type: 'SET_UNLOADING' });
   };
 
   const searchProducts = async () => {
+    dispatch({ type: 'SET_LOADING' });
     const response = await productApi.searchProducts({
       q: state.searchValue,
       current_page: state.currentPage + 1,
@@ -102,38 +139,23 @@ const ProductList = () => {
       products: response.data.data,
       count: response.data.pagination.count
     });
-  };
-
-  const handleSearchSubmit = (event) => {
-    if (event.key === 'Enter') {
-      dispatch({ type: 'TRIGGER_SEARCH' });
-    }
+    dispatch({ type: 'SET_UNLOADING' });
   };
 
   useEffect(() => {
     if (state.searchValue.length > 4) { searchProducts(); } else { fetchProducts(); }
-  }, [state.pageSize, state.currentPage, state.triggerSearch]);
+  }, [state.pageSize, state.currentPage, state.filters, state.sort, state.triggerSearch]);
 
   return (
     <Page
       title="Products"
+      context={ListContext}
+      contextValue={{ state, dispatch }}
       toolbar={(
-        <ProductListToolbar
-          searchValue={state.searchValue}
-          handleSearchChange={handleSearchChange}
-          handleSearchSubmit={handleSearchSubmit}
-        />
+        <ProductListToolbar />
       )}
       main={(
-        <ProductListResults
-          products={state.products}
-          pageSize={state.pageSize}
-          currentPage={state.currentPage}
-          count={state.count}
-          handlePageChange={handlePageChange}
-          handleLimitChange={handleLimitChange}
-          fetchProducts={fetchProducts}
-        />
+        <ProductListResults />
       )}
     />
   );

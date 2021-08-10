@@ -129,7 +129,7 @@ const ProductList = ({ fetchQuery, sortElemnents }) => {
 ProductList.defaultProps = {
 	fetchQuery: "/product/all?",
 	sortElemnents: [
-		{ name: 'New', value: 'createdAt.desc' },
+		{ name: 'Newest', value: 'createdAt.desc' },
 		{ name: 'Price (Low to High)', value: 'price.asc' },
 		{ name: 'Price (High to Low)', value: 'price.desc' },
 		{ name: 'Discount', value: 'discount.desc' },
