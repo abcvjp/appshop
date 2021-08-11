@@ -13,6 +13,7 @@ import CreateCategory from './pages/category/CreateCategory';
 import EditCategory from './pages/category/EditCategory';
 import ProductList from './pages/product/ProductList';
 import AddProduct from './pages/product/AddProduct';
+import EditProduct from './pages/product/EditProduct';
 
 const routes = [
   {
@@ -26,6 +27,7 @@ const routes = [
       { path: 'categories/:categoryId/edit', element: <EditCategory /> },
       { path: 'products', element: <ProductList /> },
       { path: 'products/add', element: <AddProduct /> },
+      { path: 'products/:productId/edit', element: <EditProduct /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'settings', element: <Settings /> },
       { path: '*', element: <Navigate to="/404" /> }

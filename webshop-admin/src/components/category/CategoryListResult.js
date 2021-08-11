@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -21,7 +20,7 @@ import { openConfirmDialog } from '../../actions/confirmDialog';
 
 import { categoryApi } from '../../utils/api';
 
-const CategoryListResults = ({ categories, ...rest }) => {
+const CategoryListResults = ({ categories }) => {
   console.log('rerender');
   const dispatch = useDispatch();
   const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
@@ -82,131 +81,129 @@ const CategoryListResults = ({ categories, ...rest }) => {
   };
 
   return (
-    <Card {...rest}>
-      <PerfectScrollbar>
-        <Box sx={{ minWidth: 1050 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCategoryIds.length === categories.length}
-                    color="primary"
-                    indeterminate={
+    <Card>
+      <Box sx={{ minWidth: 1050 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell padding="checkbox">
+                <Checkbox
+                  checked={selectedCategoryIds.length === categories.length}
+                  color="primary"
+                  indeterminate={
                       selectedCategoryIds.length > 0
                       && selectedCategoryIds.length < categories.length
                     }
-                    onChange={handleSelectAll}
+                  onChange={handleSelectAll}
+                />
+              </TableCell>
+              {selectedCategoryIds.length === 0
+                ? (
+                  <>
+                    <TableCell>
+                      Name
+                    </TableCell>
+                    <TableCell>
+                      Path
+                    </TableCell>
+                    <TableCell>
+                      Description
+                    </TableCell>
+                    <TableCell align="right">
+                      Actions
+                    </TableCell>
+                  </>
+                ) : (
+                  <TableCell>
+                    <Box m={0.5} display="inline-block">
+                      <Button
+                        color="primary"
+                        size="small"
+                        variant="outlined"
+                        onClick={handleDeleteSelected}
+                      >
+                        Delete
+                      </Button>
+                    </Box>
+                  </TableCell>
+                )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {categories.slice(page * limit, page * limit + limit).map((category) => (
+              <TableRow
+                hover
+                key={category.id}
+                selected={selectedCategoryIds.indexOf(category.id) !== -1}
+              >
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    checked={selectedCategoryIds.indexOf(category.id) !== -1}
+                    onChange={(event) => handleSelectOne(event, category.id)}
+                    value="true"
                   />
                 </TableCell>
-                {selectedCategoryIds.length === 0
-                  ? (
-                    <>
-                      <TableCell>
-                        Name
-                      </TableCell>
-                      <TableCell>
-                        Path
-                      </TableCell>
-                      <TableCell>
-                        Description
-                      </TableCell>
-                      <TableCell align="right">
-                        Actions
-                      </TableCell>
-                    </>
-                  ) : (
-                    <TableCell>
-                      <Box m={0.5} display="inline-block">
-                        <Button
-                          color="primary"
-                          size="small"
-                          variant="outlined"
-                          onClick={handleDeleteSelected}
-                        >
-                          Delete
-                        </Button>
-                      </Box>
-                    </TableCell>
-                  )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {categories.slice(page * limit, page * limit + limit).map((category) => (
-                <TableRow
-                  hover
-                  key={category.id}
-                  selected={selectedCategoryIds.indexOf(category.id) !== -1}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedCategoryIds.indexOf(category.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, category.id)}
-                      value="true"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
+                <TableCell>
+                  <Box
+                    sx={{
+                      alignItems: 'center',
+                      display: 'flex'
+                    }}
+                  >
+                    <Link
+                      target="_blank"
+                      href={`${process.env.REACT_APP_APP_BASE}/${category.slug}`}
+                      rel="noreferrer"
+                    >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {category.name}
+                      </Typography>
+                    </Link>
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  {category.path}
+                </TableCell>
+                <TableCell>
+                  {category.description}
+                </TableCell>
+                <TableCell align="right">
+                  <Box m={0.5} display="inline-block">
+                    <Button
+                      color="primary"
+                      size="small"
+                      variant="outlined"
                     >
                       <Link
+                        color="inherit"
+                        underline="none"
                         target="_blank"
-                        href={`${process.env.REACT_APP_APP_BASE}/${category.slug}`}
-                        rel="noreferrer"
+                        href={`http://${process.env.REACT_APP_APP_BASE}/${category.slug}`}
                       >
-                        <Typography
-                          color="textPrimary"
-                          variant="body1"
-                        >
-                          {category.name}
-                        </Typography>
+                        View
                       </Link>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    {category.path}
-                  </TableCell>
-                  <TableCell>
-                    {category.description}
-                  </TableCell>
-                  <TableCell align="right">
-                    <Box m={0.5} display="inline-block">
-                      <Button
-                        color="primary"
-                        size="small"
-                        variant="outlined"
-                      >
-                        <Link
-                          color="inherit"
-                          underline="none"
-                          target="_blank"
-                          href={`http://${process.env.REACT_APP_APP_BASE}/${category.slug}`}
-                        >
-                          View
-                        </Link>
-                      </Button>
-                    </Box>
-                    <Box m={0.5} display="inline-block">
-                      <Button
-                        color="primary"
-                        component={RouterLink}
-                        size="small"
-                        to={`${category.id}/edit`}
-                        variant="outlined"
-                      >
-                        Edit
-                      </Button>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      </PerfectScrollbar>
+                    </Button>
+                  </Box>
+                  <Box m={0.5} display="inline-block">
+                    <Button
+                      color="primary"
+                      component={RouterLink}
+                      size="small"
+                      to={`${category.id}/edit`}
+                      variant="outlined"
+                    >
+                      Edit
+                    </Button>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
       <TablePagination
         component="div"
         count={categories.length}

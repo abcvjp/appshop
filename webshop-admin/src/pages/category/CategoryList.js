@@ -19,7 +19,7 @@ const CategoryList = () => {
 
   return (
     <Page
-      title="Category"
+      title="Categories"
       toolbar={<CategoryListToolbar />}
       main={<CategoryListResults categories={state.categories} />}
     />

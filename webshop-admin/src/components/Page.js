@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 
 const Page = ({
   title, toolbar, main, context, contextValue
@@ -22,23 +21,21 @@ const Page = ({
       }}
     >
       <Container maxWidth={false}>
-        <PerfectScrollbar>
-          { context ? (
-            <context.Provider value={contextValue}>
-              {toolbar}
-              <Box sx={{ pt: 3 }}>
-                {main}
-              </Box>
-            </context.Provider>
-          ) : (
-            <>
-              {toolbar}
-              <Box sx={{ pt: 3 }}>
-                {main}
-              </Box>
-            </>
-          )}
-        </PerfectScrollbar>
+        { context ? (
+          <context.Provider value={contextValue}>
+            {toolbar}
+            <Box sx={{ pt: 3 }}>
+              {main}
+            </Box>
+          </context.Provider>
+        ) : (
+          <>
+            {toolbar}
+            <Box sx={{ pt: 3 }}>
+              {main}
+            </Box>
+          </>
+        )}
       </Container>
     </Box>
   </>

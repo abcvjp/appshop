@@ -13,6 +13,9 @@ const initialState = {
       message: '',
       onConfirm: () => {},
       onCancel: () => {}
+    },
+    fullscreenLoading: {
+      isShown: false
     }
   }
 };

@@ -1,6 +1,13 @@
 const Joi = require('joi')
 
 module.exports = {
+	getOrders: {
+		query: Joi.object({
+			order_status: Joi.string().trim().valid('Pending', 'Handling', 'Completed', 'Canceled'),
+			payment_status: Joi.string().trim().valid('Unpaid', 'Paid'),
+			shipping_status: Joi.string().trim().valid('Undelivered', 'Delivering', 'Successfully delivered', 'Delivery failed'),
+		})
+	},
 	getOrderById: {
 		params: Joi.object({
 			orderId: Joi.string().guid({ version: 'uuidv4' }).required()

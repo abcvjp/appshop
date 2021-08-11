@@ -11,7 +11,7 @@ exports.getCategories = async ({current_page, page_size, sort}) => {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		const {rows, count} = await Category.findAndCountAll({
 			limit, offset,
-			order: sort ? [sort.split('.')] : ['createdAt']
+			order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
 		})
 		if (rows.length < 1) throw createError(404, "Can not find any category")
 		const pagination = paginate(current_page, count, rows, page_size)

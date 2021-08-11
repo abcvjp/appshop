@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import {
@@ -20,10 +21,11 @@ import {
 
 import { useCategories } from 'src/utils/customHooks';
 import { productApi } from 'src/utils/api';
-import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
 
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
+import { stateFromHTML } from 'draft-js-import-html';
+import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
 import RichEditor from '../RichEditor';
 
 const useStyles = makeStyles(() => ({
@@ -32,15 +34,16 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const AddProductForm = () => {
+const EditProductForm = ({ productId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [categories] = useCategories();
   const [state, setState] = useState({
-    isLoading: false,
+    product: null,
     error: null,
     isOpenResult: false
   });
+  const { product } = state;
 
   const handleResultOpen = () => {
     setState((prevState) => ({ ...prevState, isOpenResult: true }));
@@ -49,25 +52,43 @@ const AddProductForm = () => {
     setState((prevState) => ({ ...prevState, isOpenResult: false }));
   };
 
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const response = await productApi.getProduct({ id: productId });
+      setState((prevState) => ({
+        ...prevState,
+        product: response.data.data
+      }));
+    };
+    fetchProduct();
+  }, []);
+
   const onSubmit = async (values) => {
     dispatch(openFullScreenLoading());
     const description = draftToHtml(convertToRaw(values.description.getCurrentContent()));
     console.log({ ...values, description });
-    await productApi.createProduct({ ...values, description }).then((res) => res.data).then(() => {
+    await productApi.updateProduct(product.id, {
+      ...values,
+      description
+    }).then((res) => res.data).then(() => {
       handleResultOpen();
     }).catch((err) => {
       setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));
     });
     dispatch(closeFullScreenLoading());
   };
+
   return (
+    product && (
     <Paper className="paper" square>
       <Box sx={{ mb: 3 }}>
         <Typography
           color="textPrimary"
           variant="h2"
         >
-          Add Product
+          {`Edit Product '
+                    ${product.name}
+                    '`}
         </Typography>
       </Box>
       {state.error && (
@@ -81,19 +102,19 @@ const AddProductForm = () => {
       )}
       <Formik
         initialValues={{
-          enable: true,
-          name: '',
-          category_id: '',
-          title: '',
-          price: '',
-          root_price: '',
-          quantity: '',
-          short_description: '',
-          description: EditorState.createEmpty(),
-          images: [],
-          meta_title: '',
-          meta_description: '',
-          meta_keywords: ''
+          enable: product.enable,
+          name: product.name,
+          category_id: product.category.id,
+          title: product.title,
+          price: product.price,
+          root_price: product.root_price,
+          quantity: product.quantity,
+          short_description: product.short_description,
+          description: EditorState.createWithContent(stateFromHTML(product.description)),
+          images: product.images || [],
+          meta_title: product.title,
+          meta_description: product.meta_description || '',
+          meta_keywords: product.meta_keywords || ''
         }}
         validationSchema={Yup.object().shape({
           enable: Yup.boolean(),
@@ -304,7 +325,7 @@ const AddProductForm = () => {
                 type="submit"
                 variant="contained"
               >
-                Add Product
+                Update Product
               </Button>
             </Box>
           </form>
@@ -313,12 +334,17 @@ const AddProductForm = () => {
       <Dialog open={state.isOpenResult} onClose={handleResultClose}>
         <DialogContent>
           <DialogContentText style={{ color: 'green' }}>
-            Product is created successfully
+            Product is updated successfully
           </DialogContentText>
         </DialogContent>
       </Dialog>
     </Paper>
+    )
   );
 };
 
-export default AddProductForm;
+EditProductForm.propTypes = {
+  productId: PropTypes.string.isRequired
+};
+
+export default EditProductForm;

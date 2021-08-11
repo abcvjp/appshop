@@ -1,4 +1,5 @@
 import API from './apiClient';
+import { cleanObj } from '../functions';
 
 const categoryApi = {
   getAll: (body) => API.get('/category/all', body),
@@ -6,8 +7,15 @@ const categoryApi = {
   deleteCategories: (categoryIds) => API.delete('/category', {
     data: { categoryIds }
   }),
-  createCategory: (body) => API.post('/category', body),
-  editCategory: (id, body) => API.put(`/category/${id}`, body)
+  createCategory: (data) => {
+    const url = '/category';
+    return API.post(url, cleanObj(data));
+  },
+  editCategory: (id, body) => API.put(`/category/${id}`, body),
+  updateCategory: (id, data) => {
+    const url = `/category/${id}`;
+    return API.put(url, cleanObj(data));
+  },
 };
 
 export default categoryApi;

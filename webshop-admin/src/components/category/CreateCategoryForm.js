@@ -16,7 +16,9 @@ import {
 } from '@material-ui/core';
 
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useCategories } from 'src/utils/customHooks';
+import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
 import { categoryApi } from '../../utils/api';
 
 const useStyles = makeStyles(() => ({
@@ -27,6 +29,7 @@ const useStyles = makeStyles(() => ({
 
 const CreateCategoryForm = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [categories] = useCategories();
   const [state, setState] = useState({
     isLoading: false,
@@ -40,7 +43,15 @@ const CreateCategoryForm = () => {
   const handleResultClose = () => {
     setState((prevState) => ({ ...prevState, isOpenResult: false }));
   };
-
+  const onSubmit = async (values) => {
+    dispatch(openFullScreenLoading());
+    await categoryApi.createCategory(values).then((res) => res.data).then(() => {
+      handleResultOpen();
+    }).catch((err) => {
+      setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));
+    });
+    dispatch(closeFullScreenLoading());
+  };
   return (
     <Paper className="paper" square>
       <Box sx={{ mb: 3 }}>
@@ -83,20 +94,7 @@ const CreateCategoryForm = () => {
           meta_keywords: Yup.string().trim().min(1).max(150)
             .lowercase()
         })}
-        onSubmit={async (values) => {
-          console.log(values);
-          const data = {};
-          Object.keys(values).forEach((key) => {
-            if (values[key] !== '') {
-              data[key] = values[key];
-            }
-          });
-          await categoryApi.createCategory(data).then((res) => res.data).then(() => {
-            handleResultOpen();
-          }).catch((err) => {
-            setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));
-          });
-        }}
+        onSubmit={onSubmit}
       >
         {({
           errors,

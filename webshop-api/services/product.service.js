@@ -66,7 +66,7 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					exclude: ['category_id']
 				},
 				limit, offset,
-				order: sort ? [sort.split('.')] : ['createdAt']
+				order: sort ? [sort.split('.')] : [['createdAt','DESC']]
 			})
 			var result = rows
 		}

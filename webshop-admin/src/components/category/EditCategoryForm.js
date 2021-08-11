@@ -16,7 +16,10 @@ import {
 } from '@material-ui/core';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
+import { useCategories } from 'src/utils/customHooks';
+import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
 import { categoryApi } from '../../utils/api';
 
 const useStyles = makeStyles(() => ({
@@ -25,13 +28,12 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const EditCategoryForm = () => {
+const EditCategoryForm = ({ categoryId }) => {
   const classes = useStyles();
-  const { categoryId } = useParams();
+  const dispatch = useDispatch();
+  const [categories] = useCategories();
   const [state, setState] = useState({
     category: null,
-    categories: [],
-    isLoading: false,
     error: null,
     isOpenResult: false
   });
@@ -44,19 +46,26 @@ const EditCategoryForm = () => {
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      const response = await categoryApi.getAll();
-      const categories = response.data.data;
+    if (categories.length > 0) {
       setState((prevState) => ({
         ...prevState,
-        categories,
         category: categories.find((category) => category.id === categoryId)
       }));
-    };
-    fetchCategories();
-  }, []);
+    }
+  }, [categories]);
 
   const { category } = state;
+
+  const onSubmit = async (values) => {
+    dispatch(openFullScreenLoading());
+    await categoryApi.updateCategory(categoryId, values).then((res) => res.data).then(() => {
+      handleResultOpen();
+    }).catch((err) => {
+      setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));
+    });
+    dispatch(closeFullScreenLoading());
+  };
+
   return (
     category
       ? (
@@ -83,12 +92,12 @@ const EditCategoryForm = () => {
           <Formik
             initialValues={{
               name: category.name,
-              parent_id: category.parent_id ? category.parent_id : '',
+              parent_id: category.parent_id,
               description: category.description,
               published: true,
               meta_title: category.meta_title,
-              meta_description: category.meta_description ? category.meta_description : '',
-              meta_keywords: category.meta_keywords ? category.meta_description : ''
+              meta_description: category.meta_description,
+              meta_keywords: category.meta_keywords
             }}
             validationSchema={Yup.object().shape({
               name: Yup.string().trim().min(1).max(30)
@@ -96,27 +105,16 @@ const EditCategoryForm = () => {
               description: Yup.string().trim().min(20).max(100)
                 .required('Category description is required'),
               // parent_id: Yup.string(),
-              published: Yup.boolean(),
+              published: Yup.boolean().required(),
               meta_title: Yup.string().trim().min(1).max(100)
                 .required('Meta title is required'),
-              meta_description: Yup.string().trim().min(20).max(200),
+              meta_description: Yup.string().trim().min(20).max(200)
+                .nullable(),
               meta_keywords: Yup.string().trim().min(1).max(150)
+                .nullable()
                 .lowercase()
             })}
-            onSubmit={async (values) => {
-              const data = {};
-              Object.keys(values).forEach((key) => {
-                if (values[key] !== '' && key !== 'parent_id') {
-                  data[key] = values[key];
-                }
-              });
-              console.log(data);
-              await categoryApi.editCategory(categoryId, data).then((res) => res.data).then(() => {
-                handleResultOpen();
-              }).catch((err) => {
-                setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));
-              });
-            }}
+            onSubmit={onSubmit}
           >
             {({
               errors,
@@ -157,7 +155,7 @@ const EditCategoryForm = () => {
                   variant="outlined"
                   disabled
                 >
-                  {state.categories.map((item) => (
+                  {categories.map((item) => (
                     <MenuItem key={item.id} value={item.id}>
                       {item.path}
                     </MenuItem>
@@ -256,4 +254,7 @@ const EditCategoryForm = () => {
   );
 };
 
+EditCategoryForm.propTypes = {
+  categoryId: PropTypes.string.isRequired
+};
 export default EditCategoryForm;
