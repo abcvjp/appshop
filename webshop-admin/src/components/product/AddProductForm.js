@@ -25,6 +25,7 @@ import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fulls
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import RichEditor from '../RichEditor';
+import UploadFile from '../UploadFile';
 
 const useStyles = makeStyles(() => ({
   select: {
@@ -70,6 +71,7 @@ const AddProductForm = () => {
           Add Product
         </Typography>
       </Box>
+      <UploadFile />
       {state.error && (
       <Box mb={2}>
         <Typography color="secondary">

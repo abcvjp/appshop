@@ -86,13 +86,15 @@ const CreateCategoryForm = () => {
             .required('Category name is required'),
           description: Yup.string().trim().min(20).max(100)
             .required('Category description is required'),
-          parent_id: Yup.string().uuid(),
-          published: Yup.boolean(),
+          parent_id: Yup.string().uuid().nullable(),
+          published: Yup.boolean().required(),
           meta_title: Yup.string().trim().min(1).max(100)
             .required('Meta title is required'),
-          meta_description: Yup.string().trim().min(20).max(200),
+          meta_description: Yup.string().trim().min(20).max(200)
+            .nullable(),
           meta_keywords: Yup.string().trim().min(1).max(150)
             .lowercase()
+            .nullable()
         })}
         onSubmit={onSubmit}
       >

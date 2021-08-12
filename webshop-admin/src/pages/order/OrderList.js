@@ -1,9 +1,10 @@
 import {
-  useEffect, useReducer, createContext
+  useEffect, useReducer
 } from 'react';
-import ProductListToolbar from 'src/components/product/ProductListToolbar';
-import { productApi } from 'src/utils/api';
-import ProductListResults from 'src/components/product/ProductListResult';
+import { orderApi } from 'src/utils/api';
+import OrderListToolbar from 'src/components/order/OrderListToolbar';
+import OrderListResults from 'src/components/order/OrderListResult';
+import { OrderListContext } from 'src/utils/contexts';
 import Page from '../../components/Page';
 
 const initialState = {
@@ -11,18 +12,21 @@ const initialState = {
   pageSize: 10,
   currentPage: 0,
   count: 10,
-  searchValue: '',
   triggerFetch: Date.now(),
   filters: {
-    order_status: undefined,
-    payment_status: undefined,
-    shipping_status: undefined
+    id: '',
+    status: '',
+    payment_status: '',
+    shipping_status: '',
+    customer_name: '',
+    email: '',
+    phone_number: ''
   },
   sort: '',
   isLoading: false
 };
 
-function productListReducer(state, action) {
+function orderListReducer(state, action) {
   switch (action.type) {
     case 'CHANGE_PAGE_SIZE':
       return {
@@ -35,50 +39,19 @@ function productListReducer(state, action) {
         ...state,
         currentPage: action.currentPage
       };
-    case 'CHANGE_SEARCH_VALUE':
+    case 'SET_FILTERS':
       return {
         ...state,
-        searchValue: action.searchValue
-      };
-    case 'SET_SEARCH':
-      return {
-        ...state,
-        searchValue: action.searchValue,
-        triggerSearch: Date.now()
+        filters: action.filters,
+        currentPage: 0,
+        triggerFetch: Date.now()
       };
     case 'CHANGE_SORT':
       return {
         ...state,
         sort: action.sort
       };
-    case 'CHANGE_ENABLE':
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          order_status: action.order_status,
-        },
-        currentPage: 0
-      };
-    case 'CHANGE_INSTOCK':
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          payment_status: action.payment_status
-        },
-        currentPage: 0
-      };
-    case 'CHANGE_CATEGORY':
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          shipping_status: action.shipping_status
-        },
-        currentPage: 0
-      };
-    case 'SET_PRODUCTS':
+    case 'SET_ORDERS':
       return {
         ...state,
         orders: action.orders,
@@ -100,65 +73,68 @@ function productListReducer(state, action) {
         ...state,
         isLoading: false
       };
+    case 'UPDATE_ORDER':
+      return {
+        ...state,
+        orders: state.orders.map((i) => {
+          if (i.id === action.order.id) {
+            return { ...i, ...action.order };
+          } return i;
+        })
+      };
+    case 'UPDATE_ORDERS_STATUS': {
+      const newOrders = state.orders.slice();
+      action.orders.forEach((order) => {
+        const index = newOrders.findIndex((curOrder) => curOrder.id === order.id);
+        if (index !== -1) {
+          newOrders[index] = { ...newOrders[index], ...order };
+        }
+      });
+      return {
+        ...state,
+        orders: newOrders
+      };
+    }
     default:
       return state;
   }
 }
-export const ListContext = createContext();
 
-const ProductList = () => {
-  const [state, dispatch] = useReducer(productListReducer, initialState);
-
-  const fetchProducts = async () => {
-    dispatch({ type: 'SET_LOADING' });
-    const response = await productApi.getAll({
-      current_page: state.currentPage + 1,
-      page_size: state.pageSize,
-      category_id: state.filters.shipping_status,
-      order_status: state.filters.order_status,
-      in_stock: state.filters.payment_status,
-      sort: state.sort
-    });
-    dispatch({
-      type: 'SET_PRODUCTS',
-      orders: response.data.data,
-      count: response.data.pagination.count
-    });
-    dispatch({ type: 'SET_UNLOADING' });
-  };
-
-  const searchProducts = async () => {
-    dispatch({ type: 'SET_LOADING' });
-    const response = await productApi.searchProducts({
-      q: state.searchValue,
-      current_page: state.currentPage + 1,
-      page_size: state.pageSize
-    });
-    dispatch({
-      type: 'SET_PRODUCTS',
-      orders: response.data.data,
-      count: response.data.pagination.count
-    });
-    dispatch({ type: 'SET_UNLOADING' });
-  };
+const OrderList = () => {
+  const [state, dispatch] = useReducer(orderListReducer, initialState);
 
   useEffect(() => {
-    if (state.searchValue.length > 4) { searchProducts(); } else { fetchProducts(); }
-  }, [state.pageSize, state.currentPage, state.filters, state.sort, state.triggerSearch]);
+    const fetchOrders = async () => {
+      dispatch({ type: 'SET_LOADING' });
+      const response = await orderApi.getOrders({
+        current_page: state.currentPage + 1,
+        page_size: state.pageSize,
+        ...state.filters,
+        sort: state.sort
+      });
+      dispatch({
+        type: 'SET_ORDERS',
+        orders: response.data.data,
+        count: response.data.pagination.count
+      });
+      dispatch({ type: 'SET_UNLOADING' });
+    };
+    fetchOrders();
+  }, [state.pageSize, state.currentPage, state.filters, state.sort, state.triggerFetch]);
 
   return (
     <Page
-      title="Products"
-      context={ListContext}
+      title="Orders"
+      context={OrderListContext}
       contextValue={{ state, dispatch }}
       toolbar={(
-        <ProductListToolbar />
+        <OrderListToolbar />
       )}
       main={(
-        <ProductListResults />
+        <OrderListResults />
       )}
     />
   );
 };
 
-export default ProductList;
+export default OrderList;

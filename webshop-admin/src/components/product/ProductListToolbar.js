@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useCategories } from 'src/utils/customHooks';
 
-import { ListContext } from 'src/pages/product/ProductList';
+import { ProductListContext } from 'src/utils/contexts';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -38,7 +38,7 @@ const instockOptions = [
 ];
 
 const ProductListToolbar = () => {
-  const { state, dispatch } = useContext(ListContext);
+  const { state, dispatch } = useContext(ProductListContext);
   const [searchValue, setSearchValue] = useState('');
   const [categories] = useCategories();
 

@@ -1,9 +1,10 @@
 import {
-  useEffect, useReducer, createContext
+  useEffect, useReducer
 } from 'react';
 import ProductListToolbar from 'src/components/product/ProductListToolbar';
 import { productApi } from 'src/utils/api';
 import ProductListResults from 'src/components/product/ProductListResult';
+import { ProductListContext } from 'src/utils/contexts';
 import Page from '../../components/Page';
 
 const initialState = {
@@ -104,7 +105,6 @@ function productListReducer(state, action) {
       return state;
   }
 }
-export const ListContext = createContext();
 
 const ProductList = () => {
   const [state, dispatch] = useReducer(productListReducer, initialState);
@@ -149,7 +149,7 @@ const ProductList = () => {
   return (
     <Page
       title="Products"
-      context={ListContext}
+      context={ProductListContext}
       contextValue={{ state, dispatch }}
       toolbar={(
         <ProductListToolbar />

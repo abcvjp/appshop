@@ -104,7 +104,7 @@ const EditCategoryForm = ({ categoryId }) => {
                 .required('Category name is required'),
               description: Yup.string().trim().min(20).max(100)
                 .required('Category description is required'),
-              // parent_id: Yup.string(),
+              parent_id: Yup.string().uuid().nullable(),
               published: Yup.boolean().required(),
               meta_title: Yup.string().trim().min(1).max(100)
                 .required('Meta title is required'),

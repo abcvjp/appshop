@@ -110,12 +110,15 @@ exports.createCategory = async ({ name, description, parent_id, published, meta_
 		throw createError(error.statusCode || 500, error.message)
 	}
 }
-exports.updateCategory = async ({ id, name, description, published, meta_title, meta_description, meta_keywords }) => {
+exports.updateCategory = async ({ id, name, parent_id, description, published, meta_title, meta_description, meta_keywords }) => {
 	try {
 		// find category to be updated
 		const categoryToUpdate = await Category.findByPk(id)
 		if (!categoryToUpdate) {
 			throw createError(409, "Category doesn't exist")
+		}
+		if (categoryToUpdate.parent_id !== parent_id) {
+			throw createError(409, "Parent id is not allowed to change")
 		}
 
 		let relateCategories

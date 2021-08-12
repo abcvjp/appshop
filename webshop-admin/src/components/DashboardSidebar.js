@@ -19,7 +19,8 @@ import {
   User as UserIcon,
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
-  Folder as CategoryIcon
+  Folder as CategoryIcon,
+  ShoppingCart as OrderIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -36,19 +37,24 @@ const items = [
     title: 'Dashboard'
   },
   {
-    href: '/management/customers',
+    href: '/management/customer',
     icon: UsersIcon,
     title: 'Customers'
   },
   {
-    href: '/management/categories',
+    href: '/management/category',
     icon: CategoryIcon,
     title: 'Categories'
   },
   {
-    href: '/management/products',
+    href: '/management/product',
     icon: ShoppingBagIcon,
     title: 'Products'
+  },
+  {
+    href: '/management/order',
+    icon: OrderIcon,
+    title: 'Orders'
   },
   {
     href: '/management/account',
@@ -56,7 +62,7 @@ const items = [
     title: 'Account'
   },
   {
-    href: '/management/settings',
+    href: '/management/setting',
     icon: SettingsIcon,
     title: 'Settings'
   },

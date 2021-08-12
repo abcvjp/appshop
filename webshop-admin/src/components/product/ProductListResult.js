@@ -1,6 +1,6 @@
 import { useState, useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import { ListContext } from 'src/pages/product/ProductList';
+import { ProductListContext } from 'src/utils/contexts';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -23,7 +23,7 @@ import { productApi } from '../../utils/api';
 
 const ProductListResults = () => {
   const dispatchGlobal = useDispatch();
-  const { state, dispatch } = useContext(ListContext);
+  const { state, dispatch } = useContext(ProductListContext);
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const { products } = state;
 

@@ -3,29 +3,63 @@ const { sequelize } = require('../models')
 const createError = require('http-errors')
 const slug = require('slug')
 const { uuid } = require('uuidv4')
+const { calculateLimitAndOffset, paginate } = require('paginate-info')
 
-exports.getOrders = async () => {
+exports.getOrders = async ({id, customer_name, email,phone_number, status, payment_status,
+		shipping_status, current_page, page_size, sort}) => {
 	try {
-		const orders = await Order.findAll({
+		const whereConditions = {}
+		if (id !== undefined) {
+			whereConditions['id'] = id
+		}
+		if (customer_name !== undefined) {
+			whereConditions['customer_name'] = customer_name
+		}
+		if (email !== undefined) {
+			whereConditions['email'] = email
+		}
+		if (phone_number !== undefined) {
+			whereConditions['phone_number'] = phone_number
+		}
+		if (status !== undefined) {
+			whereConditions['status'] = status
+		}
+		if (payment_status !== undefined) {
+			whereConditions['payment_status'] = payment_status
+		}
+		if (shipping_status !== undefined) {
+			whereConditions['shipping_status'] = shipping_status
+		}
+
+		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
+		const { rows, count } = await Order.findAndCountAll({
+			where: whereConditions,
 			include: [
 				{
 					association: 'payment_method',
-					attributes: ['name']
+					attributes: ['name'],
 				},
 				{
 					association: 'shipping_method',
-					attributes: ['name']
+					attributes: ['name'],
 				},
 				{
 					association: 'order_items',
-					attributes: ['product_id', 'product_name', 'price', 'quantity']
+					attributes: ['product_id', 'product_name', 'product_thumbnail', 'price', 'quantity']
 				}
-			]
+			],
+			attributes: {
+				exclude: ['payment_method_id','shipping_method_id']
+			},
+			limit, offset,
+			order: sort ? [sort.split('.')] : [['createdAt','DESC']]
 		})
-		if (!orders) throw createError(404, "Can't find any order")
+		if (rows.length === 0) throw createError(404, "Can't find any order")
+		const pagination = paginate(current_page, count, rows, page_size)
 		return {
 			success: true,
-			data: orders
+			data: rows,
+			pagination
 		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)
@@ -38,17 +72,20 @@ exports.getOrderById = async ({ id }) => {
 			include: [
 				{
 					association: 'payment_method',
-					attributes: ['name']
+					attributes: ['name'],
 				},
 				{
 					association: 'shipping_method',
-					attributes: ['name']
+					attributes: ['name'],
 				},
 				{
 					association: 'order_items',
-					attributes: ['product_id', 'product_name', 'price', 'quantity']
+					attributes: ['product_id', 'product_name', 'product_thumbnail', 'price', 'quantity']
 				}
-			]
+			],
+			attributes: {
+				exclude: ['payment_method_id','shipping_method_id']
+			}
 		})
 		if (!orderById) throw createError(404, 'Order does not exist')
 		return {
@@ -226,7 +263,9 @@ exports.confirmlOrder = async ({ id }) => {
 	try {
 		const orderToConfirm = await Order.findByPk(id, { attributes: ['id', 'status'] })
 		if (!orderToConfirm) throw createError(404, 'Order does not exist')
-		if (orderToConfirm.status !== 'Pending') throw createError(409, 'Order is already confirmed')
+		if (orderToConfirm.status === 'Canceled') {
+			throw createError(409, 'Order is canceled')
+		} else if (orderToConfirm.status !== 'Pending') throw createError(409, 'Order is already confirmed')
 		await orderToConfirm.update({ status: 'Handling' })
 		return { success: true }
 	} catch (error) {

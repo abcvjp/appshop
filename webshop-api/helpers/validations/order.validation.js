@@ -3,9 +3,16 @@ const Joi = require('joi')
 module.exports = {
 	getOrders: {
 		query: Joi.object({
-			order_status: Joi.string().trim().valid('Pending', 'Handling', 'Completed', 'Canceled'),
+			id: Joi.string().guid({ version: 'uuidv4' }),
+			customer_name: Joi.string().trim().min(1).max(100),
+			email: Joi.string().trim().email(),
+			phone_number: Joi.string().length(10).pattern(/^[0-9]+$/),
+			status: Joi.string().trim().valid('Pending', 'Handling', 'Completed', 'Canceled'),
 			payment_status: Joi.string().trim().valid('Unpaid', 'Paid'),
 			shipping_status: Joi.string().trim().valid('Undelivered', 'Delivering', 'Successfully delivered', 'Delivery failed'),
+			current_page: Joi.number().integer().min(1),
+			page_size: Joi.number().integer().min(1),
+			sort: Joi.string().min(1)
 		})
 	},
 	getOrderById: {

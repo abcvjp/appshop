@@ -14,6 +14,8 @@ import EditCategory from './pages/category/EditCategory';
 import ProductList from './pages/product/ProductList';
 import AddProduct from './pages/product/AddProduct';
 import EditProduct from './pages/product/EditProduct';
+import OrderList from './pages/order/OrderList';
+import ViewOrder from './pages/order/ViewOrder';
 
 const routes = [
   {
@@ -21,15 +23,17 @@ const routes = [
     element: <DashboardLayout />,
     children: [
       { path: 'account', element: <Account /> },
-      { path: 'customers', element: <CustomerList /> },
-      { path: 'categories', element: <CategoryList /> },
-      { path: 'categories/create', element: <CreateCategory /> },
-      { path: 'categories/:categoryId/edit', element: <EditCategory /> },
-      { path: 'products', element: <ProductList /> },
-      { path: 'products/add', element: <AddProduct /> },
-      { path: 'products/:productId/edit', element: <EditProduct /> },
+      { path: 'customer', element: <CustomerList /> },
+      { path: 'category', element: <CategoryList /> },
+      { path: 'category/create', element: <CreateCategory /> },
+      { path: 'category/:categoryId/edit', element: <EditCategory /> },
+      { path: 'product', element: <ProductList /> },
+      { path: 'product/add', element: <AddProduct /> },
+      { path: 'product/:productId/edit', element: <EditProduct /> },
+      { path: 'order/', element: <OrderList /> },
+      { path: 'order/:orderId', element: <ViewOrder /> },
       { path: 'dashboard', element: <Dashboard /> },
-      { path: 'settings', element: <Settings /> },
+      { path: 'setting', element: <Settings /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },

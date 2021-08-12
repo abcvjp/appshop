@@ -28,7 +28,10 @@ exports.deleteOrder = asyncHandler(async (req, res, next) => {
 })
 
 exports.getOrders = asyncHandler(async (req, res, next) => {
-	const result = await orderService.getOrders()
+	const {id, customer_name, email,phone_number, status, payment_status,
+		shipping_status, current_page, page_size, sort} = req.query
+	const result = await orderService.getOrders({id, customer_name, email,phone_number, status, payment_status,
+		shipping_status, current_page, page_size, sort})
 	res.status(200).json(result)
 })
 

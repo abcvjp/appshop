@@ -31,8 +31,8 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
 
 exports.updateCategory = asyncHandler(async (req, res, next) => {
 	const { categoryId } = req.params
-	const { name, description, meta_title, meta_description, meta_keywords } = req.body
-	const result = await categoryService.updateCategory({ id: categoryId, name, description, meta_title, meta_description, meta_keywords })
+	const { name, parent_id, description, meta_title, meta_description, meta_keywords } = req.body
+	const result = await categoryService.updateCategory({ id: categoryId, name, parent_id, description, meta_title, meta_description, meta_keywords })
 	res.status(200).json(result)
 })
 
