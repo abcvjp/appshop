@@ -24,17 +24,10 @@ const useStyles = makeStyles(() => ({
 const OrderListFilter = () => {
   const classes = useStyles();
   const { state, dispatch } = useContext(OrderListContext);
+  console.log({ ...state.filters });
   return (
     <Formik
-      initialValues={{
-        id: state.filters.id,
-        status: state.filters.status,
-        payment_status: state.filters.payment_status,
-        shipping_status: state.filters.shipping_status,
-        customer_name: state.filters.customer_name,
-        email: state.filters.email,
-        phone_number: state.filters.phone_number
-      }}
+      initialValues={{ ...state.filters }}
       validationSchema={Yup.object().shape({
         id: Yup.string().uuid(),
         customer_name: Yup.string().trim().min(1).max(100),
@@ -43,6 +36,8 @@ const OrderListFilter = () => {
         status: Yup.mixed().oneOf(['Pending', 'Handling', 'Completed', 'Canceled']),
         payment_status: Yup.mixed().oneOf(['Unpaid', 'Paid']),
         shipping_status: Yup.mixed().oneOf(['Undelivered', 'Delivering', 'Successfully delivered', 'Delivery failed']),
+        start_date: Yup.date(),
+        end_date: Yup.date()
       })}
       onSubmit={(values) => dispatch({ type: 'SET_FILTERS', filters: values })}
     >
@@ -190,6 +185,46 @@ const OrderListFilter = () => {
                   </MenuItem>
                 ))}
               </TextField>
+            </Grid>
+            <Grid item key="start_date" className={classes.field}>
+              <TextField
+                error={Boolean(touched.start_date && errors.start_date)}
+                helperText={touched.start_date && errors.start_date}
+                label="Start Date"
+                name="start_date"
+                type="date"
+                margin="dense"
+                size="small"
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.start_date}
+                variant="outlined"
+                className={classes.field}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+            <Grid item key="end_date" className={classes.field}>
+              <TextField
+                error={Boolean(touched.end_date && errors.end_date)}
+                helperText={touched.end_date && errors.end_date}
+                label="End Date"
+                name="end_date"
+                type="date"
+                margin="dense"
+                size="small"
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.end_date}
+                variant="outlined"
+                className={classes.field}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </Grid>
           </Grid>
 

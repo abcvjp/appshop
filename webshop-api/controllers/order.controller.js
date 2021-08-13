@@ -21,6 +21,12 @@ exports.updateOrderInfo = asyncHandler(async (req, res, next) => {
 	res.status(200).json(result)
 })
 
+exports.updateOrdersStatus = asyncHandler(async (req, res, next) => {
+	const { orders } = req.body
+	const result = await orderService.updateOrdersStatus({orders})
+	res.status(200).json(result)
+})
+
 exports.deleteOrder = asyncHandler(async (req, res, next) => {
 	const { orderId } = req.params
 	const result = await orderService.deleteOrder({ id: orderId })
@@ -29,9 +35,9 @@ exports.deleteOrder = asyncHandler(async (req, res, next) => {
 
 exports.getOrders = asyncHandler(async (req, res, next) => {
 	const {id, customer_name, email,phone_number, status, payment_status,
-		shipping_status, current_page, page_size, sort} = req.query
+		shipping_status, start_date, end_date, current_page, page_size, sort} = req.query
 	const result = await orderService.getOrders({id, customer_name, email,phone_number, status, payment_status,
-		shipping_status, current_page, page_size, sort})
+		shipping_status, start_date, end_date, current_page, page_size, sort})
 	res.status(200).json(result)
 })
 

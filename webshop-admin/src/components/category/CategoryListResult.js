@@ -173,22 +173,6 @@ const CategoryListResults = ({ categories }) => {
                   <Box m={0.5} display="inline-block">
                     <Button
                       color="primary"
-                      size="small"
-                      variant="outlined"
-                    >
-                      <Link
-                        color="inherit"
-                        underline="none"
-                        target="_blank"
-                        href={`http://${process.env.REACT_APP_APP_BASE}/${category.slug}`}
-                      >
-                        View
-                      </Link>
-                    </Button>
-                  </Box>
-                  <Box m={0.5} display="inline-block">
-                    <Button
-                      color="primary"
                       component={RouterLink}
                       size="small"
                       to={`${category.id}/edit`}

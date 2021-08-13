@@ -19,6 +19,7 @@ const orderApi = {
     const url = `/order/${id}`;
     return API.put(url, cleanObj(data));
   },
+  updateOrdersStatus: (data) => API.put('/order', { orders: data }),
   editOrder: (id, body) => API.put(`/order/${id}`, body),
   searchOrders: (query) => {
     const url = '/search';

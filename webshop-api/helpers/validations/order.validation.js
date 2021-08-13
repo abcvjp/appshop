@@ -1,4 +1,4 @@
-const Joi = require('joi')
+const Joi = require('joi').extend(require('@joi/date'))
 
 module.exports = {
 	getOrders: {
@@ -10,6 +10,8 @@ module.exports = {
 			status: Joi.string().trim().valid('Pending', 'Handling', 'Completed', 'Canceled'),
 			payment_status: Joi.string().trim().valid('Unpaid', 'Paid'),
 			shipping_status: Joi.string().trim().valid('Undelivered', 'Delivering', 'Successfully delivered', 'Delivery failed'),
+			start_date: Joi.date().format('YYYY-MM-DD'),
+			end_date: Joi.date().format('YYYY-MM-DD'),
 			current_page: Joi.number().integer().min(1),
 			page_size: Joi.number().integer().min(1),
 			sort: Joi.string().min(1)
@@ -49,6 +51,14 @@ module.exports = {
 			email: Joi.string().trim().email().required(),
 			phone_number: Joi.string().length(10).pattern(/^[0-9]+$/).required(),
 			shipping_note: Joi.string().max(255)
+		})
+	},
+	updateOrdersStatus: {
+		body: Joi.object({
+			orders: Joi.array().items(Joi.object({
+				id: Joi.string().guid({ version: 'uuidv4' }).required(),
+				status: Joi.string().trim().valid('Pending', 'Handling', 'Completed', 'Canceled')
+			})).min(1).required()
 		})
 	},
 	deleteOrder: {

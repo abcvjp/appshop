@@ -20,7 +20,9 @@ const initialState = {
     shipping_status: '',
     customer_name: '',
     email: '',
-    phone_number: ''
+    phone_number: '',
+    start_date: '',
+    end_date: ''
   },
   sort: '',
   isLoading: false
@@ -63,6 +65,11 @@ function orderListReducer(state, action) {
         currentPage: 0,
         triggerFetch: Date.now()
       };
+    case 'REFRESH':
+      return {
+        ...state,
+        triggerFetch: Date.now()
+      };
     case 'SET_LOADING':
       return {
         ...state,
@@ -82,7 +89,7 @@ function orderListReducer(state, action) {
           } return i;
         })
       };
-    case 'UPDATE_ORDERS_STATUS': {
+    case 'UPDATE_ORDERS': {
       const newOrders = state.orders.slice();
       action.orders.forEach((order) => {
         const index = newOrders.findIndex((curOrder) => curOrder.id === order.id);
@@ -106,10 +113,11 @@ const OrderList = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       dispatch({ type: 'SET_LOADING' });
+      const { filters } = state;
       const response = await orderApi.getOrders({
         current_page: state.currentPage + 1,
         page_size: state.pageSize,
-        ...state.filters,
+        ...filters,
         sort: state.sort
       });
       dispatch({

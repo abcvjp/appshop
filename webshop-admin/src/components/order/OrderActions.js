@@ -58,7 +58,7 @@ const OrderActions = ({
     }));
   };
   const handleViewOrder = () => {
-    navigate(orderId, { replace: true });
+    navigate(orderId);
   };
   return (
     <ButtonGroup color="primary" aria-label="outlined primary button group">

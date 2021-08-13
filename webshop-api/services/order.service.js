@@ -1,35 +1,51 @@
 const { Order, Product, OrderItem, ShippingMethod, PaymentMethod } = require('../models')
-const { sequelize } = require('../models')
+const { sequelize, Sequelize } = require('../models')
 const createError = require('http-errors')
 const slug = require('slug')
 const { uuid } = require('uuidv4')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
 
 exports.getOrders = async ({id, customer_name, email,phone_number, status, payment_status,
-		shipping_status, current_page, page_size, sort}) => {
+		shipping_status, start_date, end_date, current_page, page_size, sort}) => {
 	try {
 		const whereConditions = {}
-		if (id !== undefined) {
+		if (id) {
 			whereConditions['id'] = id
 		}
-		if (customer_name !== undefined) {
+		if (customer_name) {
 			whereConditions['customer_name'] = customer_name
 		}
-		if (email !== undefined) {
+		if (email) {
 			whereConditions['email'] = email
 		}
-		if (phone_number !== undefined) {
+		if (phone_number) {
 			whereConditions['phone_number'] = phone_number
 		}
-		if (status !== undefined) {
+		if (status) {
 			whereConditions['status'] = status
 		}
-		if (payment_status !== undefined) {
+		if (payment_status) {
 			whereConditions['payment_status'] = payment_status
 		}
-		if (shipping_status !== undefined) {
+		if (shipping_status) {
 			whereConditions['shipping_status'] = shipping_status
 		}
+		if (start_date) {
+			if (!end_date) {
+				whereConditions['createdAt'] = {
+					[Sequelize.Op.gte]: start_date
+				}
+			} else {
+				whereConditions['createdAt'] = {
+					[Sequelize.Op.between]: [start_date, end_date]
+				}
+			}
+		} else if (end_date) {
+				whereConditions['createdAt'] = {
+					[Sequelize.Op.lte]: end_date
+				}
+			}
+
 
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		const { rows, count } = await Order.findAndCountAll({
@@ -192,6 +208,49 @@ exports.updateOrderInfo = async ({ id, customer_name, address, email, phone_numb
 			success: true,
 			result: orderToUpdate
 		}
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
+	}
+}
+
+exports.updateOrdersStatus = async ({ orders }) => {
+	try {
+		orders.sort((a, b) => {
+			return a.id < b.id ? -1 : 1
+		})
+		const ordersToUpdate = await Order.findAll({
+			where: {
+				id: {
+					[Sequelize.Op.in]: orders.map(order => order.id)
+				}
+			},
+			order: ['id']
+		})
+		if (ordersToUpdate.length !== orders.length) throw createError(404, 'Any order does not exist')
+		const promises = []
+		ordersToUpdate.forEach((order, index) => {
+			const beforeStatus = order.status
+			const afterStatus = orders[index].status
+			if (beforeStatus === 'Completed' || beforeStatus === 'Canceled') {
+				throw createError(409, `Order ${order.id} is ${beforeStatus}`)
+			} else if (afterStatus === 'Completed' && beforeStatus === 'Handling') {
+				promises.push(order.update({
+					status: 'Completed',
+					payment_status: 'Paid',
+					shipping_status: 'Successfully delivered'
+				}))
+			} else if (afterStatus === 'Handling' && beforeStatus === 'Pending') {
+				promises.push(order.update({ status: 'Handling' }))
+			} else if (afterStatus === 'Canceled') {
+				promises.push(order.update({ status: 'Canceled' }))
+			} else {
+				throw createError(409, `Order ${order.id} is ${beforeStatus} and can not be ${afterStatus}`)
+			}
+		})
+		await sequelize.transaction(async (t) => {
+			await Promise.all(promises)
+		})
+		return { success: true }
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)
 	}

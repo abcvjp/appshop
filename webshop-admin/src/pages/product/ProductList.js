@@ -45,7 +45,7 @@ function productListReducer(state, action) {
       return {
         ...state,
         searchValue: action.searchValue,
-        triggerSearch: Date.now()
+        triggerFetch: Date.now()
       };
     case 'CHANGE_SORT':
       return {
@@ -89,6 +89,11 @@ function productListReducer(state, action) {
       return {
         ...state,
         currentPage: 0,
+        triggerFetch: Date.now()
+      };
+    case 'REFRESH':
+      return {
+        ...state,
         triggerFetch: Date.now()
       };
     case 'SET_LOADING':
@@ -144,7 +149,7 @@ const ProductList = () => {
 
   useEffect(() => {
     if (state.searchValue.length > 4) { searchProducts(); } else { fetchProducts(); }
-  }, [state.pageSize, state.currentPage, state.filters, state.sort, state.triggerSearch]);
+  }, [state.pageSize, state.currentPage, state.filters, state.sort, state.triggerFetch]);
 
   return (
     <Page

@@ -3,6 +3,7 @@ import { useCategories } from 'src/utils/customHooks';
 
 import { ProductListContext } from 'src/utils/contexts';
 import { Link as RouterLink } from 'react-router-dom';
+import { CSVLink } from 'react-csv';
 import {
   Box,
   Button,
@@ -15,14 +16,16 @@ import {
   SvgIcon,
   InputLabel
 } from '@material-ui/core';
-import { Search as SearchIcon } from 'react-feather';
+import { Search as SearchIcon, RefreshCcw as RefreshIcon } from 'react-feather';
 
 const sortOptions = [
   { name: 'Newest', value: 'createdAt.desc' },
   { name: 'Price (Low to High)', value: 'price.asc' },
   { name: 'Price (High to Low)', value: 'price.desc' },
   { name: 'Discount', value: 'discount.desc' },
-  { name: 'Best Selling', value: 'sold.desc' }
+  { name: 'Best Selling', value: 'sold.desc' },
+  { name: 'Quantity (Low to High)', value: 'quantity.asc' },
+  { name: 'Quantity (High to Low)', value: 'quantity.desc' }
 ];
 
 const enableOptions = [
@@ -37,6 +40,30 @@ const instockOptions = [
   { name: 'Out of stock', value: false }
 ];
 
+const createHeader = (label, key) => ({ label, key });
+const exportFileHeaders = [
+  createHeader('Id', 'id'),
+  createHeader('Enable', 'enable'),
+  createHeader('Product name', 'name'),
+  createHeader('Slug', 'slug'),
+  createHeader('Product title', 'title'),
+  createHeader('Category id', 'category.id'),
+  createHeader('Category name', 'category.name'),
+  createHeader('Category slug', 'category.slug'),
+  createHeader('Price', 'price'),
+  createHeader('Root price', 'root_price'),
+  createHeader('Quantity', 'Quantity'),
+  createHeader('Sold', 'sold'),
+  createHeader('Short description', 'short_description'),
+  createHeader('Description', 'description'),
+  createHeader('Images', 'images'),
+  createHeader('Meta title', 'meta_title'),
+  createHeader('Meta description', 'meta_description'),
+  createHeader('Meta keywords', 'meta_keywords'),
+  createHeader('Created at', 'createdAt'),
+  createHeader('Last update', 'updatedAt')
+];
+
 const ProductListToolbar = () => {
   const { state, dispatch } = useContext(ProductListContext);
   const [searchValue, setSearchValue] = useState('');
@@ -46,8 +73,8 @@ const ProductListToolbar = () => {
     setSearchValue(event.target.value);
   };
 
-  const handleSearchSubmit = (event) => {
-    if (event.key === 'Enter') {
+  const handleSearchEnter = () => {
+    if (searchValue.length > 4) {
       dispatch({ type: 'SET_SEARCH', searchValue });
     }
   };
@@ -92,8 +119,23 @@ const ProductListToolbar = () => {
         <Button key="import">
           Import
         </Button>
-        <Button key="export" sx={{ mx: 1 }}>
-          Export
+        <CSVLink
+          headers={exportFileHeaders}
+          data={state.products}
+          filename="products.csv"
+        >
+          <Button key="export" sx={{ mx: 1 }}>
+            Export
+          </Button>
+        </CSVLink>
+        <Button
+          key="refresh"
+          color="primary"
+          variant="contained"
+          sx={{ mx: 1 }}
+          onClick={() => dispatch({ type: 'REFRESH' })}
+        >
+          <RefreshIcon />
         </Button>
         <Button
           key="add product"
@@ -129,7 +171,11 @@ const ProductListToolbar = () => {
                     variant="outlined"
                     value={searchValue}
                     onChange={handleSearchChange}
-                    onKeyDown={handleSearchSubmit}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        handleSearchEnter();
+                      }
+                    }}
                   />
                 </Box>
               </Grid>

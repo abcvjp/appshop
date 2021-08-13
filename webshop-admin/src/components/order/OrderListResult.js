@@ -98,7 +98,7 @@ const OrderListResults = () => {
           id,
           status: 'Handling'
         }));
-        await orderApi.updateOrders(ordersTemp);
+        await orderApi.updateOrdersStatus(ordersTemp);
         dispatch({
           type: 'UPDATE_ORDERS',
           orders: ordersTemp
@@ -117,7 +117,7 @@ const OrderListResults = () => {
           id,
           status: 'Canceled'
         }));
-        await orderApi.updateOrders(ordersTemp);
+        await orderApi.updateOrdersStatus(ordersTemp);
         dispatch({
           type: 'UPDATE_ORDERS',
           orders: ordersTemp
@@ -134,9 +134,11 @@ const OrderListResults = () => {
       onConfirm: async () => {
         const ordersTemp = selectedOrderIds.map((id) => ({
           id,
-          status: 'Completed'
+          status: 'Completed',
+          payment_status: 'Paid',
+          shipping_status: 'Successfully delivered'
         }));
-        await orderApi.updateOrders(ordersTemp);
+        await orderApi.updateOrdersStatus(ordersTemp);
         dispatch({
           type: 'UPDATE_ORDERS',
           orders: ordersTemp

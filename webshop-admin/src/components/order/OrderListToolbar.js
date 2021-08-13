@@ -7,9 +7,16 @@ import {
   Grid,
   Card,
   CardContent,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   InputLabel,
-  Select
+  Select,
+  Typography
 } from '@material-ui/core';
+import { ExpandMore } from '@material-ui/icons';
+import { Search as SearchIcon, RefreshCcw as RefreshIcon } from 'react-feather';
+import { CSVLink } from 'react-csv';
 import OrderListFilter from './OrderListFilter';
 
 const sortOptions = [
@@ -17,6 +24,24 @@ const sortOptions = [
   { name: 'Oldest', value: 'createdAt.asc' },
   { name: 'Total (Low to High)', value: 'cost.asc' },
   { name: 'Total (High to Low)', value: 'cost.desc' },
+];
+
+const createHeader = (label, key) => ({ label, key });
+const exportFileHeaders = [
+  createHeader('Id', 'id'),
+  createHeader('Status', 'status'),
+  createHeader('Order total', 'cost'),
+  createHeader('Payment status', 'payment_status'),
+  createHeader('Shipping status', 'shipping_status'),
+  createHeader('Customer name', 'customer_name'),
+  createHeader('Address', 'address'),
+  createHeader('Email', 'email'),
+  createHeader('Phone number', 'phone_number'),
+  createHeader('Shipping note', 'shipping_note.name'),
+  createHeader('Payment method', 'payment_method.name'),
+  createHeader('Shipping method', 'shipping_method.name'),
+  createHeader('Created at', 'createdAt'),
+  createHeader('Last update', 'updatedAt')
 ];
 
 const OrderListToolbar = () => {
@@ -41,8 +66,23 @@ const OrderListToolbar = () => {
         <Button key="import">
           Import
         </Button>
-        <Button key="export" sx={{ mx: 1 }}>
-          Export
+        <CSVLink
+          headers={exportFileHeaders}
+          data={state.orders}
+          filename="orders.csv"
+        >
+          <Button key="export" sx={{ mx: 1 }}>
+            Export
+          </Button>
+        </CSVLink>
+        <Button
+          key="refresh"
+          color="primary"
+          variant="contained"
+          sx={{ mx: 1 }}
+          onClick={() => dispatch({ type: 'REFRESH' })}
+        >
+          <RefreshIcon />
         </Button>
         <Button
           key="add product"
@@ -59,7 +99,19 @@ const OrderListToolbar = () => {
           <CardContent>
             <Grid container spacing={2} direction="column">
               <Grid item key="filters">
-                <OrderListFilter />
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Box display="flex" alignItems="center">
+                      <Box mr={1}>
+                        <SearchIcon />
+                      </Box>
+                      <Typography>Search</Typography>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <OrderListFilter />
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
               <Grid item key="sort">
                 <InputLabel>Sort</InputLabel>

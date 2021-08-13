@@ -63,21 +63,21 @@ module.exports = {
 	updateProducts: {
 		body: Joi.object({
 			products: Joi.array().items(Joi.object({
-			id: Joi.string().guid({ version: 'uuidv4' }).required(),
-			enable: Joi.boolean(),
-			name: Joi.string().trim().min(1).max(200),
-			category_id: Joi.string().guid({ version: 'uuidv4' }),
-			title: Joi.string().trim().min(1).max(200),
-			price: Joi.number().precision(3).min(0),
-			root_price: Joi.number().precision(3).min(0),
-			quantity: Joi.number().integer().min(0),
-			short_description: Joi.string().trim().min(20).max(300),
-			description: Joi.string().min(20).max(2500),
-			images: Joi.array().items(Joi.string()),
-			meta_title: Joi.string().trim().min(1).max(100),
-			meta_description: Joi.string().trim().min(20).max(200),
-			meta_keywords: Joi.string().trim().min(1).max(150)
-		})).min(1).required()
+				id: Joi.string().guid({ version: 'uuidv4' }).required(),
+				enable: Joi.boolean(),
+				name: Joi.string().trim().min(1).max(200),
+				category_id: Joi.string().guid({ version: 'uuidv4' }),
+				title: Joi.string().trim().min(1).max(200),
+				price: Joi.number().precision(3).min(0),
+				root_price: Joi.number().precision(3).min(0),
+				quantity: Joi.number().integer().min(0),
+				short_description: Joi.string().trim().min(20).max(300),
+				description: Joi.string().min(20).max(2500),
+				images: Joi.array().items(Joi.string()),
+				meta_title: Joi.string().trim().min(1).max(100),
+				meta_description: Joi.string().trim().min(20).max(200),
+				meta_keywords: Joi.string().trim().min(1).max(150)
+			})).min(1).required()
 		})
 	},
 	deleteProduct: {

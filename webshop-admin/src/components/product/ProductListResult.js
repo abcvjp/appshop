@@ -6,6 +6,7 @@ import {
   Box,
   Card,
   Checkbox,
+  Avatar,
   Button,
   Link,
   Table,
@@ -217,13 +218,17 @@ const ProductListResults = () => {
                   <Box
                     sx={{
                       alignItems: 'center',
-                      display: 'flex'
+                      display: 'flex',
                     }}
                   >
+                    <Avatar
+                      src={product.images[0]}
+                      sx={{ mr: 2 }}
+                      variant="rounded"
+                    />
                     <Link
                       target="_blank"
                       href={`${process.env.REACT_APP_APP_BASE}/product/${product.slug}`}
-                      rel="noreferrer"
                     >
                       <Typography
                         color="textPrimary"
