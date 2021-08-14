@@ -40,6 +40,7 @@
     "firebase": "^8.9.1",
     "formik": "^2.1.5",
     "history": "^5.0.0",
+    "immutable": "^3.8.2",
     "install": "^0.13.0",
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
