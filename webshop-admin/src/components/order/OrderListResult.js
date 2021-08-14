@@ -17,11 +17,11 @@ import {
   Typography,
   LinearProgress
 } from '@material-ui/core';
-import { getStatusColor, getPaymentStatusColor, getShippingStatusColor } from 'src/utils/functions';
 import { openConfirmDialog } from '../../actions/confirmDialog';
 
 import { orderApi } from '../../utils/api';
 import OrderActions from './OrderActions';
+import StatusLabel from '../StatusLabel';
 
 const OrderListResults = () => {
   const dispatchGlobal = useDispatch();
@@ -296,13 +296,13 @@ const OrderListResults = () => {
                   {order.cost}
                 </TableCell>
                 <TableCell align="left">
-                  <Typography color={getStatusColor(order.status)}>{order.status}</Typography>
+                  <StatusLabel status={order.status} size="small" />
                 </TableCell>
                 <TableCell align="left">
-                  <Typography color={getPaymentStatusColor(order.payment_status)}>{order.payment_status}</Typography>
+                  <StatusLabel status={order.payment_status} size="small" />
                 </TableCell>
                 <TableCell align="left">
-                  <Typography color={getShippingStatusColor(order.shipping_status)}>{order.shipping_status}</Typography>
+                  <StatusLabel status={order.shipping_status} size="small" />
                 </TableCell>
                 <TableCell align="right">
                   <OrderActions orderId={order.id} status={order.status} />

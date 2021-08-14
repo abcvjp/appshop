@@ -50,7 +50,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       field: 'hash',
       allowNull: false
-    }
+    },
+    avatar: {
+      type: DataTypes.STRING,
+      field: 'avatar',
+      allowNull: true
+    },
   }, {
     sequelize,
     modelName: 'User',

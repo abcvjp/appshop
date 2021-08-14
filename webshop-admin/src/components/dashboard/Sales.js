@@ -9,6 +9,7 @@ import {
   useTheme,
   colors
 } from '@material-ui/core';
+import moment from 'moment';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
@@ -28,7 +29,7 @@ const Sales = (props) => {
         label: 'Last year'
       }
     ],
-    labels: ['1 Aug', '2 Aug', '3 Aug', '4 Aug', '5 Aug', '6 Aug']
+    labels: [1, 2, 3, 4, 5, 6, 7].map((i) => moment().weekday(i).format('DD/MM'))
   };
 
   const options = {

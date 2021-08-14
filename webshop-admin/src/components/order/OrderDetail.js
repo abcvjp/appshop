@@ -4,6 +4,7 @@ import {
   Grid, Paper, makeStyles, Typography, Divider, Table, TableBody, TableCell, TableContainer, TableRow
 } from '@material-ui/core';
 import OrderItemList from './OrderItemList';
+import StatusLabel from '../StatusLabel';
 
 const useStyles = makeStyles((theme) => ({
   status: {
@@ -51,7 +52,7 @@ const OrderDetail = ({ order }) => {
                       {row.field}
                     </TableCell>
                     <TableCell align="left">
-                      {row.value}
+                      <StatusLabel status={row.value} size="small" />
                     </TableCell>
                   </TableRow>
                 ))}

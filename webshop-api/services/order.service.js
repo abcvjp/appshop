@@ -41,10 +41,10 @@ exports.getOrders = async ({id, customer_name, email,phone_number, status, payme
 				}
 			}
 		} else if (end_date) {
-				whereConditions['createdAt'] = {
-					[Sequelize.Op.lte]: end_date
-				}
+			whereConditions['createdAt'] = {
+				[Sequelize.Op.lte]: end_date
 			}
+		}
 
 
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)

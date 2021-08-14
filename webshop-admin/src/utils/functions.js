@@ -40,33 +40,19 @@ export const cleanObj = (obj) => {
   return obj;
 };
 
-export const getStatusColor = (status) => {
-  switch (status) {
-    case 'Completed':
-      return 'green';
-    case 'Canceled':
-      return 'red';
-    default:
-      return 'orange';
-  }
-};
-export const getPaymentStatusColor = (status) => {
-  switch (status) {
-    case 'Paid':
-      return 'green';
-    case 'Unpaid':
-      return 'red';
-    default:
-      return 'orange';
-  }
-};
-export const getShippingStatusColor = (status) => {
-  switch (status) {
-    case 'Successfully delivered':
-      return 'green';
-    case 'Delivery failed':
-      return 'red';
-    default:
-      return 'orange';
-  }
+export const statusColors = {
+  Completed: 'green',
+  Canceled: 'red',
+  Handling: 'DodgerBlue',
+  Pending: 'orange',
+  Paid: 'green',
+  Unpaid: 'orange',
+  'Successfully delivered': 'green',
+  'Delivery failed': 'red',
+  Undelivered: 'orange',
+  Delivering: 'DodgerBlue',
+  Disabled: 'red',
+  Enabled: 'green',
+  DISABLED: 'red',
+  ENABLED: 'green'
 };

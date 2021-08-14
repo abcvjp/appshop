@@ -21,6 +21,7 @@ import {
 import { openConfirmDialog } from '../../actions/confirmDialog';
 
 import { productApi } from '../../utils/api';
+import StatusLabel from '../StatusLabel';
 
 const ProductListResults = () => {
   const dispatchGlobal = useDispatch();
@@ -240,12 +241,14 @@ const ProductListResults = () => {
                   </Box>
                 </TableCell>
                 <TableCell>
-                  {product.category.name}
+                  <Link component={RouterLink} to={`/management/category/${product.category.id}/edit`}>
+                    {product.category.name}
+                  </Link>
                 </TableCell>
                 <TableCell>
                   {product.enable
-                    ? <Typography color="green">ENABLED</Typography>
-                    : <Typography color="red">DISABLED</Typography>}
+                    ? <StatusLabel status="ENABLED" />
+                    : <StatusLabel status="DISABLED" />}
                 </TableCell>
                 <TableCell>
                   {product.price}

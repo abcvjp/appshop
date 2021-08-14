@@ -61,6 +61,35 @@ var config = convict({
 			}
 		}
 	},
+	sequelize: {
+		host: {
+			doc: 'Database host name/IP',
+			format: '*',
+			default: 'server1.dev.test'
+		},
+		database: {
+			doc: 'Database name',
+			format: String,
+			default: 'users'
+		},
+		username: {
+			doc: 'Database username',
+			format: String,
+			default: 'admin'
+		},
+		password: {
+			doc: 'Database password for user',
+			format: String,
+			sensitive: true,
+			default: '123456',
+			env: 'DB_PASSWORD'
+		},
+		dialect: {
+			doc: 'Database type',
+			format: String,
+			default: 'mysql'
+		}
+	},
 	jwt: {
 		secret: {
 			format: String,

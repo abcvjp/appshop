@@ -3,7 +3,7 @@
 
 /build
 
-/configs/development.json
+# /configs/production.json
 
 .env
 .env.local
