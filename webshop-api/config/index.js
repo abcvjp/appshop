@@ -88,6 +88,19 @@ var config = convict({
 			doc: 'Database type',
 			format: String,
 			default: 'mysql'
+		},
+		ssl: {
+			format: Boolean,
+			default: false,
+			nullable: true,
+		},
+		dialectOptions: {
+			ssl: {
+				require: {
+					format: Boolean,
+					default: false
+				}
+			}
 		}
 	},
 	jwt: {

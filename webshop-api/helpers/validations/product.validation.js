@@ -9,6 +9,7 @@ module.exports = {
 			category_id: Joi.string().guid({ version: 'uuidv4' }),
 			category_slug: Joi.string().min(1),
 			enable: Joi.bool(),
+			published: Joi.boolean(),
 			in_stock: Joi.bool()
 		})
 	},
@@ -26,6 +27,7 @@ module.exports = {
 	createProduct: {
 		body: Joi.object({
 			enable: Joi.boolean(),
+			published: Joi.boolean(),
 			name: Joi.string().trim().min(1).max(200).required(),
 			category_id: Joi.string().guid({ version: 'uuidv4' }).required(),
 			title: Joi.string().trim().min(1).max(200).required(),
@@ -34,7 +36,11 @@ module.exports = {
 			quantity: Joi.number().integer().min(1).required(),
 			short_description: Joi.string().trim().min(20).max(300).required(),
 			description: Joi.string().min(20).max(2500).required(),
-			images: Joi.array().items(Joi.string()),
+			images: Joi.array().items(Joi.object({
+				url: Joi.string().trim().required().min(10),
+				alt: Joi.string().trim().min(10),
+				title: Joi.string().trim().min(10)
+			})),
 			meta_title: Joi.string().trim().min(1).max(100).required(),
 			meta_description: Joi.string().trim().min(20).max(200),
 			meta_keywords: Joi.string().trim().min(1).max(150)
@@ -46,6 +52,7 @@ module.exports = {
 		}),
 		body: Joi.object({
 			enable: Joi.boolean(),
+			published: Joi.boolean(),
 			name: Joi.string().trim().min(1).max(200),
 			category_id: Joi.string().guid({ version: 'uuidv4' }),
 			title: Joi.string().trim().min(1).max(200),
@@ -54,7 +61,11 @@ module.exports = {
 			quantity: Joi.number().integer().min(0),
 			short_description: Joi.string().trim().min(20).max(300),
 			description: Joi.string().min(20).max(2500),
-			images: Joi.array().items(Joi.string()),
+			images: Joi.array().items(Joi.object({
+				url: Joi.string().trim().required().min(10),
+				alt: Joi.string().trim().min(10),
+				title: Joi.string().trim().min(10)
+			})),
 			meta_title: Joi.string().trim().min(1).max(100),
 			meta_description: Joi.string().trim().min(20).max(200),
 			meta_keywords: Joi.string().trim().min(1).max(150)
@@ -65,6 +76,7 @@ module.exports = {
 			products: Joi.array().items(Joi.object({
 				id: Joi.string().guid({ version: 'uuidv4' }).required(),
 				enable: Joi.boolean(),
+				published: Joi.boolean(),
 				name: Joi.string().trim().min(1).max(200),
 				category_id: Joi.string().guid({ version: 'uuidv4' }),
 				title: Joi.string().trim().min(1).max(200),
@@ -73,7 +85,11 @@ module.exports = {
 				quantity: Joi.number().integer().min(0),
 				short_description: Joi.string().trim().min(20).max(300),
 				description: Joi.string().min(20).max(2500),
-				images: Joi.array().items(Joi.string()),
+				images: Joi.array().items(Joi.object({
+					url: Joi.string().trim().required().min(10),
+					alt: Joi.string().trim().min(10),
+					title: Joi.string().trim().min(10)
+				})),
 				meta_title: Joi.string().trim().min(1).max(100),
 				meta_description: Joi.string().trim().min(20).max(200),
 				meta_keywords: Joi.string().trim().min(1).max(150)

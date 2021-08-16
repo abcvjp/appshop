@@ -36,6 +36,11 @@ module.exports = {
 				price: Joi.number().precision(3).min(0).required(),
 				quantity: Joi.number().integer().min(1).required(),
 				product_name: Joi.string().trim().min(1).max(200).required(),
+				product_thumbnail: Joi.object({
+					url: Joi.string().trim().required().min(10),
+					alt: Joi.string().trim().min(10),
+					title: Joi.string().trim().min(10)
+				})
 			})).unique('product_id').required()
 		})
 	},

@@ -6,11 +6,10 @@ const { uuid } = require('uuidv4')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
 const {roundPrice} = require('../helpers/logicFunc.helper')
 
-exports.getProducts = async ({ current_page, page_size, sort, category_id, category_slug, enable, in_stock }) => {
+exports.getProducts = async ({ current_page, page_size, sort, category_id, category_slug, enable, published, in_stock }) => {
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		if (category_id !== undefined) {
-			console.log(enable)
 			const rows = await sequelize.query(`
 				WITH RECURSIVE cte (id, name, slug, parent_id) AS
 				(
@@ -18,11 +17,13 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					UNION
 					SELECT c.id, c.name, c.parent_id, c.slug FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
 				)
-				SELECT p.id, p.name, p.enable, p.title, p.price, p.root_price, p.quantity, p.sold,
+				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, p.quantity, p.sold,
 					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
-				WHERE ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
+				WHERE
+					${published !== undefined ? `p.enable = ${published ? 1 : 0}` : '1=1'}
+					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`, {nest: true})
@@ -37,11 +38,13 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					UNION
 					SELECT c.id, c.name, c.parent_id, c.slug FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
 				)
-				SELECT p.id, p.name, p.enable, p.title, p.price, p.root_price, p.quantity, p.sold,
+				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, p.quantity, p.sold,
 					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
-				WHERE ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
+				WHERE
+					${published !== undefined ? `p.enable = ${published ? 1 : 0}` : '1=1'}
+					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`, {nest: true})
@@ -127,7 +130,7 @@ exports.getProductById = async ({ id }) => {
 	}
 }
 
-exports.createProduct = async ({ enable, name, title, price, quantity, root_price, short_description, description, images, meta_title,
+exports.createProduct = async ({ enable, published, name, title, price, quantity, root_price, short_description, description, images, meta_title,
 	meta_description, meta_keywords, category_id }) => {
 	try {
 		const id = uuid()
@@ -139,6 +142,7 @@ exports.createProduct = async ({ enable, name, title, price, quantity, root_pric
 		const newProduct = await Product.create({
 			id,
 			enable,
+			published,
 			name,
 			title,
 			price,
@@ -159,7 +163,7 @@ exports.createProduct = async ({ enable, name, title, price, quantity, root_pric
 	}
 }
 
-exports.updateProduct = async ({ id, enable, name, title, price, root_price, quantity, short_description, description,
+exports.updateProduct = async ({ id, enable, published, name, title, price, root_price, quantity, short_description, description,
 	images, meta_title, meta_description, meta_keywords, category_id }) => {
 	try {
 		const productToUpdate = await Product.findByPk(id)
@@ -175,6 +179,7 @@ exports.updateProduct = async ({ id, enable, name, title, price, root_price, qua
 		}
 		await productToUpdate.update({
 			enable,
+			published,
 			name,
 			title,
 			price,

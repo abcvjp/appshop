@@ -3,10 +3,10 @@
 	"ip": "127.0.0.1",
 	"port": "8080",
 	"db": {
-		"host": "db",
-		"name": "webshop_db",
-		"username": "hoaideptrai",
-		"password": "123456",
+		"username": "abcvjp",
+    "password": "hoai_vip2K",
+    "name": "webshop_db",
+    "host": "webshopdb.mysql.database.azure.com",
 		"pool": {
 			"max": 10,
 			"min": 0,
@@ -15,11 +15,17 @@
 		}
 	},
 	"sequelize": {
-		"username": "hoaideptrai",
-    "password": "123456",
+		"username": "abcvjp",
+    "password": "hoai_vip2K",
     "database": "webshop_db",
-    "host": "db",
-    "dialect": "mysql"
+    "host": "webshopdb.mysql.database.azure.com",
+    "dialect": "mysql",
+		"ssl": true,
+    "dialectOptions": {
+			"ssl": {
+				"require": true
+			}
+		}
 	},
 	"jwt": {
 		"secret": "Ysg$fG&DG",

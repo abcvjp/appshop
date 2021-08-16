@@ -121,7 +121,7 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 			return a.product_id < b.product_id ? -1 : 1
 		})
 		// fetch product and shipping method
-		const [productsToOrder, shippingMethod, paymentMethod] = await Promise.all([
+		const [productsInDB, shippingMethod, paymentMethod] = await Promise.all([
 			Product.findAll({
 				where: {
 					id: order_items.map(item => item.product_id)
@@ -134,23 +134,25 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 		])
 		if (!shippingMethod) throw createError(404, "Shipping method does not exist")
 		if (!paymentMethod) throw createError(404, "Payment method does not exist")
-		if (productsToOrder.length !== order_items.length) throw createError(409, "Any or some product ordered no longer exist")
+		if (productsInDB.length !== order_items.length) throw createError(409, "Any or some product ordered no longer exist")
 
 		let cost = shippingMethod.fee
 		order_items.forEach((orderItem, i) => {
-			if (!productsToOrder[i].enable) {
+			const productInDB = productsToOrder[i]
+			if (!productInDB.enable) {
 				throw createError(409, `Product ${orderItem.name} is disabled`)
 			}
-			if (productsToOrder[i].quantity < orderItem.quantity) {
+			if (productInDB.quantity < orderItem.quantity) {
 				throw createError(409, `Stock quantity of ${orderItem.name} is not enough`)
 			}
-			if (productsToOrder[i].price !== orderItem.price) {
+			if (productInDB.price !== orderItem.price) {
 				throw createError(409, `Price of ${orderItem.product_name} has changed`)
 			}
-			if (productsToOrder[i].name !== orderItem.product_name) {
+			if (productInDB.name !== orderItem.product_name) {
 				throw createError(409, `Name of ${orderItem.product_name} has changed`)
 			}
-			cost += productsToOrder[i].price * order_items[i].quantity
+			orderItem.product_thumbnail = productInDB.images[0]
+			cost += productInDB.price * order_items[i].quantity
 		})
 
 		// CREATE ORDER DATA
@@ -175,7 +177,7 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 				// create order items and update product stock quantity
 				promises.push(
 					OrderItem.create({ ...order_item, order_id: newOrder.id }),
-					productsToOrder[i].decrement('quantity', { by: order_item.quantity })
+					productsInDB[i].decrement('quantity', { by: order_item.quantity })
 				)
 			})
 			await Promise.all(promises)
