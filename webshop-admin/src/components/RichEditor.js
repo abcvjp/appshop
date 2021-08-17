@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import PropTypes from 'prop-types';
 import { makeStyles, Box, Typography } from '@material-ui/core';
-import { useField } from 'formik';
 import { Editor } from 'react-draft-wysiwyg';
 import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { EditorState, convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
 
 const useStyles = makeStyles(() => ({
   error: {
@@ -11,27 +13,35 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const RichEditor = ({ ...props }) => {
+const RichEditor = ({
+  touched,
+  error,
+  label,
+  initialState,
+  fieldName,
+  setFieldValue
+}) => {
   const classes = useStyles();
-  const [field, meta, helpers] = useField(props.name);
-
-  const { setValue, setTouched } = helpers;
+  const [editorState, setEditorState] = useState(initialState || EditorState.createEmpty());
 
   const onEditorStateChange = (state) => {
-    setValue(state);
+    setEditorState(state);
+  };
+  const onBlur = () => {
+    setFieldValue(fieldName, draftToHtml(convertToRaw(editorState.getCurrentContent())));
   };
 
   return (
     <>
       <Box mb={1}>
         <Typography color="#8c8c8c">
-          {props.label}
-          *
+          {label}
         </Typography>
       </Box>
       <Editor
-        editorState={field.value}
+        editorState={editorState}
         onEditorStateChange={onEditorStateChange}
+        onBlur={onBlur}
         editorStyle={{
           minWidth: '37px',
           minHeight: '200px',
@@ -39,18 +49,21 @@ const RichEditor = ({ ...props }) => {
           border: '1px solid #bfbfbf',
           padding: '5px',
         }}
-        onFocus={() => setTouched(true)}
       />
-      {meta.touched && meta.error ? (
-        <div className={classes.error}>{meta.error}</div>
+      {touched && error ? (
+        <div className={classes.error}>{error}</div>
       ) : null}
     </>
   );
 };
 
 RichEditor.propTypes = {
+  touched: PropTypes.bool,
+  error: PropTypes.string,
   label: PropTypes.string,
-  name: PropTypes.string.isRequired
+  initialState: PropTypes.object,
+  fieldName: PropTypes.string,
+  setFieldValue: PropTypes.func
 };
 
 export default RichEditor;

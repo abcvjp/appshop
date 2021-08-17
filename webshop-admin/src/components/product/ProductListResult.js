@@ -223,7 +223,7 @@ const ProductListResults = () => {
                     }}
                   >
                     <Avatar
-                      src={product.images[0]}
+                      src={product.images.length > 0 && product.images[0].url}
                       sx={{ mr: 2 }}
                       variant="rounded"
                     />

@@ -35,9 +35,41 @@ export const convertObjToQuery = (query) => {
 
 export const cleanObj = (obj) => {
   Object.keys(obj).forEach((k) => {
-    if (obj[k] === null || obj[k] === undefined || obj[k] === '' || obj[k] === {} || obj[k] === []) delete obj[k];// eslint-disable-line
+    const objProp = obj[k];
+    if (objProp === null || objProp === undefined || objProp === '' || objProp === {} || objProp === []) delete obj[k]; // eslint-disable-line
+    else if (typeof objProp === 'object' && Object.keys(objProp).length > 0) cleanObj(obj[k]);
   });
   return obj;
+};
+
+export const formatBytes = (bytes, decimals = 2) => {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
+};
+
+export const moveInArray = (arr, from, to) => {
+  // Make sure a valid array is provided
+  if (Object.prototype.toString.call(arr) !== '[object Array]') {
+    throw new Error('Please provide a valid array');
+  }
+
+  // Delete the item from it's current position
+  const item = arr.splice(from, 1);
+
+  // Make sure there's an item to move
+  if (!item.length) {
+    throw new Error(`There is no item in the array at index ${from}`);
+  }
+
+  // Move the item to its new position
+  arr.splice(to, 0, item[0]);
 };
 
 export const statusColors = {

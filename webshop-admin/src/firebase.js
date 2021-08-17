@@ -13,3 +13,59 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const storage = firebase.storage();
 export default storage;
+
+export const uploadProductImages = async (images) => {
+  try {
+    const getDownloadURLs = [];
+    const promises = [];
+    images.forEach((image, index) => {
+      const uploadTask = firebase.storage().ref().child(`/product-images/${image.name}`).put(image.file);
+      promises.push(uploadTask);
+      uploadTask.on(
+        firebase.storage.TaskEvent.STATE_CHANGED,
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload image ${index} is ${progress}% done`);
+          switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED: // or 'paused'
+              console.log(`Upload image ${index} is paused`);
+              break;
+            case firebase.storage.TaskState.RUNNING: // or 'running'
+              console.log(`Upload image ${index} is running`);
+              break;
+            default:
+              break;
+          }
+        },
+        (error) => {
+          switch (error.code) {
+            case 'storage/unauthorized':
+              // User doesn't have permission to access the object
+              break;
+            case 'storage/canceled':
+              // User canceled the upload
+              break;
+
+              // ...
+
+            case 'storage/unknown':
+              // Unknown error occurred, inspect error.serverResponse
+              break;
+            default:
+              break;
+          }
+          throw error;
+        },
+        () => {
+          getDownloadURLs[index] = uploadTask.snapshot.ref.getDownloadURL();
+        }
+      );
+    });
+    await Promise.all(promises);
+    const downloadURLs = await Promise.all(getDownloadURLs);
+    return downloadURLs;
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+};

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
@@ -19,13 +19,16 @@ import {
   makeStyles
 } from '@material-ui/core';
 
+import { EditorState } from 'draft-js';
+import { stateFromHTML } from 'draft-js-import-html';
+
 import { useCategories } from 'src/utils/customHooks';
 import { productApi } from 'src/utils/api';
+import { uploadProductImages } from 'src/firebase';
 
-import { EditorState, convertToRaw } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
-import { stateFromHTML } from 'draft-js-import-html';
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
+import ProductUploadImage from './ProductUploadImage';
+import ProductImageList from './ProductImageList';
 import RichEditor from '../RichEditor';
 
 const useStyles = makeStyles(() => ({
@@ -40,10 +43,53 @@ const EditProductForm = ({ productId }) => {
   const [categories] = useCategories();
   const [state, setState] = useState({
     product: null,
+    images: [],
     error: null,
     isOpenResult: false
   });
   const { product } = state;
+
+  const handleAddImages = async (imagesToUp) => {
+    dispatch(openFullScreenLoading());
+    try {
+      const imageURLs = await uploadProductImages(imagesToUp);
+      const newImages = [...state.images].concat(imagesToUp.map((image, i) => ({
+        url: imageURLs[i],
+        alt: image.alt,
+        title: image.title
+      })));
+      await productApi.updateProduct(productId, {
+        images: newImages
+      });
+      setState((prev) => ({
+        ...prev,
+        images: newImages
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+    dispatch(closeFullScreenLoading());
+  };
+
+  const handleUpdateImages = async (newImages) => {
+    dispatch(openFullScreenLoading());
+    try {
+      await productApi.updateProduct(productId, {
+        images: newImages.map((image) => ({
+          url: image.url,
+          alt: image.alt,
+          title: image.title
+        }))
+      });
+      setState((prev) => ({
+        ...prev,
+        images: newImages
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+    dispatch(closeFullScreenLoading());
+  };
 
   const handleResultOpen = () => {
     setState((prevState) => ({ ...prevState, isOpenResult: true }));
@@ -55,290 +101,328 @@ const EditProductForm = ({ productId }) => {
   useEffect(() => {
     const fetchProduct = async () => {
       const response = await productApi.getProduct({ id: productId });
+      const {images, ...product} = response.data.data; // eslint-disable-line
       setState((prevState) => ({
         ...prevState,
-        product: response.data.data
+        product,
+        images
       }));
     };
     fetchProduct();
   }, []);
 
-  const onSubmit = async (values) => {
+  const onSubmit = useCallback(async (values) => { // eslint-disable-line
     dispatch(openFullScreenLoading());
-    const description = draftToHtml(convertToRaw(values.description.getCurrentContent()));
-    console.log({ ...values, description });
-    await productApi.updateProduct(product.id, {
-      ...values,
-      description
-    }).then((res) => res.data).then(() => {
+    try {
+      await productApi.updateProduct(productId, values);
       handleResultOpen();
-    }).catch((err) => {
+    } catch (err) {
+      console.log(err);
       setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));
-    });
+    }
     dispatch(closeFullScreenLoading());
-  };
+  });
 
   return (
     product && (
-    <Paper className="paper" square>
-      <Box sx={{ mb: 3 }}>
-        <Typography
-          color="textPrimary"
-          variant="h2"
+      <>
+        <Formik
+          initialValues={{
+            enable: product.enable,
+            published: product.published,
+            name: product.name,
+            category_id: product.category.id,
+            title: product.title,
+            price: product.price,
+            root_price: product.root_price,
+            quantity: product.quantity,
+            short_description: product.short_description,
+            description: EditorState.createWithContent(stateFromHTML(product.description)),
+            meta_title: product.title,
+            meta_description: product.meta_description || '',
+            meta_keywords: product.meta_keywords || ''
+          }}
+          validationSchema={Yup.object().shape({
+            enable: Yup.boolean(),
+            published: Yup.boolean(),
+            name: Yup.string().trim().min(1).max(200)
+              .required('Name is required'),
+            category_id: Yup.string().uuid().required('Cateogory is required'),
+            title: Yup.string().trim().min(1).max(200)
+              .required('Title is requried'),
+            price: Yup.number().positive().min(0).required('Price is required'),
+            root_price: Yup.number().positive().min(0).required('Root price is required'),
+            quantity: Yup.number().integer().positive().min(1)
+              .required('Quantity is required'),
+            short_description: Yup.string().trim().min(20).max(300)
+              .required('Short description is required'),
+            description: Yup.string().min(20).required('Description is required'),
+            meta_title: Yup.string().trim().min(1).max(100)
+              .required('Meta title is required'),
+            meta_description: Yup.string().trim().min(20).max(200),
+            meta_keywords: Yup.string().trim().min(1).max(150)
+          })}
+          onSubmit={onSubmit}
         >
-          {`Edit Product '
-                    ${product.name}
-                    '`}
-        </Typography>
-      </Box>
-      {state.error && (
-      <Box mb={2}>
-        <Typography color="secondary">
-          Error:
-          {' '}
-          {state.error}
-        </Typography>
-      </Box>
-      )}
-      <Formik
-        initialValues={{
-          enable: product.enable,
-          name: product.name,
-          category_id: product.category.id,
-          title: product.title,
-          price: product.price,
-          root_price: product.root_price,
-          quantity: product.quantity,
-          short_description: product.short_description,
-          description: EditorState.createWithContent(stateFromHTML(product.description)),
-          images: product.images || [],
-          meta_title: product.title,
-          meta_description: product.meta_description || '',
-          meta_keywords: product.meta_keywords || ''
-        }}
-        validationSchema={Yup.object().shape({
-          enable: Yup.boolean(),
-          name: Yup.string().trim().min(1).max(200)
-            .required('Name is required'),
-          category_id: Yup.string().uuid().required('Cateogory is required'),
-          title: Yup.string().trim().min(1).max(200)
-            .required('Title is requried'),
-          price: Yup.number().positive().min(0).required('Price is required'),
-          root_price: Yup.number().positive().min(0).required('Root price is required'),
-          quantity: Yup.number().integer().positive().min(1)
-            .required('Quantity is required'),
-          short_description: Yup.string().trim().min(20).max(300)
-            .required('Short description is required'),
-          description: Yup.object().required('Description is required'),
-          images: Yup.array().of(Yup.string().trim().url()),
-          meta_title: Yup.string().trim().min(1).max(100)
-            .required('Meta title is required'),
-          meta_description: Yup.string().trim().min(20).max(200),
-          meta_keywords: Yup.string().trim().min(1).max(150)
-        })}
-        onSubmit={onSubmit}
-      >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <TextField
-              error={Boolean(touched.name && errors.name)}
-              fullWidth
-              helperText={touched.name && errors.name}
-              label="Product Name"
-              margin="normal"
-              name="name"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="name"
-              value={values.name}
-              variant="outlined"
-              required
-            />
-            <TextField
-              error={Boolean(touched.title && errors.title)}
-              fullWidth
-              helperText={touched.title && errors.title}
-              label="Product Title"
-              margin="normal"
-              name="title"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="title"
-              value={values.title}
-              variant="outlined"
-              required
-            />
-            <TextField
-              className={classes.select}
-              error={Boolean(touched.category_id && errors.category_id)}
-              helperText={touched.category_id && errors.category_id}
-              label="Category"
-              margin="normal"
-              fullWidth
-              name="category_id"
-              select
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.category_id}
-              variant="outlined"
-              required
-            >
-              {categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <Grid container spacing={2} wrap="nowrap">
-              <Grid item>
+          {({
+            errors,
+            handleBlur,
+            handleChange,
+            handleSubmit,
+            setFieldValue,
+            isSubmitting,
+            touched,
+            values
+          }) => (
+            <form onSubmit={handleSubmit}>
+              {state.error && (
+              <Box mb={2}>
+                <Typography color="secondary">
+                  Error:
+                  {' '}
+                  {state.error}
+                </Typography>
+              </Box>
+              )}
+              <Paper className="paper">
+                <Box sx={{ mb: 2 }}>
+                  <Typography
+                    color="textPrimary"
+                    variant="h3"
+                  >
+                    Product Information
+                  </Typography>
+                </Box>
+
                 <TextField
-                  error={Boolean(touched.price && errors.price)}
-                  helperText={touched.price && errors.price}
-                  label="Price"
+                  error={Boolean(touched.name && errors.name)}
+                  fullWidth
+                  helperText={touched.name && errors.name}
+                  label="Product Name"
                   margin="normal"
-                  type="number"
-                  name="price"
+                  name="name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.price}
+                  type="name"
+                  value={values.name}
                   variant="outlined"
                   required
                 />
-              </Grid>
-              <Grid item>
                 <TextField
-                  error={Boolean(touched.root_price && errors.root_price)}
-                  helperText={touched.root_price && errors.root_price}
-                  label="Root Price"
+                  error={Boolean(touched.title && errors.title)}
+                  fullWidth
+                  helperText={touched.title && errors.title}
+                  label="Product Title"
                   margin="normal"
-                  type="number"
-                  name="root_price"
+                  name="title"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.root_price}
+                  type="title"
+                  value={values.title}
                   variant="outlined"
                   required
                 />
-              </Grid>
-              <Grid item>
                 <TextField
-                  error={Boolean(touched.quantity && errors.quantity)}
-                  helperText={touched.quantity && errors.quantity}
-                  label="Quantity"
+                  className={classes.select}
+                  error={Boolean(touched.category_id && errors.category_id)}
+                  helperText={touched.category_id && errors.category_id}
+                  label="Category"
                   margin="normal"
-                  type="number"
-                  name="quantity"
+                  fullWidth
+                  name="category_id"
+                  select
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.quantity}
+                  value={values.category_id}
                   variant="outlined"
                   required
-                />
-              </Grid>
-            </Grid>
-            <TextField
-              error={Boolean(touched.short_description && errors.short_description)}
-              fullWidth
-              helperText={touched.short_description && errors.short_description}
-              label="Short Description"
-              margin="normal"
-              name="short_description"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="short_description"
-              value={values.short_description}
-              variant="outlined"
-              multiline
-              minRows={3}
-              required
-            />
-            <Box mt={2} mb={2}>
-              <RichEditor
-                label="Description"
-                name="description"
-              />
-            </Box>
-            <FormControlLabel
-              control={(
-                <Checkbox
-                  checked={values.enable}
-                  onChange={handleChange}
+                >
+                  {categories.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <Grid container spacing={2} wrap="nowrap">
+                  <Grid item>
+                    <TextField
+                      error={Boolean(touched.price && errors.price)}
+                      helperText={touched.price && errors.price}
+                      label="Price"
+                      margin="normal"
+                      type="number"
+                      name="price"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.price}
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      error={Boolean(touched.root_price && errors.root_price)}
+                      helperText={touched.root_price && errors.root_price}
+                      label="Root Price"
+                      margin="normal"
+                      type="number"
+                      name="root_price"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.root_price}
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      error={Boolean(touched.quantity && errors.quantity)}
+                      helperText={touched.quantity && errors.quantity}
+                      label="Quantity"
+                      margin="normal"
+                      type="number"
+                      name="quantity"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.quantity}
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
+                </Grid>
+                <TextField
+                  error={Boolean(touched.short_description && errors.short_description)}
+                  fullWidth
+                  helperText={touched.short_description && errors.short_description}
+                  label="Short Description"
                   margin="normal"
-                  name="enable"
+                  name="short_description"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  type="short_description"
+                  value={values.short_description}
+                  variant="outlined"
+                  multiline
+                  minRows={3}
+                  required
                 />
+                <Box mt={2} mb={2}>
+                  <RichEditor
+                    error={errors.description}
+                    touched={touched.description}
+                    label="Description*"
+                    initialState={values.description}
+                    fieldName="description"
+                    setFieldValue={setFieldValue}
+                  />
+                </Box>
+
+                <FormControlLabel
+                  control={(
+                    <Checkbox
+                      checked={values.enable}
+                      onChange={handleChange}
+                      margin="normal"
+                      name="enable"
+                    />
                 )}
-              label="Enable?"
-            />
-            <TextField
-              error={Boolean(touched.meta_title && errors.meta_title)}
-              fullWidth
-              helperText={touched.meta_title && errors.meta_title}
-              label="Meta title"
-              margin="normal"
-              name="meta_title"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="meta_title"
-              value={values.meta_title}
-              variant="outlined"
-              required
-            />
-            <TextField
-              error={Boolean(touched.meta_description && errors.meta_description)}
-              fullWidth
-              helperText={touched.meta_description && errors.meta_description}
-              label="Meta description"
-              margin="normal"
-              name="meta_description"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="meta_description"
-              value={values.meta_description}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(touched.meta_keywords && errors.meta_keywords)}
-              fullWidth
-              helperText={touched.meta_keywords && errors.meta_keywords}
-              label="Meta keywords"
-              margin="normal"
-              name="meta_keywords"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="meta_keyword"
-              value={values.meta_keywords}
-              variant="outlined"
-            />
-            <Box sx={{ py: 2 }}>
-              <Button
-                color="primary"
-                disabled={isSubmitting}
-                size="large"
-                type="submit"
-                variant="contained"
-              >
-                Update Product
-              </Button>
-            </Box>
-          </form>
-        )}
-      </Formik>
-      <Dialog open={state.isOpenResult} onClose={handleResultClose}>
-        <DialogContent>
-          <DialogContentText style={{ color: 'green' }}>
-            Product is updated successfully
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
-    </Paper>
+                  label="Enable?"
+                />
+                <FormControlLabel
+                  control={(
+                    <Checkbox
+                      checked={values.published}
+                      onChange={handleChange}
+                      margin="normal"
+                      name="published"
+                    />
+                )}
+                  label="Publish?"
+                />
+
+                <TextField
+                  error={Boolean(touched.meta_title && errors.meta_title)}
+                  fullWidth
+                  helperText={touched.meta_title && errors.meta_title}
+                  label="Meta title"
+                  margin="normal"
+                  name="meta_title"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  type="meta_title"
+                  value={values.meta_title}
+                  variant="outlined"
+                  required
+                />
+                <TextField
+                  error={Boolean(touched.meta_description && errors.meta_description)}
+                  fullWidth
+                  helperText={touched.meta_description && errors.meta_description}
+                  label="Meta description"
+                  margin="normal"
+                  name="meta_description"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  type="meta_description"
+                  value={values.meta_description}
+                  variant="outlined"
+                />
+                <TextField
+                  error={Boolean(touched.meta_keywords && errors.meta_keywords)}
+                  fullWidth
+                  helperText={touched.meta_keywords && errors.meta_keywords}
+                  label="Meta keywords"
+                  margin="normal"
+                  name="meta_keywords"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  type="meta_keyword"
+                  value={values.meta_keywords}
+                  variant="outlined"
+                />
+                <Box mt={2}>
+                  <Button
+                    color="primary"
+                    disabled={isSubmitting}
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                  >
+                    Update Product
+                  </Button>
+                </Box>
+              </Paper>
+              <Paper className="paper" sx={{ my: 4 }}>
+                <Box sx={{ mb: 2 }}>
+                  <Typography
+                    color="textPrimary"
+                    variant="h3"
+                  >
+                    Product Images
+                  </Typography>
+                </Box>
+                <Box mb={2}>
+                  <ProductUploadImage handleAddImages={handleAddImages} />
+                  {state.images.length > 0
+                    && (
+                    <ProductImageList
+                      imageList={state.images}
+                      handleUpdateImages={handleUpdateImages}
+                    />
+                    )}
+                </Box>
+              </Paper>
+            </form>
+          )}
+        </Formik>
+        <Dialog open={state.isOpenResult} onClose={handleResultClose}>
+          <DialogContent>
+            <DialogContentText style={{ color: 'green' }}>
+              Product is updated successfully
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+      </>
     )
   );
 };

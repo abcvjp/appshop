@@ -52,6 +52,7 @@
     "react-csv": "^2.0.3",
     "react-dom": "^17.0.2",
     "react-draft-wysiwyg": "^1.14.7",
+    "react-dropzone": "^11.3.4",
     "react-feather": "^2.0.8",
     "react-helmet": "^6.1.0",
     "react-perfect-scrollbar": "^1.5.8",
@@ -60,6 +61,7 @@
     "react-router-dom": "^6.0.0-beta.0",
     "react-scripts": "^4.0.0",
     "redux": "^4.1.1",
+    "slugify": "^1.6.0",
     "uuid": "^8.3.0",
     "yup": "^0.29.3"
   },
