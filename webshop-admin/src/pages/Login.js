@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
@@ -18,11 +19,12 @@ import API from '../utils/api/apiClient';
 
 const Login = () => {
   const navigate = useNavigate();
-
+  const [error, setError] = useState(null);
+  console.log(error);
   return (
     <>
       <Helmet>
-        <title>Login | Material Kit</title>
+        <title>Login | Webshop App</title>
       </Helmet>
       <Box
         sx={{
@@ -44,12 +46,12 @@ const Login = () => {
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={async (values) => {
-              const response = await API.post('/user/login', values).then((res) => res.data);
-              if (response.success) {
-                navigate('/app/dashboard', { replace: true });
-              } else {
-                console.log('login error');
-                alert(`${response.error.message}`); // eslint-disable-line
+              try {
+                const response = await API.post('/user/login', values); // eslint-disable-line
+                navigate('/management/dashboard', { replace: true });
+              } catch (err) {
+                console.log(err.response);
+                setError(err.response.data.error.message);
               }
             }}
           >
@@ -125,9 +127,25 @@ const Login = () => {
                     color="textSecondary"
                     variant="body1"
                   >
-                    or login with email address
+                    or login with your account
                   </Typography>
                 </Box>
+                {error && (
+                <Box
+                  sx={{
+                    pb: 1,
+                    pt: 3
+                  }}
+                >
+                  <Typography
+                    align="left"
+                    color="red"
+                    variant="body1"
+                  >
+                    {error}
+                  </Typography>
+                </Box>
+                )}
                 <TextField
                   error={Boolean(touched.username && errors.username)}
                   fullWidth

@@ -153,6 +153,9 @@ const ProductListResults = () => {
                       Enable
                     </TableCell>
                     <TableCell>
+                      Published
+                    </TableCell>
+                    <TableCell>
                       Price
                     </TableCell>
                     <TableCell>
@@ -249,6 +252,11 @@ const ProductListResults = () => {
                   {product.enable
                     ? <StatusLabel status="ENABLED" />
                     : <StatusLabel status="DISABLED" />}
+                </TableCell>
+                <TableCell>
+                  {product.published
+                    ? <StatusLabel status="Published" />
+                    : <StatusLabel status="Unpublished" />}
                 </TableCell>
                 <TableCell>
                   {product.price}

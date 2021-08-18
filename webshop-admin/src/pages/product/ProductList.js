@@ -17,6 +17,7 @@ const initialState = {
   filters: {
     enable: undefined,
     inStock: undefined,
+    published: undefined,
     categoryId: undefined
   },
   sort: '',
@@ -67,6 +68,15 @@ function productListReducer(state, action) {
         filters: {
           ...state.filters,
           inStock: action.inStock
+        },
+        currentPage: 0
+      };
+    case 'CHANGE_PUBLISHED':
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          published: action.published
         },
         currentPage: 0
       };
@@ -122,6 +132,7 @@ const ProductList = () => {
       category_id: state.filters.categoryId,
       enable: state.filters.enable,
       in_stock: state.filters.inStock,
+      published: state.filters.published,
       sort: state.sort
     });
     dispatch({

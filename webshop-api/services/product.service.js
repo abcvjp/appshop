@@ -22,7 +22,7 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
 				WHERE
-					${published !== undefined ? `p.enable = ${published ? 1 : 0}` : '1=1'}
+					${published !== undefined ? `p.published = ${published ? 1 : 0}` : '1=1'}
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
@@ -43,7 +43,7 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
 				WHERE
-					${published !== undefined ? `p.enable = ${published ? 1 : 0}` : '1=1'}
+					${published !== undefined ? `p.published = ${published ? 1 : 0}` : '1=1'}
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
@@ -57,6 +57,9 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 			}
 			if (in_stock !== undefined) {
 				filter.quantity = in_stock ? { [Sequelize.Op.gt]: 0 } : 0
+			}
+			if (published !== undefined) {
+				filter.published = published ? 1 : 0
 			}
 			var { rows, count } = await Product.findAndCountAll({
 				include: {

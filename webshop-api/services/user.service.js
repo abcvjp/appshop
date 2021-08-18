@@ -7,7 +7,7 @@ exports.login = async ({ username, password }) => {
 	try {
 		const user = await User.findOne({ where: { username } })
 		if (!user) {
-			throw createError(409, "User doesn't exists")
+			throw createError(409, "User doesn't exist")
 		}
 		if (Bcrypt.verifyPassword(password, user.hash)) {
 			const tokenId = uuid()
@@ -19,7 +19,16 @@ exports.login = async ({ username, password }) => {
 				username,
 				tokenId
 			})
-			return { success: true, username, email: user.email, accessToken, refreshToken }
+			return {
+				success: true,
+				user: {
+					username,
+					full_name: user.full_name,
+					email: user.email
+				},
+				accessToken,
+				refreshToken
+			}
 		} else {
 			throw createError(401, 'Password is incorrect')
 		}
@@ -45,9 +54,11 @@ exports.signup = async ({ username, password, email, full_name }) => {
 		})
 		return {
 			success: true,
-			username,
-			full_name,
-			email
+			user: {
+				username,
+				full_name,
+				email
+			}
 		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)

@@ -20,7 +20,7 @@ exports.searchProducts = async ({ keyword, category_id, current_page, page_size,
 					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
 				WHERE
-					${published !== undefined ? `p.enable = ${published ? 1 : 0}` : '1=1'}
+					${published !== undefined ? `p.published = ${published ? 1 : 0}` : '1=1'}
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
@@ -37,7 +37,7 @@ exports.searchProducts = async ({ keyword, category_id, current_page, page_size,
 					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
 				FROM Products p INNER JOIN Categories c ON p.category_id = c.id
 				WHERE
-					${published !== undefined ? `p.enable = ${published ? 1 : 0}` : '1=1'}
+					${published !== undefined ? `p.published = ${published ? 1 : 0}` : '1=1'}
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)

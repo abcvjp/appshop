@@ -7,6 +7,7 @@ import { CSVLink } from 'react-csv';
 import {
   Box,
   Button,
+  IconButton,
   Grid,
   Card,
   CardContent,
@@ -16,7 +17,7 @@ import {
   SvgIcon,
   InputLabel
 } from '@material-ui/core';
-import { Search as SearchIcon, RefreshCcw as RefreshIcon } from 'react-feather';
+import { Search as SearchIcon, RefreshCcw as RefreshIcon, X } from 'react-feather';
 
 const sortOptions = [
   { name: 'Newest', value: 'createdAt.desc' },
@@ -38,6 +39,12 @@ const instockOptions = [
   { name: 'All', value: '' },
   { name: 'In stock', value: true },
   { name: 'Out of stock', value: false }
+];
+
+const publishedOptions = [
+  { name: 'All', value: '' },
+  { name: 'Published', value: true },
+  { name: 'Unpublished', value: false }
 ];
 
 const createHeader = (label, key) => ({ label, key });
@@ -79,6 +86,11 @@ const ProductListToolbar = () => {
     }
   };
 
+  const handleClearSearch = () => {
+    setSearchValue('');
+    dispatch({ type: 'SET_SEARCH', searchValue: '' });
+  };
+
   const handleSortChange = (event) => {
     dispatch({
       type: 'CHANGE_SORT',
@@ -97,6 +109,13 @@ const ProductListToolbar = () => {
     dispatch({
       type: 'CHANGE_INSTOCK',
       inStock: event.target.value
+    });
+  };
+
+  const handlePublishedChange = (event) => {
+    dispatch({
+      type: 'CHANGE_PUBLISHED',
+      published: event.target.value
     });
   };
 
@@ -165,7 +184,19 @@ const ProductListToolbar = () => {
                             <SearchIcon />
                           </SvgIcon>
                         </InputAdornment>
-                      )
+                      ),
+                      endAdornment: searchValue.length > 4 ? (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleClearSearch}>
+                            <SvgIcon
+                              fontSize="small"
+                              color="action"
+                            >
+                              <X />
+                            </SvgIcon>
+                          </IconButton>
+                        </InputAdornment>
+                      ) : null
                     }}
                     placeholder="Search product"
                     variant="outlined"
@@ -220,6 +251,16 @@ const ProductListToolbar = () => {
                   onChange={handleInstockChange}
                 >
                   {instockOptions.map((element) => <option key={element.name} value={element.value}>{element.name}</option>)}
+                </Select>
+              </Grid>
+              <Grid item key="published">
+                <InputLabel>Published</InputLabel>
+                <Select
+                  native
+                  value={state.filters.published}
+                  onChange={handlePublishedChange}
+                >
+                  {publishedOptions.map((element) => <option key={element.name} value={element.value}>{element.name}</option>)}
                 </Select>
               </Grid>
             </Grid>
