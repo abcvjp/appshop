@@ -11,5 +11,6 @@ router.use('/cart', require('./cart.route'))
 router.use('/shipping', require('./shipping.route'))
 router.use('/payment', require('./payment.route'))
 router.use('/search', require('./search.route'))
+router.use('/report', require('./report.route'))
 
 module.exports = router;

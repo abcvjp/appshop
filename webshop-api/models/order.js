@@ -27,7 +27,21 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: "Pending"
     },
-    cost: {
+    order_total: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+      validate: {
+        min: 0
+      }
+    },
+    item_total: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+      validate: {
+        min: 0
+      }
+    },
+    shipping_fee: {
       type: DataTypes.DOUBLE,
       allowNull: false,
       validate: {

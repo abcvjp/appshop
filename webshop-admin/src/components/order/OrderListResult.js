@@ -179,7 +179,7 @@ const OrderListResults = () => {
                       Customer Info
                     </TableCell>
                     <TableCell align="left">
-                      Total Cost
+                      Order Total
                     </TableCell>
                     <TableCell align="left">
                       Status
@@ -293,7 +293,7 @@ const OrderListResults = () => {
                   {`${order.customer_name} - ${order.email} - ${order.phone_number}`}
                 </TableCell>
                 <TableCell align="left">
-                  {order.cost}
+                  {order.order_total}
                 </TableCell>
                 <TableCell align="left">
                   <StatusLabel status={order.status} size="small" />

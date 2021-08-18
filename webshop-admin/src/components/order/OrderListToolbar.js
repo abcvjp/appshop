@@ -22,15 +22,18 @@ import OrderListFilter from './OrderListFilter';
 const sortOptions = [
   { name: 'Newest', value: 'createdAt.desc' },
   { name: 'Oldest', value: 'createdAt.asc' },
-  { name: 'Total (Low to High)', value: 'cost.asc' },
-  { name: 'Total (High to Low)', value: 'cost.desc' },
+  { name: 'Updated recenly', value: 'updatedAt.desc' },
+  { name: 'Total (Low to High)', value: 'order_total.asc' },
+  { name: 'Total (High to Low)', value: 'order_total.desc' },
 ];
 
 const createHeader = (label, key) => ({ label, key });
 const exportFileHeaders = [
   createHeader('Id', 'id'),
   createHeader('Status', 'status'),
-  createHeader('Order total', 'cost'),
+  createHeader('Order total', 'order_total'),
+  createHeader('Item total', 'item_total'),
+  createHeader('Shipping fee', 'shipping_fee'),
   createHeader('Payment status', 'payment_status'),
   createHeader('Shipping status', 'shipping_status'),
   createHeader('Customer name', 'customer_name'),

@@ -4,6 +4,7 @@ const createError = require('http-errors')
 const slug = require('slug')
 const { uuid } = require('uuidv4')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
+const { roundPrice } = require('../helpers/logicFunc.helper')
 
 exports.getOrders = async ({id, customer_name, email,phone_number, status, payment_status,
 		shipping_status, start_date, end_date, current_page, page_size, sort}) => {
@@ -136,9 +137,9 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 		if (!paymentMethod) throw createError(404, "Payment method does not exist")
 		if (productsInDB.length !== order_items.length) throw createError(409, "Any or some product ordered no longer exist")
 
-		let cost = shippingMethod.fee
+		let item_total = 0
 		order_items.forEach((orderItem, i) => {
-			const productInDB = productsToOrder[i]
+			const productInDB = productsInDB[i]
 			if (!productInDB.enable) {
 				throw createError(409, `Product ${orderItem.name} is disabled`)
 			}
@@ -151,16 +152,20 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 			if (productInDB.name !== orderItem.product_name) {
 				throw createError(409, `Name of ${orderItem.product_name} has changed`)
 			}
-			orderItem.product_thumbnail = productInDB.images[0]
-			cost += productInDB.price * order_items[i].quantity
+			orderItem.product_thumbnail = productInDB.images && productsInDB.images.length > 0 ? productsInDB.images[0] : null
+			item_total += productInDB.price * order_items[i].quantity
 		})
 
 		// CREATE ORDER DATA
-		cost = Math.round(cost * 100) / 100
+		const shipping_fee = shippingMethod.fee
+		item_total = roundPrice(item_total)
+		const order_total = roundPrice(item_total + shipping_fee)
 		const id = uuid() // generate id
 		const newOrder = {
 			id,
-			cost,
+			order_total,
+			item_total,
+			shipping_fee,
 			customer_name,
 			address,
 			email,

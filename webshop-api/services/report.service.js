@@ -5,7 +5,7 @@ const slug = require('slug')
 const { uuid } = require('uuidv4')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
 
-exports.reportOrders = async ({start_date, end_date, group_by, current_page, page_size, sort}) => {
+exports.getOrderReport = async ({start_date, end_date, group_by, current_page, page_size, sort}) => {
 	try {
 		const where = {}
 		if (start_date) {
@@ -41,12 +41,14 @@ exports.reportOrders = async ({start_date, end_date, group_by, current_page, pag
 			include: [
 				{
 					association: 'order_items',
-					attributes: ['price', 'quantity']
+					attributes: ['price', 'quantity'],
+					required: true
 				}
 			],
 			attributes: [
         [Sequelize.literal(timeAttribute), 'time'],
-        [Sequelize.literal(`COUNT(DISTINCT(id))`), 'orders_number']
+        [Sequelize.literal(`COUNT(DISTINCT(id))`), 'orders_number'],
+				[Sequelize.literal(`SUM(order_items.price*order_items.quantity)`), 'revenue']
     	],
 			group: ['time'],
 			limit, offset,
