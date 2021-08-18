@@ -127,7 +127,7 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 				where: {
 					id: order_items.map(item => item.product_id)
 				},
-				attributes: ['id', 'enable', 'price', 'quantity', 'name'],
+				attributes: ['id', 'enable', 'price', 'root_price', 'quantity', 'name', 'images'],
 				order: ['id']
 			}),
 			ShippingMethod.findByPk(shipping_method_id, { attributes: ['id', 'fee'] }),
@@ -138,6 +138,8 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 		if (productsInDB.length !== order_items.length) throw createError(409, "Any or some product ordered no longer exist")
 
 		let item_total = 0
+		let item_root_total = 0
+		let items_number = 0
 		order_items.forEach((orderItem, i) => {
 			const productInDB = productsInDB[i]
 			if (!productInDB.enable) {
@@ -152,13 +154,17 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 			if (productInDB.name !== orderItem.product_name) {
 				throw createError(409, `Name of ${orderItem.product_name} has changed`)
 			}
-			orderItem.product_thumbnail = productInDB.images && productsInDB.images.length > 0 ? productsInDB.images[0] : null
-			item_total += productInDB.price * order_items[i].quantity
+			orderItem.product_thumbnail = (productInDB.images) ? productInDB.images[0].url : null
+			item_total += productInDB.price * orderItem.quantity
+			item_root_total += productInDB.root_price * orderItem.quantity
+			items_number += orderItem.quantity
 		})
 
 		// CREATE ORDER DATA
 		const shipping_fee = shippingMethod.fee
 		item_total = roundPrice(item_total)
+		item_root_total = roundPrice(item_root_total)
+		const profit = roundPrice(item_root_total - item_total)
 		const order_total = roundPrice(item_total + shipping_fee)
 		const id = uuid() // generate id
 		const newOrder = {
@@ -177,11 +183,17 @@ exports.createOrder = async ({ customer_name, address, email, phone_number, ship
 
 		// CREATE ORDER AND ORDER ITEMS
 		await sequelize.transaction(async (t) => {
-			let promises = [Order.create(newOrder)] // create order
+			let promises = [Order.create(newOrder, {
+				profit,
+				items_number
+			})] // create order
 			order_items.map((order_item, i) => {
 				// create order items and update product stock quantity
 				promises.push(
-					OrderItem.create({ ...order_item, order_id: newOrder.id }),
+					OrderItem.create({
+						...order_item,
+						order_id: newOrder.id
+					}),
 					productsInDB[i].decrement('quantity', { by: order_item.quantity })
 				)
 			})

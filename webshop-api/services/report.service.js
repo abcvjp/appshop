@@ -1,8 +1,7 @@
-const { Order, Product, OrderItem, ShippingMethod, PaymentMethod } = require('../models')
+const { OrderReport } = require('../models')
 const { sequelize, Sequelize } = require('../models')
 const createError = require('http-errors')
-const slug = require('slug')
-const { uuid } = require('uuidv4')
+const moment = require('moment')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
 
 exports.getOrderReport = async ({start_date, end_date, group_by, current_page, page_size, sort}) => {
@@ -10,16 +9,16 @@ exports.getOrderReport = async ({start_date, end_date, group_by, current_page, p
 		const where = {}
 		if (start_date) {
 			if (!end_date) {
-				where['createdAt'] = {
+				where['day'] = {
 					[Sequelize.Op.gte]: start_date
 				}
 			} else {
-				where['createdAt'] = {
+				where['day'] = {
 					[Sequelize.Op.between]: [start_date, end_date]
 				}
 			}
 		} else if (end_date) {
-			where['createdAt'] = {
+			where['day'] = {
 				[Sequelize.Op.lte]: end_date
 			}
 		}
@@ -36,25 +35,23 @@ exports.getOrderReport = async ({start_date, end_date, group_by, current_page, p
 		}
 
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
-		const { rows, count } = await Order.findAndCountAll({
+		const rows = await OrderReport.findAll({
 			where,
-			include: [
-				{
-					association: 'order_items',
-					attributes: ['price', 'quantity'],
-					required: true
-				}
-			],
 			attributes: [
         [Sequelize.literal(timeAttribute), 'time'],
-        [Sequelize.literal(`COUNT(DISTINCT(id))`), 'orders_number'],
-				[Sequelize.literal(`SUM(order_items.price*order_items.quantity)`), 'revenue']
+				[Sequelize.fn('SUM',Sequelize.col('orders_number')),'orders_number'],
+				[Sequelize.fn('SUM',Sequelize.col('item_total')),'item_total'],
+				[Sequelize.fn('SUM',Sequelize.col('items_number')),'items_number'],
+				[Sequelize.fn('SUM',Sequelize.col('shipping_fee')),'shipping_fee'],
+				[Sequelize.fn('SUM',Sequelize.col('order_total')),'order_total'],
+				[Sequelize.fn('SUM',Sequelize.col('profit')),'profit']
     	],
 			group: ['time'],
 			limit, offset,
-			order: sort ? [sort.split('.')] : [['createdAt','DESC']]
+			order: sort ? [sort.split('.')] : [[Sequelize.literal('time'),'DESC']]
 		})
-		if (rows.length === 0) throw createError(404, "Can't find any order")
+		const count = rows.length
+		if (rows.length === 0) throw createError(404, "Can't find any order report")
 		const pagination = paginate(current_page, count, rows, page_size)
 		return {
 			success: true,

@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
-    time: {
+    day: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0
     },
-    item_quantity: {
+    items_number: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
@@ -45,12 +45,12 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0
     },
     order_total: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DOUBLE,
       allowNull: false,
       defaultValue: 0
     },
     profit: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DOUBLE,
       allowNull: false,
       defaultValue: 0
     }

@@ -24,7 +24,8 @@
     "dialectOptions": {
 			"ssl": {
 				"require": true
-			}
+			},
+			"decimalNumbers": true
 		}
 	},
 	"jwt": {

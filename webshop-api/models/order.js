@@ -2,6 +2,11 @@
 const {
   Model
 } = require('sequelize');
+
+const { uuid } = require('uuidv4')
+const moment = require('moment');
+const { roundPrice } = require('../helpers/logicFunc.helper');
+
 module.exports = (sequelize, DataTypes) => {
   class Order extends Model {
     /**
@@ -81,6 +86,47 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Order',
+    hooks: {
+      afterCreate: async (order, options) => {
+        try {
+          console.log(options)
+          const OrderReport = sequelize.models.OrderReport
+          const orderReport = await OrderReport.findOne({
+            where: {
+              day: moment(order.createdAt).format('YYYY-MM-DD')
+            }
+          })
+          if (orderReport) {
+            const { orders_number, order_total, item_total, items_number, shipping_fee, profit } = orderReport
+            return orderReport.update({
+              orders_number: orders_number + 1,
+              item_total: roundPrice(item_total + order.item_total),
+              items_number: items_number + options.items_number,
+              shipping_fee: roundPrice(shipping_fee + order.shipping_fee),
+              order_total: roundPrice(order_total + order.order_total),
+              profit: roundPrice(profit + options.profit)
+            },{
+              transaction: options.transaction
+            })
+          } else {
+            return OrderReport.create({
+              id: uuid(),
+              day: moment(order.createdAt).format('YYYY-MM-DD'),
+              orders_number: 1,
+              item_total: order.item_total,
+              items_number: options.items_number,
+              shipping_fee: order.shipping_fee,
+              order_total: order.order_total,
+              profit: options.profit
+            },{
+              transaction: options.transaction
+            })
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
   });
   return Order;
 };

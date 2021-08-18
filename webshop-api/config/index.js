@@ -100,6 +100,10 @@ var config = convict({
 					format: Boolean,
 					default: false
 				}
+			},
+			decimalNumbers: {
+				format: Boolean,
+				default: true
 			}
 		}
 	},

@@ -21,7 +21,7 @@ module.exports = {
       quantity: 100,
       short_description: 'ÁO KHOÁC DÙ NAM HAHAMAN 2 TRONG 1 CHUYỂN ĐỔI THÀNH BALO SIÊU NHẸ asdfqwerqwerqwrasfasdf',
       description: 'Áo gió được may với chất liệu vải gió lụa chống thấm nước và giữ ấm cơ thể tốt, túi có khóa kéo chắc chắn. Thích hợp mặc chống nắng, đi mưa nhỏ, du lị Áo có tích hợp balo siêu gọn nhẹ và 1 túi đựng điện thoại bên trong áo****ĐẶC BIỆT: ÁO CÓ THỂ CHUYỂN ĐỔI THÀNH BALO MANG VAI TRONG VÒNG 1 NỐT NHẠC GIÚP ĐỰNG VẬT DỤNG NHƯ SÁCH VỞ, ĐỒ TRANG SỨC, LAPTOP, IPAD , ĐIỆN THOẠI',
-      images: JSON.stringify(['https://salt.tikicdn.com/cache/w444/ts/product/56/dd/e2/2612def5999d6417d9916a828cf054df.jpg']),
+      images: JSON.stringify([{url: 'https://salt.tikicdn.com/cache/w444/ts/product/56/dd/e2/2612def5999d6417d9916a828cf054df.jpg'}]),
       slug: 'ao-khoac-du-nam-hahaman',
       meta_title: 'ÁO KHOÁC DÙ NAM HAHAMAN 2 TRONG 1 CHUYỂN ĐỔI THÀNH BALO SIÊU NHẸ',
       createdAt: new Date(),

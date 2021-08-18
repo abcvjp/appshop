@@ -19,7 +19,10 @@
     "password": "123456",
     "database": "webshop_db",
     "host": "db",
-    "dialect": "mysql"
+    "dialect": "mysql",
+		"dialectOptions": {
+			"decimalNumbers": true
+		}
 	},
 	"jwt": {
 		"secret": "Ysg$fG&DG",
