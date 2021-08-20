@@ -8,10 +8,14 @@ import theme from './theme';
 import store from './store';
 import routes from './routes';
 import GlobalComponents from './components/global';
+import { setUser } from './actions/user';
 
 const App = () => {
   const routing = useRoutes(routes);
-
+  const savedUser = sessionStorage.getItem('user');
+  if (savedUser) {
+    store.dispatch(setUser(JSON.parse(savedUser)));
+  }
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
@@ -19,7 +23,6 @@ const App = () => {
         {routing}
         <GlobalComponents />
       </Provider>
-      ,
     </ThemeProvider>
   );
 };

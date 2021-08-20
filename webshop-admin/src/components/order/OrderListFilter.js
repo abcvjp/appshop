@@ -24,7 +24,6 @@ const useStyles = makeStyles(() => ({
 const OrderListFilter = () => {
   const classes = useStyles();
   const { state, dispatch } = useContext(OrderListContext);
-  console.log({ ...state.filters });
   return (
     <Formik
       initialValues={{ ...state.filters }}

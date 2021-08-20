@@ -14,10 +14,10 @@ const initialState = {
   count: 10,
   triggerFetch: Date.now(),
   filters: {
-    group_by: 'day',
     start_date: '',
     end_date: ''
   },
+  group_by: 'day',
   sort: '',
   isLoading: false
 };
@@ -46,6 +46,11 @@ function reportOrderReducer(state, action) {
       return {
         ...state,
         sort: action.sort
+      };
+    case 'CHANGE_GROUP_BY':
+      return {
+        ...state,
+        group_by: action.groupBy
       };
     case 'SET_REPORTS':
       return {
@@ -112,6 +117,7 @@ const ReportOrder = () => {
         current_page: state.currentPage + 1,
         page_size: state.pageSize,
         ...filters,
+        group_by: state.group_by,
         sort: state.sort
       });
       dispatch({
@@ -122,7 +128,7 @@ const ReportOrder = () => {
       dispatch({ type: 'SET_UNLOADING' });
     };
     fetchReports();
-  }, [state.pageSize, state.currentPage, state.filters, state.sort, state.triggerFetch]);
+  }, [state.pageSize, state.currentPage, state.filters, state.sort, state.group_by, state.triggerFetch]);
   console.log('report order');
   return (
     <Page

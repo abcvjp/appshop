@@ -26,6 +26,7 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
     try {
       await userApi.logout();
       dispatch(setUser(null));
+      sessionStorage.clear('user');
       navigate('/login');
     } catch (err) {
       console.log(err.response);
