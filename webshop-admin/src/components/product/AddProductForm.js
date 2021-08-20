@@ -16,8 +16,8 @@ import {
   DialogContentText,
   FormControlLabel,
   Checkbox,
-  makeStyles,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 import { useCategories } from 'src/utils/customHooks';
 import { productApi } from 'src/utils/api';
@@ -134,13 +134,13 @@ const AddProductForm = () => {
     <>
       <form onSubmit={handleSubmit}>
         {state.error && (
-        <Box mb={2}>
-          <Typography color="secondary">
-            Error:
-            {' '}
-            {state.error}
-          </Typography>
-        </Box>
+          <Box mb={2}>
+            <Typography color="secondary">
+              Error:
+              {' '}
+              {state.error}
+            </Typography>
+          </Box>
         )}
         <Paper className="paper">
           <Box sx={{ mb: 2 }}>
@@ -282,7 +282,7 @@ const AddProductForm = () => {
                 margin="normal"
                 name="enable"
               />
-                )}
+            )}
             label="Enable?"
           />
           <FormControlLabel
@@ -293,7 +293,7 @@ const AddProductForm = () => {
                 margin="normal"
                 name="published"
               />
-                )}
+            )}
             label="Publish?"
           />
 
@@ -351,10 +351,10 @@ const AddProductForm = () => {
             <ProductUploadImage handleAddImages={handleAddImages} />
             {images.length > 0
               && (
-              <ProductImageList
-                imageList={images}
-                handleUpdateImages={handleUpdateImages}
-              />
+                <ProductImageList
+                  imageList={images}
+                  handleUpdateImages={handleUpdateImages}
+                />
               )}
           </Box>
         </Paper>

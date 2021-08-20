@@ -16,8 +16,8 @@ import {
   DialogContentText,
   FormControlLabel,
   Checkbox,
-  makeStyles
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 import { EditorState } from 'draft-js';
 import { stateFromHTML } from 'draft-js-import-html';
@@ -101,7 +101,7 @@ const EditProductForm = ({ productId }) => {
   useEffect(() => {
     const fetchProduct = async () => {
       const response = await productApi.getProduct({ id: productId });
-      const {images, ...product} = response.data.data; // eslint-disable-line
+      const { images, ...product } = response.data.data; // eslint-disable-line
       setState((prevState) => ({
         ...prevState,
         product,
@@ -176,13 +176,13 @@ const EditProductForm = ({ productId }) => {
           }) => (
             <form onSubmit={handleSubmit}>
               {state.error && (
-              <Box mb={2}>
-                <Typography color="secondary">
-                  Error:
-                  {' '}
-                  {state.error}
-                </Typography>
-              </Box>
+                <Box mb={2}>
+                  <Typography color="secondary">
+                    Error:
+                    {' '}
+                    {state.error}
+                  </Typography>
+                </Box>
               )}
               <Paper className="paper">
                 <Box sx={{ mb: 2 }}>
@@ -325,7 +325,7 @@ const EditProductForm = ({ productId }) => {
                       margin="normal"
                       name="enable"
                     />
-                )}
+                  )}
                   label="Enable?"
                 />
                 <FormControlLabel
@@ -336,7 +336,7 @@ const EditProductForm = ({ productId }) => {
                       margin="normal"
                       name="published"
                     />
-                )}
+                  )}
                   label="Publish?"
                 />
 
@@ -405,10 +405,10 @@ const EditProductForm = ({ productId }) => {
                   <ProductUploadImage handleAddImages={handleAddImages} />
                   {state.images.length > 0
                     && (
-                    <ProductImageList
-                      imageList={state.images}
-                      handleUpdateImages={handleUpdateImages}
-                    />
+                      <ProductImageList
+                        imageList={state.images}
+                        handleUpdateImages={handleUpdateImages}
+                      />
                     )}
                 </Box>
               </Paper>

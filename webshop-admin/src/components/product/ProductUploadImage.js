@@ -8,9 +8,9 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  makeStyles,
   Box
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import { formatBytes } from 'src/utils/functions';
@@ -65,33 +65,33 @@ const ProductUploadImage = ({ handleAddImages }) => {
         }}
       />
       {files.length > 0 && (
-      <>
-        <List className={classes.list}>
-          {files.map((file, i) => (
-            <ListItem
-              divider={i < files.length - 1}
-              key={uuid()}
+        <>
+          <List className={classes.list}>
+            {files.map((file, i) => (
+              <ListItem
+                divider={i < files.length - 1}
+                key={uuid()}
+              >
+                <ListItemIcon>
+                  <FileCopyIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={file.name}
+                  primaryTypographyProps={{ variant: 'h7' }}
+                  secondary={formatBytes(file.size)}
+                />
+              </ListItem>
+            ))}
+          </List>
+          <div className={classes.actions}>
+            <Button
+              onClick={handleRemoveAll}
+              size="small"
             >
-              <ListItemIcon>
-                <FileCopyIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary={file.name}
-                primaryTypographyProps={{ variant: 'h7' }}
-                secondary={formatBytes(file.size)}
-              />
-            </ListItem>
-          ))}
-        </List>
-        <div className={classes.actions}>
-          <Button
-            onClick={handleRemoveAll}
-            size="small"
-          >
-            Remove all
-          </Button>
-        </div>
-      </>
+              Remove all
+            </Button>
+          </div>
+        </>
       )}
       <TextField
         key="alt"

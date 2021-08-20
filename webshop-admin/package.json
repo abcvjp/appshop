@@ -62,10 +62,12 @@
     "react-scripts": "^4.0.0",
     "redux": "^4.1.1",
     "slugify": "^1.6.0",
+    "uninstall": "^0.0.0",
     "uuid": "^8.3.0",
     "yup": "^0.29.3"
   },
   "devDependencies": {
+    "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1"
   }
 }

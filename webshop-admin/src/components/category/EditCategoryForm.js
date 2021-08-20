@@ -11,9 +11,9 @@ import {
   DialogContent,
   DialogContentText,
   FormControlLabel,
-  Checkbox,
-  makeStyles
+  Checkbox
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -81,13 +81,13 @@ const EditCategoryForm = ({ categoryId }) => {
             </Typography>
           </Box>
           {state.error && (
-          <Box mb={2}>
-            <Typography color="secondary">
-              Error:
-              {' '}
-              {state.error}
-            </Typography>
-          </Box>
+            <Box mb={2}>
+              <Typography color="secondary">
+                Error:
+                {' '}
+                {state.error}
+              </Typography>
+            </Box>
           )}
           <Formik
             initialValues={{
@@ -185,7 +185,7 @@ const EditCategoryForm = ({ categoryId }) => {
                       margin="normal"
                       name="published"
                     />
-                        )}
+                  )}
                   label="Published?"
                 />
                 <TextField

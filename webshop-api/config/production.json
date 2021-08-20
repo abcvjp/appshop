@@ -4,9 +4,9 @@
 	"port": "8080",
 	"db": {
 		"username": "abcvjp",
-    "password": "hoai_vip2K",
-    "name": "webshop_db",
-    "host": "webshopdb.mysql.database.azure.com",
+		"password": "hoai_vip2K",
+		"name": "webshop_db",
+		"host": "webshopdb.mysql.database.azure.com",
 		"pool": {
 			"max": 10,
 			"min": 0,
@@ -16,17 +16,23 @@
 	},
 	"sequelize": {
 		"username": "abcvjp",
-    "password": "hoai_vip2K",
-    "database": "webshop_db",
-    "host": "webshopdb.mysql.database.azure.com",
-    "dialect": "mysql",
+		"password": "hoai_vip2K",
+		"database": "webshop_db",
+		"host": "webshopdb.mysql.database.azure.com",
+		"dialect": "mysql",
 		"ssl": true,
-    "dialectOptions": {
+		"dialectOptions": {
 			"ssl": {
 				"require": true
 			},
 			"decimalNumbers": true
 		}
+	},
+	"cors": {
+		"whiteList": [
+			"https://webshop--api.herokuapp.com"
+		],
+		"credentials": true
 	},
 	"jwt": {
 		"secret": "Ysg$fG&DG",

@@ -8,8 +8,8 @@ import {
   Button,
   Grid,
   MenuItem,
-  makeStyles
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 const statuses = ['Pending', 'Handling', 'Completed', 'Canceled'];
 const paymentStatuses = ['Unpaid', 'Paid'];

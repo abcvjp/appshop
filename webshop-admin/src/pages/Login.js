@@ -14,6 +14,9 @@ import {
   Typography
 } from '@material-ui/core';
 import { setUser } from 'src/actions/user';
+
+import Role from 'src/constants/Roles';
+
 import FacebookIcon from '../icons/Facebook';
 import GoogleIcon from '../icons/Google';
 
@@ -51,8 +54,13 @@ const Login = () => {
             onSubmit={async (values) => {
               try {
                 const response = await API.post('/user/login', values); // eslint-disable-line
-                dispatch(setUser(response.data.user));
-                navigate('/management/dashboard', { replace: true });
+                const { user } = response.data;
+                if (user && user.role === Role.Admin) {
+                  dispatch(setUser(user));
+                  navigate('/management/dashboard', { replace: true });
+                } else {
+                  setError('Your account does not have permission to access');
+                }
               } catch (err) {
                 console.log(err.response);
                 setError(err.response.data.error.message);
@@ -135,20 +143,20 @@ const Login = () => {
                   </Typography>
                 </Box>
                 {error && (
-                <Box
-                  sx={{
-                    pb: 1,
-                    pt: 3
-                  }}
-                >
-                  <Typography
-                    align="left"
-                    color="red"
-                    variant="body1"
+                  <Box
+                    sx={{
+                      pb: 1,
+                      pt: 3
+                    }}
                   >
-                    {error}
-                  </Typography>
-                </Box>
+                    <Typography
+                      align="left"
+                      color="red"
+                      variant="body1"
+                    >
+                      {error}
+                    </Typography>
+                  </Box>
                 )}
                 <TextField
                   error={Boolean(touched.username && errors.username)}
