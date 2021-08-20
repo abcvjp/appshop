@@ -16,6 +16,7 @@ import AddProduct from './pages/product/AddProduct';
 import EditProduct from './pages/product/EditProduct';
 import OrderList from './pages/order/OrderList';
 import ViewOrder from './pages/order/ViewOrder';
+import ReportOrder from './pages/report/ReportOrder';
 
 const routes = [
   {
@@ -35,6 +36,13 @@ const routes = [
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'setting', element: <Settings /> },
       { path: '*', element: <Navigate to="/404" /> }
+    ]
+  },
+  {
+    path: 'report',
+    element: <DashboardLayout />,
+    children: [
+      { path: 'order', element: <ReportOrder /> },
     ]
   },
   {

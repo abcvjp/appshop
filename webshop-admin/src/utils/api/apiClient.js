@@ -23,7 +23,8 @@ const API = axios.create({
       ? `Bearer ${localStorage.getItem('auth_token')}`
       : '',
   },
-  responseType: 'json'
+  responseType: 'json',
+  withCredentials: true,
 });
 
 export default API;

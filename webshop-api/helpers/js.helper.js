@@ -8,3 +8,9 @@ exports.isEmptyArray = (arr) => {
 exports.isObjectEmpty = obj => {
 	return Object.keys(obj).length === 0
 }
+
+exports.deleteObjProps = (obj, prop) => {
+    for (const p of prop) {
+        (p in obj) && (delete obj[p]);
+    }    
+}

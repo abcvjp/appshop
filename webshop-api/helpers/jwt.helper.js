@@ -1,25 +1,25 @@
 const jwt = require('jsonwebtoken')
 const config = require('../config')
 
-const generateToken = (data) => {
+const generateAccessToken = (data) => {
 	return jwt.sign(data, config.get('jwt.secret'), config.get('jwt.secret_options'))
 }
 
 const generateRefreshToken = (data) => {
-	return jwt.sign(data, config.get('jwt.refresh_secret'))
+	return jwt.sign(data, config.get('jwt.refresh_secret'), config.get('jwt.refresh_secret_options'))
 }
 
-const verifyToken = (token) => {
+const verifyAccessToken = (token) => {
 	return jwt.verify(token, config.get('jwt.secret'))
 }
 
 const verifyRefreshToken = (token) => {
-	return jwt.verify(token, config.get('jwt.refresh_secret_options'))
+	return jwt.verify(token, config.get('jwt.refresh_secret'))
 }
 
 module.exports = {
-	generateToken,
-	verifyToken,
+	generateAccessToken,
+	verifyAccessToken,
 	generateRefreshToken,
 	verifyRefreshToken
 }

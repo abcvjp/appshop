@@ -1,9 +1,11 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
+
+const config = require('./config')
 
 const cors = require('cors');
+var cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const boolParser = require('express-query-boolean');
 const logger = require('./helpers/logger.helper');
@@ -13,7 +15,10 @@ const morgan = require('morgan');
 
 var app = express();
 
-app.use(cors())
+app.use(cors({
+  origin: config.get('cors.whiteList'),
+  credentials: config.get('cors.credentials')
+}))
 app.use(bodyParser.json())
 app.use(boolParser())
 

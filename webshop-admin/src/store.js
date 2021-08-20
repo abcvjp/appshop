@@ -2,6 +2,7 @@ import { createStore } from 'redux';
 import rootReducer from './reducers';
 
 const initialState = {
+  user: null,
   ui: {
     alertMessage: {
       isShown: false,

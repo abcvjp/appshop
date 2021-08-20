@@ -40,11 +40,12 @@ exports.getOrderReport = async ({start_date, end_date, group_by, current_page, p
 			attributes: [
         [Sequelize.literal(timeAttribute), 'time'],
 				[Sequelize.fn('SUM',Sequelize.col('orders_number')),'orders_number'],
+				[Sequelize.fn('SUM',Sequelize.col('completed_orders_number')),'completed_orders_number'],
 				[Sequelize.fn('SUM',Sequelize.col('item_total')),'item_total'],
 				[Sequelize.fn('SUM',Sequelize.col('items_number')),'items_number'],
 				[Sequelize.fn('SUM',Sequelize.col('shipping_fee')),'shipping_fee'],
 				[Sequelize.fn('SUM',Sequelize.col('order_total')),'order_total'],
-				[Sequelize.fn('SUM',Sequelize.col('profit')),'profit']
+				[Sequelize.fn('SUM',Sequelize.col('expected_profit')),'expected_profit']
     	],
 			group: ['time'],
 			limit, offset,

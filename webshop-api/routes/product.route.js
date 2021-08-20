@@ -2,15 +2,18 @@ var express = require('express')
 var router = express.Router()
 const productController = require('../controllers/product.controller')
 const productValidation = require('../helpers/validations/product.validation')
+
+const { authenticate, authorize } = require('../controllers/user.controller')
+const Role = require('../helpers/roles.helper')
 const { validate } = require('express-validation')
 
 router.get('/all', validate(productValidation.getProducts), productController.getProducts)
 router.get('/', validate(productValidation.getProduct), productController.getProduct)
-router.post('/', validate(productValidation.createProduct), productController.createProduct)
+router.post('/', authenticate({ required: true }), authorize(Role.Admin), validate(productValidation.createProduct), productController.createProduct)
 router.get('/:productId', validate(productValidation.getProductById), productController.getProductById)
-router.put('/', validate(productValidation.updateProducts), productController.updateProducts)
-router.put('/:productId', validate(productValidation.updateProduct), productController.updateProduct)
-router.delete('/', validate(productValidation.deleteProducts), productController.deleteProducts)
-router.delete('/:productId', validate(productValidation.deleteProduct), productController.deleteProduct)
+router.put('/', authenticate({ required: true }), authorize(Role.Admin), validate(productValidation.updateProducts), productController.updateProducts)
+router.put('/:productId', authenticate({ required: true }), authorize(Role.Admin), validate(productValidation.updateProduct), productController.updateProduct)
+router.delete('/', authenticate({ required: true }), authorize(Role.Admin), validate(productValidation.deleteProducts), productController.deleteProducts)
+router.delete('/:productId', authenticate({ required: true }), authorize(Role.Admin), validate(productValidation.deleteProduct), productController.deleteProduct)
 
 module.exports = router

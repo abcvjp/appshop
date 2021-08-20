@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
@@ -12,6 +13,7 @@ import {
   TextField,
   Typography
 } from '@material-ui/core';
+import { setUser } from 'src/actions/user';
 import FacebookIcon from '../icons/Facebook';
 import GoogleIcon from '../icons/Google';
 
@@ -19,6 +21,7 @@ import API from '../utils/api/apiClient';
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [error, setError] = useState(null);
   console.log(error);
   return (
@@ -48,6 +51,7 @@ const Login = () => {
             onSubmit={async (values) => {
               try {
                 const response = await API.post('/user/login', values); // eslint-disable-line
+                dispatch(setUser(response.data.user));
                 navigate('/management/dashboard', { replace: true });
               } catch (err) {
                 console.log(err.response);

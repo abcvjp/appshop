@@ -1,5 +1,14 @@
 var convict = require('convict')
 
+convict.addFormat({
+  name: 'array',
+  validate: function(children, schema) {
+    if (!Array.isArray(children)) {
+      throw new Error('must be of type Array');
+    }
+  }
+});
+
 var config = convict({
 	env: {
 		doc: 'The application environment.',
@@ -105,6 +114,16 @@ var config = convict({
 				format: Boolean,
 				default: true
 			}
+		}
+	},
+	cors: {
+		whiteList: {
+			format: 'array',
+			default: []
+		},
+		credentials: {
+			format: Boolean,
+			default: false
 		}
 	},
 	jwt: {

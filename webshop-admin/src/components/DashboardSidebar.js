@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
@@ -20,15 +21,10 @@ import {
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
   Folder as CategoryIcon,
-  ShoppingCart as OrderIcon
+  ShoppingCart as OrderIcon,
+  FileText as ReportIcon
 } from 'react-feather';
 import NavItem from './NavItem';
-
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
-};
 
 const items = [
   {
@@ -67,6 +63,11 @@ const items = [
     title: 'Settings'
   },
   {
+    href: '/report/order',
+    icon: ReportIcon,
+    title: 'Report'
+  },
+  {
     href: '/login',
     icon: LockIcon,
     title: 'Login'
@@ -85,6 +86,7 @@ const items = [
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
   const location = useLocation();
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
@@ -110,7 +112,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
       >
         <Avatar
           component={RouterLink}
-          src={user.avatar}
+          src={user.avatar ? user.avatar : '/static/images/avatars/avatar_6.png'}
           sx={{
             cursor: 'pointer',
             width: 64,
@@ -122,13 +124,13 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           color="textPrimary"
           variant="h5"
         >
-          {user.name}
+          {user.username}
         </Typography>
         <Typography
           color="textSecondary"
           variant="body2"
         >
-          {user.jobTitle}
+          {user.full_name}
         </Typography>
       </Box>
       <Divider />

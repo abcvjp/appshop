@@ -24,14 +24,18 @@
 			"decimalNumbers": true
 		}
 	},
+	"cors": {
+		"whiteList": ["http://admin.webshop.local"],
+		"credentials": true
+	},
 	"jwt": {
 		"secret": "Ysg$fG&DG",
 		"secret_options": {
-			"expiresIn": "3d"
+			"expiresIn": "1d"
 		},
 		"refresh_secret": "123asdfasd",
 		"refresh_secret_options": {
-			"expiresIn": "10d"
+			"expiresIn": "7d"
 		}
 	}
 }

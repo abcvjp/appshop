@@ -6,12 +6,10 @@ const asyncHandler = require('express-async-handler')
 
 exports.login = asyncHandler(async (req, res, next) => {
 	const { username, password } = req.body
-	if (!(username && password)) {
-		throw createError(400, 'Username or password is not provided')
-	}
 	const result = await userService.login({ username, password })
 	if (result.success) {
-		res.cookie('accessToken', result.accessToken, { httpOnly: true })
+		res.cookie('access_token', result.access_token, { httpOnly: true })
+		res.cookie('refresh_token', result.refresh_token, { httpOnly: true, path: '/user' })
 	}
 	res.status(200).json(result)
 })
@@ -23,23 +21,26 @@ exports.signup = asyncHandler(async (req, res, next) => {
 })
 
 exports.logout = asyncHandler(async (req, res, next) => {
-	const { accessToken } = req.cookies
-	if (accessToken) {
-		res.clearCookie("accessToken")
+	const { access_token } = req.cookies
+	if (access_token) {
+		const result = await userService.deleteRefreshToken({ access_token })
+		res.clearCookie('access_token')
+		res.clearCookie('refresh_token')
 		res.status(200).json({ success: true })
 	} else {
 		throw createError(409, 'You are not logged in')
 	}
 })
 
-exports.authenticate = asyncHandler(async (req, res, next) => {
-	const { accessToken } = req.cookies
-	if (accessToken) {
-		const user = await userService.authenticate({ accessToken })
-		req.user = user
-		next()
+exports.refreshToken = asyncHandler(async (req, res, next) => {
+	const { refresh_token } = req.cookies
+	if (refresh_token) {
+		const result = await userService.refreshToken({ refresh_token })
+		res.cookie('access_token', result.access_token, { httpOnly: true })
+		res.cookie('refresh_token', result.refresh_token, { httpOnly: true, path: '/user' })
+		res.status(200).json(result)
 	} else {
-		throw createError(401, 'accessToken required')
+		throw createError(409, 'You do not have refresh token')
 	}
 })
 
@@ -52,4 +53,29 @@ exports.getUserById = asyncHandler(async (req, res, next) => {
 	const userId = req.params.userId
 	const result = await userService.getUserById({ id: userId })
 	res.status(200).json(result)
+})
+
+exports.authenticate = ({ required }) => asyncHandler(async (req, res, next) => {
+	const { access_token } = req.cookies
+	if (access_token) {
+		const user = await userService.authenticate({ access_token })
+		req.user = user
+		if (required && !user) {
+			throw createError(403, 'You must login to get access')
+		}
+		next()
+	} else {
+		throw createError(401, 'access_token required')
+	}
+})
+
+exports.authorize = (roles = []) => asyncHandler(async (req, res, next) => {
+	if (typeof roles === 'string') {
+		roles = [roles];
+	}
+	if (roles.length && !roles.includes(req.user.role)) {
+		// user's role is not authorized
+		throw createError(403, `You don't have permission to access this`)
+	}
+	next()
 })

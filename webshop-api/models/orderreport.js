@@ -29,6 +29,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0
     },
+    completed_orders_number: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
     item_total: {
       type: DataTypes.DOUBLE,
       allowNull: false,
@@ -49,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0
     },
-    profit: {
+    expected_profit: {
       type: DataTypes.DOUBLE,
       allowNull: false,
       defaultValue: 0
