@@ -4,9 +4,10 @@ const createError = require('http-errors')
 const slug = require('slug')
 const { uuid } = require('uuidv4')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
-const {roundPrice} = require('../helpers/logicFunc.helper')
+const { roundPrice } = require('../helpers/logicFunc.helper')
+const { deleteObjProps } = require('../helpers/js.helper')
 
-exports.getProducts = async ({ current_page, page_size, sort, category_id, category_slug, enable, published, in_stock }) => {
+exports.getProducts = async ({ current_page, page_size, sort, category_id, category_slug, enable, published, in_stock, include, exclude }) => {
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		if (category_id !== undefined) {
@@ -26,10 +27,15 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
-			`, {nest: true})
+			`, { nest: true })
 			// console.log(rows)
 			var count = rows.length
 			var result = rows.slice(offset, offset + limit)
+			if (exclude) {
+				result.forEach(i => {
+					deleteObjProps(i, exclude)
+				})
+			}
 		} else if (category_slug !== undefined) {
 			const rows = await sequelize.query(`
 				WITH RECURSIVE cte (id, name, slug, parent_id) AS
@@ -47,9 +53,14 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
-			`, {nest: true})
+			`, { nest: true })
 			var count = rows.length
 			var result = rows.slice(offset, offset + limit)
+			if (exclude) {
+				result.forEach(i => {
+					deleteObjProps(i, exclude)
+				})
+			}
 		} else {
 			const filter = {}
 			if (enable !== undefined) {
@@ -65,19 +76,21 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 				include: {
 					association: 'category',
 					required: true,
-					attributes: ['id','name','slug']
+					attributes: ['id', 'name', 'slug']
 				},
 				where: filter,
 				attributes: {
-					exclude: ['category_id']
+					exclude: ['category_id'].concat(exclude)
 				},
 				limit, offset,
-				order: sort ? [sort.split('.')] : [['createdAt','DESC']]
+				order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
 			})
 			var result = rows
 		}
 		if (result.length < 1) throw createError(404, "Can't find any product")
 		const pagination = paginate(current_page, count, result, page_size)
+
+		console.log(result)
 		return {
 			success: true,
 			data: result,
@@ -117,7 +130,7 @@ exports.getProductById = async ({ id }) => {
 			include: {
 				association: 'category',
 				required: true,
-				attributes: ['id','name','path','slug']
+				attributes: ['id', 'name', 'path', 'slug']
 			},
 			attributes: {
 				exclude: ['category_id']
@@ -141,7 +154,7 @@ exports.createProduct = async ({ enable, published, name, title, price, quantity
 		let temp = roundPrice(price)
 		price = temp
 		temp = roundPrice(root_price)
-		root_price =temp
+		root_price = temp
 		const newProduct = await Product.create({
 			id,
 			enable,
@@ -203,7 +216,7 @@ exports.updateProduct = async ({ id, enable, published, name, title, price, root
 	}
 }
 
-exports.updateProducts = async ({products}) => {
+exports.updateProducts = async ({ products }) => {
 	try {
 		products.sort((a, b) => {
 			return a.id < b.id ? -1 : 1
@@ -217,18 +230,18 @@ exports.updateProducts = async ({products}) => {
 			order: ['id']
 		})
 		if (productsToUpdate.length < products.length) throw createError(404, 'Any product does not exist')
-		const promises = products.map((product,i) => {
-				if (productsToUpdate[i].id !== product.id) throw createError(500, 'Error when updating')
-				if (product.name && productsToUpdate[i].name !== product.name) {
-					product.slug = slug(product.name)
-				}
-				if (product.price) {
-					product.price = roundPrice(product.price)
-				}
-				if (product.root_price) {
-					product.root_price = roundPrice(product.root_price)
-				}
-				return productsToUpdate[i].update(product)
+		const promises = products.map((product, i) => {
+			if (productsToUpdate[i].id !== product.id) throw createError(500, 'Error when updating')
+			if (product.name && productsToUpdate[i].name !== product.name) {
+				product.slug = slug(product.name)
+			}
+			if (product.price) {
+				product.price = roundPrice(product.price)
+			}
+			if (product.root_price) {
+				product.root_price = roundPrice(product.root_price)
+			}
+			return productsToUpdate[i].update(product)
 		})
 		await sequelize.transaction(async (t) => {
 			await Promise.all(promises)

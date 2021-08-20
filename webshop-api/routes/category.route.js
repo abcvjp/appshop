@@ -7,7 +7,7 @@ const { authenticate, authorize } = require('../controllers/user.controller')
 const Role = require('../helpers/roles.helper')
 const { validate } = require('express-validation')
 
-router.get('/all', categoryController.getCategories)
+router.get('/all', authenticate({ required: false }), categoryController.getCategories)
 router.get('/', validate(categoryValidation.getCategory), categoryController.getCategory)
 router.post('/', authenticate({ required: true }), authorize(Role.Admin), validate(categoryValidation.createCategory), categoryController.createCategory)
 router.get('/:categoryId', validate(categoryValidation.getCategoryById), categoryController.getCategoryById)

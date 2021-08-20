@@ -2,9 +2,21 @@ const categoryService = require('../services/category.service')
 const createError = require('http-errors')
 const asyncHandler = require('express-async-handler')
 
+const Role = require('../helpers/roles.helper')
+
 exports.getCategories = asyncHandler(async (req, res, next) => {
-	const {current_page, page_size, sort} = req.query
-	const result = await categoryService.getCategories({current_page, page_size, sort})
+	const { current_page, page_size, sort, published } = req.query
+	const user = req.user
+	let result
+	if (user && user.role === Role.Admin) {
+		result = await categoryService.getCategories({ current_page, page_size, sort, published })
+	} else {
+		result = await categoryService.getCategories({
+			current_page, page_size, sort,
+			published: true,
+			exclude: ['published']
+		})
+	}
 	res.status(200).json(result)
 })
 

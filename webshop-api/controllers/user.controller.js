@@ -60,12 +60,12 @@ exports.authenticate = ({ required }) => asyncHandler(async (req, res, next) => 
 	if (access_token) {
 		const user = await userService.authenticate({ access_token })
 		req.user = user
-		if (required && !user) {
-			throw createError(403, 'You must login to get access')
+		if (required === true && !user) {
+			throw createError(403, 'Your access token is invalid')
 		}
 		next()
 	} else {
-		throw createError(401, 'access_token required')
+		throw createError(401, 'You must login to get access')
 	}
 })
 

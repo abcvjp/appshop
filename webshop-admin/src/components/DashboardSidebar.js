@@ -12,13 +12,10 @@ import {
   Typography
 } from '@material-ui/core';
 import {
-  AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
-  Lock as LockIcon,
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
-  UserPlus as UserPlusIcon,
   Users as UsersIcon,
   Folder as CategoryIcon,
   ShoppingCart as OrderIcon,
@@ -53,6 +50,11 @@ const items = [
     title: 'Orders'
   },
   {
+    href: '/report/order',
+    icon: ReportIcon,
+    title: 'Sale Reports'
+  },
+  {
     href: '/management/account',
     icon: UserIcon,
     title: 'Account'
@@ -61,26 +63,6 @@ const items = [
     href: '/management/setting',
     icon: SettingsIcon,
     title: 'Settings'
-  },
-  {
-    href: '/report/order',
-    icon: ReportIcon,
-    title: 'Report'
-  },
-  {
-    href: '/login',
-    icon: LockIcon,
-    title: 'Login'
-  },
-  {
-    href: '/register',
-    icon: UserPlusIcon,
-    title: 'Register'
-  },
-  {
-    href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
   }
 ];
 

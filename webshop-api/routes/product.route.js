@@ -7,7 +7,7 @@ const { authenticate, authorize } = require('../controllers/user.controller')
 const Role = require('../helpers/roles.helper')
 const { validate } = require('express-validation')
 
-router.get('/all', validate(productValidation.getProducts), productController.getProducts)
+router.get('/all', validate(productValidation.getProducts), authenticate({ required: false }), productController.getProducts)
 router.get('/', validate(productValidation.getProduct), productController.getProduct)
 router.post('/', authenticate({ required: true }), authorize(Role.Admin), validate(productValidation.createProduct), productController.createProduct)
 router.get('/:productId', validate(productValidation.getProductById), productController.getProductById)

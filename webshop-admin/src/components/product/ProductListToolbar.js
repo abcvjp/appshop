@@ -21,6 +21,7 @@ import { Search as SearchIcon, RefreshCcw as RefreshIcon, X } from 'react-feathe
 
 const sortOptions = [
   { name: 'Newest', value: 'createdAt.desc' },
+  { name: 'Oldest', value: 'createdAt.asc' },
   { name: 'Price (Low to High)', value: 'price.asc' },
   { name: 'Price (High to Low)', value: 'price.desc' },
   { name: 'Discount', value: 'discount.desc' },
@@ -169,7 +170,7 @@ const ProductListToolbar = () => {
       <Box key={2} sx={{ mt: 3 }}>
         <Card>
           <CardContent>
-            <Grid container spacing={2} justifyContent="flex-start">
+            <Grid container spacing={2} justifyContent="flex-start" alignItems="flex-end">
               <Grid item key="search">
                 <Box sx={{ maxWidth: 400 }}>
                   <TextField

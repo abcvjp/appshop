@@ -6,10 +6,18 @@ const { isEmptyArray } = require('../helpers/js.helper')
 const { uuid } = require('uuidv4')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
 
-exports.getCategories = async ({current_page, page_size, sort}) => {
+exports.getCategories = async ({ current_page, page_size, sort, published, exclude }) => {
 	try {
+		let filters = {}
+		if (published === true) {
+			filters.published = published
+		}
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
-		const {rows, count} = await Category.findAndCountAll({
+		const { rows, count } = await Category.findAndCountAll({
+			where: filters,
+			attributes: {
+				exclude
+			},
 			limit, offset,
 			order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
 		})

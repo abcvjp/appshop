@@ -2,8 +2,9 @@ const Product = require('../models').Product
 const { Sequelize, sequelize } = require('../models')
 const createError = require('http-errors')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
+const { deleteObjProps } = require('../helpers/js.helper')
 
-exports.searchProducts = async ({ keyword, category_id, current_page, page_size, sort, enable, published, in_stock }) => {
+exports.searchProducts = async ({ keyword, category_id, current_page, page_size, sort, enable, published, in_stock, exclude }) => {
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		if (category_id !== undefined) {
@@ -25,7 +26,7 @@ exports.searchProducts = async ({ keyword, category_id, current_page, page_size,
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
-			`, {nest: true})
+			`, { nest: true })
 			var count = rows.length
 			var result = rows.slice(offset, offset + limit)
 		} else {
@@ -42,12 +43,17 @@ exports.searchProducts = async ({ keyword, category_id, current_page, page_size,
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
-			`, {nest: true})
+			`, { nest: true })
 			var count = rows.length
 			var result = rows.slice(offset, offset + limit)
 		}
 		if (result.length < 1) throw createError(404, `No result found`)
 		const pagination = paginate(current_page, count, result, page_size)
+		if (exclude) {
+			result.forEach(i => {
+				deleteObjProps(i, exclude)
+			})
+		}
 		return {
 			success: true,
 			data: result,
