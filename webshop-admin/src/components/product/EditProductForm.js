@@ -15,9 +15,8 @@ import {
   DialogContent,
   DialogContentText,
   FormControlLabel,
-  Checkbox,
+  Checkbox
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
 
 import { EditorState } from 'draft-js';
 import { stateFromHTML } from 'draft-js-import-html';
@@ -31,14 +30,7 @@ import ProductUploadImage from './ProductUploadImage';
 import ProductImageList from './ProductImageList';
 import RichEditor from '../RichEditor';
 
-const useStyles = makeStyles(() => ({
-  select: {
-    maxWidth: '100%'
-  }
-}));
-
 const EditProductForm = ({ productId }) => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const [categories] = useCategories();
   const [state, setState] = useState({
@@ -184,7 +176,7 @@ const EditProductForm = ({ productId }) => {
                   </Typography>
                 </Box>
               )}
-              <Paper className="paper">
+              <Paper sx={{ padding: 2 }}>
                 <Box sx={{ mb: 2 }}>
                   <Typography
                     color="textPrimary"
@@ -223,7 +215,6 @@ const EditProductForm = ({ productId }) => {
                   required
                 />
                 <TextField
-                  className={classes.select}
                   error={Boolean(touched.category_id && errors.category_id)}
                   helperText={touched.category_id && errors.category_id}
                   label="Category"
@@ -392,7 +383,7 @@ const EditProductForm = ({ productId }) => {
                   </Button>
                 </Box>
               </Paper>
-              <Paper className="paper" sx={{ my: 4 }}>
+              <Paper sx={{ my: 4, padding: 2 }}>
                 <Box sx={{ mb: 2 }}>
                   <Typography
                     color="textPrimary"

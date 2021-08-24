@@ -12,11 +12,12 @@ import {
   TablePagination,
   Box,
   Button,
+  makeStyles
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+
 import { Delete } from '@material-ui/icons';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
@@ -28,9 +29,6 @@ const useStyles = makeStyles((theme) => ({
   image: {
     maxHeight: '200px',
     maxWidth: '200px'
-  },
-  title: {
-    color: theme.palette.primary.light,
   },
   titleBar: {
     background: 'transparent'

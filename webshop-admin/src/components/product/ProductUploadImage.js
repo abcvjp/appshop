@@ -16,16 +16,16 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { formatBytes } from 'src/utils/functions';
 import FilesDropzone from '../FileDropzone';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   list: {
     maxHeight: 320
   },
   actions: {
-    marginTop: theme.spacing(2),
+    marginTop: 2,
     display: 'flex',
     justifyContent: 'flex-end',
     '& > * + *': {
-      marginLeft: theme.spacing(2)
+      marginLeft: 2
     }
   }
 }));

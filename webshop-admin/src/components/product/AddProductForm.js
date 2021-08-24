@@ -17,7 +17,6 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
 
 import { useCategories } from 'src/utils/customHooks';
 import { productApi } from 'src/utils/api';
@@ -27,14 +26,7 @@ import ProductImageList from './ProductImageList';
 import ProductUploadImage from './ProductUploadImage';
 import RichEditor from '../RichEditor';
 
-const useStyles = makeStyles(() => ({
-  select: {
-    maxWidth: '100%'
-  }
-}));
-
 const AddProductForm = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const [categories] = useCategories();
   const [images, setImages] = useState([]);
@@ -142,7 +134,7 @@ const AddProductForm = () => {
             </Typography>
           </Box>
         )}
-        <Paper className="paper">
+        <Paper sx={{ padding: 2 }}>
           <Box sx={{ mb: 2 }}>
             <Typography
               color="textPrimary"
@@ -181,7 +173,6 @@ const AddProductForm = () => {
             required
           />
           <TextField
-            className={classes.select}
             error={Boolean(touched.category_id && errors.category_id)}
             helperText={touched.category_id && errors.category_id}
             label="Category"
@@ -338,7 +329,7 @@ const AddProductForm = () => {
             variant="outlined"
           />
         </Paper>
-        <Paper className="paper" sx={{ my: 4 }}>
+        <Paper sx={{ my: 4, padding: 2 }}>
           <Box sx={{ mb: 2 }}>
             <Typography
               color="textPrimary"

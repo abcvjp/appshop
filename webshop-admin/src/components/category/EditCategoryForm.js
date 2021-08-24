@@ -13,7 +13,6 @@ import {
   FormControlLabel,
   Checkbox
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -22,14 +21,7 @@ import { useCategories } from 'src/utils/customHooks';
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
 import { categoryApi } from '../../utils/api';
 
-const useStyles = makeStyles(() => ({
-  select: {
-    maxWidth: '100%'
-  }
-}));
-
 const EditCategoryForm = ({ categoryId }) => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const [categories] = useCategories();
   const [state, setState] = useState({
@@ -69,7 +61,7 @@ const EditCategoryForm = ({ categoryId }) => {
   return (
     category
       ? (
-        <Paper className="paper" square>
+        <Paper sx={{ padding: 2 }}>
           <Box sx={{ mb: 3 }}>
             <Typography
               color="textPrimary"
@@ -141,7 +133,6 @@ const EditCategoryForm = ({ categoryId }) => {
                   required
                 />
                 <TextField
-                  className={classes.select}
                   error={Boolean(touched.parent_id && errors.parent_id)}
                   helperText={touched.parent_id && errors.parent_id}
                   label="Parent Category"

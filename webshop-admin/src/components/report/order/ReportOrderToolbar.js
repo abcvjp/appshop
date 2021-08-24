@@ -166,7 +166,8 @@ const ReportOrderToolbar = () => {
                           </Box>
                         </Grid>
                       </Grid>
-                    </form>)}
+                    </form>
+                  )}
                 </Formik>
               </Grid>
               <Grid item key="sort">

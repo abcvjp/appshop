@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Grid, Paper, Typography, Divider, Table, TableBody, TableCell, TableContainer, TableRow
+  Grid, Paper, Typography, Divider, Table, TableBody, TableCell, TableContainer, TableRow,
+  makeStyles
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+
 import OrderItemList from './OrderItemList';
 import StatusLabel from '../StatusLabel';
 

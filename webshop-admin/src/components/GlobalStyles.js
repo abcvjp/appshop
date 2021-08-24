@@ -1,5 +1,4 @@
-import { createStyles } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+import { createStyles, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(() => createStyles({
   '@global': {
@@ -26,7 +25,7 @@ const useStyles = makeStyles(() => createStyles({
       height: '100%',
       width: '100%'
     },
-    '.paper': {
+    '.paperBox': {
       padding: 2
     }
   }
