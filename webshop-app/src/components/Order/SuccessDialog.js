@@ -2,14 +2,14 @@ import React from 'react';
 import {
   Dialog, DialogActions, DialogContent, DialogContentText, Button
 } from '@material-ui/core';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 /* eslint-disable react/prop-types */
 
 const SuccessDialog = ({ order }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleSuccessDialogClose = () => {
-    history.push('/');
+    navigate('/');
   };
   return (
     <Dialog open>

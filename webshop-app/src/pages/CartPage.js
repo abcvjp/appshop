@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Dialog, DialogActions, DialogContent, DialogContentText, Button, Grid, makeStyles, Typography,
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 const CartPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [, forceRerender] = useState(Date.now());
 
   const cart_items = useSelector((state) => state.cart); // eslint-disable-line
@@ -155,9 +155,11 @@ const CartPage = () => {
   const handleProceedToCheckout = () => {
     if (selectedItems.current.length > 0) {
       checkValid(selectedItems.current, () => {
-        history.push({
-          pathname: '/checkout',
-          orderItems: selectedItems.current,
+        navigate('/checkout', {
+          state: {
+            pathname: '/checkout',
+            orderItems: selectedItems.current,
+          }
         });
       }, () => {
         dispatch(showAlertMessage({ type: 'warning', content: 'Something wrong with your cart, you should check again' }));

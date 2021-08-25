@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router';
-
+import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
@@ -44,12 +43,12 @@ const useStyles = makeStyles((theme) => ({
 
 const SearchBar = () => {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
 
   const handleRequestSearch = (event) => {
     if (event.keyCode === 13) {
-      history.push(`/search?q=${searchValue}`);
+      navigate(`/search?q=${searchValue}`);
     }
   };
   return (

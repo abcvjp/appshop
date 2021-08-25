@@ -49,11 +49,8 @@ const CategoryPage = () => {
         breadcrumbs: generateBreadCrumbs(category.path, categoriesStore.map_name_slug)
       };
       forceRerender(Date.now());
-      console.log('rerendered by effect');
     }
   }, [categorySlug, categoriesStore]);
-
-  const fetchProductQuery = `/product/all?category_slug=${categorySlug}`;
 
   return (
     <>
@@ -75,7 +72,7 @@ const CategoryPage = () => {
               {data.current.category.name}
             </Typography>
             )}
-            <ProductList fetchQuery={fetchProductQuery} />
+            <ProductList filters={{ category_slug: categorySlug }} />
           </Grid>
         </Grid>
       </Paper>

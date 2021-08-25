@@ -1,26 +1,18 @@
-import React from 'react';
-import { Container } from '@material-ui/core';
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
-import { blue } from '@material-ui/core/colors';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
+  useRoutes,
 } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { blue } from '@material-ui/core/colors';
+
+import { setCart } from 'src/actions/cartActions';
+import routes from 'src/routes';
+
+import { Container } from '@material-ui/core';
 import HeaderBar from './components/HeaderBar';
 import Footer from './components/Footer';
 import AlertMessage from './components/AlertMessage';
-
-import HomePage from './pages/HomePage';
-import CategoryPage from './pages/CategoryPage';
-import CartPage from './pages/CartPage';
-
-import { setCart } from './actions/cartActions';
-
-import CheckoutPage from './pages/CheckoutPage';
-import ProductPage from './pages/ProductPage';
-import SearchPage from './pages/SearchPage';
 
 const theme = createTheme({
   palette: {
@@ -34,6 +26,7 @@ const theme = createTheme({
 });
 
 function App() {
+  const routing = useRoutes(routes);
   const dispatch = useDispatch();
   const cartData = window.localStorage.getItem('cart');
   if (cartData) {
@@ -42,36 +35,12 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Router>
-        <Switch>
-          <Route path="/checkout" exact component={CheckoutPage} />
-          <Route path="/">
-            <HeaderBar />
-            <Container maxWidth="lg">
-              <Switch>
-                <Route path="/" exact>
-                  <HomePage />
-                </Route>
-                <Route path="/cart" exact>
-                  <CartPage />
-                </Route>
-                <Route path="/search">
-                  <SearchPage />
-                </Route>
-                <Route path="/product/:productSlug">
-                  <ProductPage />
-                </Route>
-                <Route path="/:categorySlug">
-                  <CategoryPage />
-                </Route>
-              </Switch>
-            </Container>
-            <Footer />
-            <AlertMessage />
-          </Route>
-
-        </Switch>
-      </Router>
+      <HeaderBar />
+      <Container maxWidth="lg">
+        {routing}
+      </Container>
+      <Footer />
+      <AlertMessage />
     </ThemeProvider>
   );
 }

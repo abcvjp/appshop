@@ -25,7 +25,7 @@
 		}
 	},
 	"cors": {
-		"whiteList": ["http://admin.webshop.local"],
+		"whiteList": ["http://admin.webshop.local", "http://app.webshop.local"],
 		"credentials": true
 	},
 	"jwt": {

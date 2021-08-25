@@ -57,16 +57,17 @@ exports.getUserById = asyncHandler(async (req, res, next) => {
 
 exports.authenticate = ({ required }) => asyncHandler(async (req, res, next) => {
 	const { access_token } = req.cookies
+	console.log(access_token)
 	if (access_token) {
 		const user = await userService.authenticate({ access_token })
 		req.user = user
 		if (required === true && !user) {
 			throw createError(403, 'Your access token is invalid')
 		}
-		next()
-	} else {
+	} else if (required === true) {
 		throw createError(401, 'You must login to get access')
 	}
+	next()
 })
 
 exports.authorize = (roles = []) => asyncHandler(async (req, res, next) => {

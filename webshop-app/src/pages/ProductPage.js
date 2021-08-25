@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useHistory } from 'react-router';
+import { useParams } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Grid, makeStyles, Box, Paper, Divider, Button
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ProductPage = () => {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { productSlug } = useParams();
@@ -88,16 +89,18 @@ const ProductPage = () => {
   };
 
   const handleBuyNow = () => {
-    history.push({
-      pathname: '/checkout',
-      orderItems: [{
-        product_id: product.id,
-        product_name: product.name,
-        product_slug: product.slug,
-        product_thumbnail: product.images[0],
-        price: product.price,
-        quantity: qty
-      }]
+    navigate('/checkout', {
+      state: {
+        pathname: '/checkout',
+        orderItems: [{
+          product_id: product.id,
+          product_name: product.name,
+          product_slug: product.slug,
+          product_thumbnail: product.images[0],
+          price: product.price,
+          quantity: qty
+        }]
+      }
     });
   };
 

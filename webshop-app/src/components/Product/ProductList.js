@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Box, makeStyles } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
 
-import { DEFAULT_COLOR } from '../../constants/ui';
-import API from '../../utils/apiClient';
+import { Typography, Box, makeStyles } from '@material-ui/core';
+
+import { Pagination } from '@material-ui/lab';
+import { DEFAULT_COLOR } from 'src/constants/ui';
+import { isArrayEmpty } from 'src/utils/utilFuncs';
+
+import { productApi } from 'src/utils/api';
+import Products from './Products';
 import SortSelector from './SortSelector';
 import PageSizeSelector from './PageSizeSelector';
-import { isArrayEmpty } from '../../utils/utilFuncs';
-import Products from './Products';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ProductList = ({ fetchQuery, sortElemnents }) => {
+const ProductList = ({ filters, sortElemnents }) => {
   const classes = useStyles();
   const products = useRef([]);
   const initialState = {
@@ -33,7 +35,7 @@ const ProductList = ({ fetchQuery, sortElemnents }) => {
     pageSize: 8,
     pageCount: 1,
     itemCount: 0,
-    sort: 'createdAt.DESC',
+    sort: sortElemnents[0].value,
   };
   const [state, setState] = useState(initialState);
 
@@ -60,13 +62,22 @@ const ProductList = ({ fetchQuery, sortElemnents }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const sort = state.sort ? `&sort=${state.sort}` : '';
-        const response = await API.get(`${fetchQuery}
-          &current_page=${state.currentPage}&page_size=${state.pageSize}${sort}`);
+        const { currentPage, pageSize, sort } = state;
+        const queryParams = {
+          ...filters,
+          current_page: currentPage,
+          page_size: pageSize,
+          sort
+        };
+        let response;
+        if (filters.q) {
+          response = await productApi.searchProducts(queryParams);
+        } else {
+          response = await productApi.getAll(queryParams);
+        }
         products.current = response.data.data;
         setState((prevState) => ({
           ...prevState,
-          currentPage: response.data.pagination.currentPage,
           pageCount: response.data.pagination.pageCount,
           itemCount: response.data.pagination.count
         }));
@@ -94,7 +105,7 @@ const ProductList = ({ fetchQuery, sortElemnents }) => {
       }
     };
     fetchProducts();
-  }, [fetchQuery, state.currentPage, state.pageSize, state.sort]);
+  }, [filters, state.currentPage, state.pageSize, state.sort]);
 
   return (
     <>
@@ -128,11 +139,10 @@ const ProductList = ({ fetchQuery, sortElemnents }) => {
 };
 
 ProductList.propTypes = {
-  fetchQuery: PropTypes.string,
+  filters: PropTypes.object,
   sortElemnents: PropTypes.array
 };
 ProductList.defaultProps = {
-  fetchQuery: '/product/all?',
   sortElemnents: [
     { name: 'Newest', value: 'createdAt.desc' },
     { name: 'Price (Low to High)', value: 'price.asc' },

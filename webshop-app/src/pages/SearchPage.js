@@ -32,13 +32,11 @@ const SearchPage = () => {
   const classes = useStyles();
   const keyword = useQuery().get('q');
 
-  const fetchProductQuery = `/search?q=${keyword}`;
-
   return (
     <>
       <Breadcrumbs breadcrumbs={[{
         name: `Search results for: '${keyword}'`,
-        path: `${fetchProductQuery}`
+        path: ''
       }]}
       />
 
@@ -51,11 +49,9 @@ const SearchPage = () => {
             <Typography className={classes.margin} variant="h4">
               Search for:
               {' '}
-              {`"$
-              {keyword}
-              "`}
+              {`"${keyword}"`}
             </Typography>
-            <ProductList fetchQuery={fetchProductQuery} />
+            <ProductList filters={{ q: keyword }} />
           </Grid>
         </Grid>
       </Paper>

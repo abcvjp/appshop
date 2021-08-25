@@ -11,7 +11,8 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 
 import { useLocation } from 'react-router';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+
 import OrderSummary from 'src/components/Order/OrderSummary';
 import ShippingInfo from 'src/components/Order/ShippingInfo';
 import ReviewAndPayment from 'src/components/Order/ReviewAndPayment';
@@ -179,7 +180,7 @@ const CheckoutPage = () => {
 
   return (
     <>
-      {isArrayEmpty(location.orderItems) && <Redirect to="/cart" />}
+      {isArrayEmpty(location.orderItems) && <Navigate to="/cart" />}
       <Container className={classes.root} maxWidth="lg">
         <Typography variant="h4" className={classes.title}>Checkout</Typography>
         <div className={classes.stepper}>
