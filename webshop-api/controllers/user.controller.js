@@ -57,7 +57,6 @@ exports.getUserById = asyncHandler(async (req, res, next) => {
 
 exports.authenticate = ({ required }) => asyncHandler(async (req, res, next) => {
 	const { access_token } = req.cookies
-	console.log(access_token)
 	if (access_token) {
 		const user = await userService.authenticate({ access_token })
 		req.user = user
