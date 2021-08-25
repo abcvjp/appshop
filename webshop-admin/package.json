@@ -1,9 +1,8 @@
 {
   "name": "webshop-admin",
-  "author": "DeviasIO",
-  "licence": "MIT",
+  "author": "abcvjp",
   "version": "1.0.0",
-  "private": false,
+  "private": true,
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

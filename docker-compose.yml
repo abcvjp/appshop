@@ -16,8 +16,10 @@ services:
    - ./webshop-api/.env
  frontend:
   build: './webshop-app'
+  depends_on:
+   - backend
   expose:
-   - 3000
+    - 3000
   volumes:
    - ./webshop-app:/app
    - /app/node_modules

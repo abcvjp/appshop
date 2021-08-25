@@ -1,4 +1,3 @@
-import React from 'react';
 import { Container } from '@material-ui/core';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { blue } from '@material-ui/core/colors';
@@ -7,20 +6,20 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+import Footer from 'src/components/Footer';
 import { useDispatch } from 'react-redux';
-import HeaderBar from './components/HeaderBar';
-import Footer from './components/Footer';
-import AlertMessage from './components/AlertMessage';
+import HeaderBar from 'src/components/HeaderBar';
+import AlertMessage from 'src/components/AlertMessage';
 
-import HomePage from './pages/HomePage';
-import CategoryPage from './pages/CategoryPage';
-import CartPage from './pages/CartPage';
+import HomePage from 'src/pages/HomePage';
+import CategoryPage from 'src/pages/CategoryPage';
+import CartPage from 'src/pages/CartPage';
 
-import { setCart } from './actions/cartActions';
+import { setCart } from 'src/actions/cartActions';
 
-import CheckoutPage from './pages/CheckoutPage';
-import ProductPage from './pages/ProductPage';
-import SearchPage from './pages/SearchPage';
+import CheckoutPage from 'src/pages/CheckoutPage';
+import ProductPage from 'src/pages/ProductPage';
+import SearchPage from 'src/pages/SearchPage';
 
 const theme = createTheme({
   palette: {
@@ -69,7 +68,6 @@ function App() {
             <Footer />
             <AlertMessage />
           </Route>
-
         </Switch>
       </Router>
     </ThemeProvider>

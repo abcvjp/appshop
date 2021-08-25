@@ -1,23 +1,24 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core'
+import React from 'react';
 import {
-	Container
-} from '@material-ui/core'
-import ProductList from '../components/Product/ProductList'
+  makeStyles,
+  Container
+} from '@material-ui/core';
+import ProductList from '../components/Product/ProductList';
+
 const useStyles = makeStyles({
-	container: {
-	},
+  container: {
+  },
 });
 
 const HomePage = () => {
-	const classes = useStyles()
-	return (
-		<>
-			<Container className={classes.container}>
-				<ProductList />
-			</Container>
-		</>
-	)
-}
+  const classes = useStyles();
+  return (
+    <>
+      <Container className={classes.container}>
+        <ProductList />
+      </Container>
+    </>
+  );
+};
 
-export default HomePage
+export default HomePage;

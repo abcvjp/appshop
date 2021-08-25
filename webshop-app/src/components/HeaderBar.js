@@ -1,60 +1,55 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 
-import { Link } from 'react-router-dom'
-import MiniCart from './Cart/MiniCart'
-import { Container, CssBaseline, Divider } from '@material-ui/core'
-import HeaderCategories from './Category/HeaderCategories'
-import SearchBar from './SearchBar'
+import { Link } from 'react-router-dom';
+import { Container, CssBaseline, Divider } from '@material-ui/core';
+import MiniCart from './Cart/MiniCart';
+import HeaderCategories from './Category/HeaderCategories';
+import SearchBar from './SearchBar';
 
 const useStyles = makeStyles((theme) => ({
-	headerbar: {
-		position: 'fixed',
-	},
-	toolbar: {
-		margin: 0,
-		padding: 0
-	},
-	grow: {
-		flexGrow: 1,
-	},
-	logo: {
-		maxHeight: 80,
-		maxWidth: 160,
-		margin: theme.spacing(1)
-	}
-}))
-
-
+  headerbar: {
+    position: 'fixed',
+  },
+  toolbar: {
+    margin: 0,
+    padding: 0
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  logo: {
+    maxHeight: 80,
+    maxWidth: 160,
+    margin: theme.spacing(1)
+  }
+}));
 
 const HeaderBar = () => {
-	const classes = useStyles()
-	return (
-		<div>
-			<CssBaseline />
-			<AppBar position="sticky" color="inherit" elevation={0}>
-				<Container maxWidth="lg">
-					<Toolbar className={classes.toolbar}>
+  const classes = useStyles();
+  return (
+    <div>
+      <CssBaseline />
+      <AppBar position="sticky" color="inherit" elevation={0}>
+        <Container maxWidth="lg">
+          <Toolbar className={classes.toolbar}>
 
-						<Link to="/">
-							<img className={classes.logo} alt="logo" src={process.env.PUBLIC_URL + '/logo.jpg'} />
-						</Link>
-						<div className={classes.grow} />
+            <Link to="/">
+              <img className={classes.logo} alt="logo" src={`${process.env.PUBLIC_URL}/logo.jpg`} />
+            </Link>
+            <div className={classes.grow} />
 
-						<SearchBar />
+            <SearchBar />
 
-						<MiniCart />
-					</Toolbar>
-					<HeaderCategories />
-				</Container>
-				<Divider />
-			</AppBar>
-		</div>
-	)
-}
-export default HeaderBar
-
-
-
+            <MiniCart />
+          </Toolbar>
+          <HeaderCategories />
+        </Container>
+        <Divider />
+      </AppBar>
+    </div>
+  );
+};
+export default HeaderBar;

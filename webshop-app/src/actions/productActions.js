@@ -1,7 +1,7 @@
-import { FETCH_PRODUCTS } from "../constants/actionTypes"
+import { FETCH_PRODUCTS } from '../constants/actionTypes';
 
-export const fetchProducts = () => {
-	return {
-		type: FETCH_PRODUCTS
-	}
-}
+export const fetchProducts = () => { // eslint-disable-line
+  return {
+    type: FETCH_PRODUCTS
+  };
+};

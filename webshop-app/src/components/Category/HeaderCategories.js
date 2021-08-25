@@ -1,36 +1,34 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { makeStyles } from '@material-ui/core'
-import HeaderCategory from './HeaderCategory'
-import { Box } from '@material-ui/core'
-import { useDispatch } from 'react-redux'
-import { useEffect } from 'react'
-import { setCategories } from '../../actions/categoryActions'
-import API from '../../utils/apiClient'
-import { isArrayEmpty } from '../../utils/utilFuncs'
-const useStyles = makeStyles((theme) => ({
-	root: {
-	}
-}))
-const HeaderCategories = () => {
-	const classes = useStyles()
-	const dispatch = useDispatch()
-	const categories = useSelector(state => state.categories.tree)
-	useEffect(() => {
-		const fetchCategories = () => {
-			return API.get('/category/all').then(response => response.data.data)
-				.then(categories => dispatch(setCategories(categories)))
-				.catch(error => console.log(error))
-		}
-		fetchCategories()
-	}, [dispatch])
-	return (
-		!isArrayEmpty(categories) && <Box className={classes.root} display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center">
-			{categories.map((category) =>
-				<HeaderCategory key={category.id} category={category} />
-			)}
-		</Box>
-	)
-}
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { makeStyles, Box } from '@material-ui/core';
+import categoryApi from 'src/utils/api/categoryApi';
+import HeaderCategory from './HeaderCategory';
 
-export default HeaderCategories
+import { setCategories } from '../../actions/categoryActions';
+import { isArrayEmpty } from '../../utils/utilFuncs';
+
+const useStyles = makeStyles(() => ({
+  root: {
+  }
+}));
+const HeaderCategories = () => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.categories.tree);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await categoryApi.getAll();
+      dispatch(setCategories(response.data.data));
+    };
+    fetchCategories();
+  }, [dispatch]);
+  return (
+    !isArrayEmpty(categories) && (
+    <Box className={classes.root} display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center">
+      {categories.map((category) => <HeaderCategory key={category.id} category={category} />)}
+    </Box>
+    )
+  );
+};
+
+export default HeaderCategories;

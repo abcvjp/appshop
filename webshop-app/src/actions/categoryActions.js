@@ -1,6 +1,7 @@
-import { SET_CATEGORIES } from '../constants/actionTypes'
+import { SET_CATEGORIES } from '../constants/actionTypes';
 
+// eslint-disable-next-line
 export const setCategories = (categories) => ({
-	type: SET_CATEGORIES,
-	categories
-})
+  type: SET_CATEGORIES,
+  categories
+});

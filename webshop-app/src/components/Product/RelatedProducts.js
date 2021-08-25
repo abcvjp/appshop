@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
-const RelatedProducts = () => {
-	return (
-		<div>
+const RelatedProducts = () => (
+  <div />
+);
 
-		</div>
-	)
-}
-
-export default RelatedProducts
+export default RelatedProducts;
