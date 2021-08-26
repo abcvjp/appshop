@@ -51,5 +51,5 @@ export default function Breadcrumbs({ breadcrumbs = [] }) {
 }
 
 Breadcrumbs.propTypes = {
-  breadcrumbs: PropTypes.arrayOf(PropTypes.node).isRequired
+  breadcrumbs: PropTypes.arrayOf(PropTypes.object).isRequired
 };

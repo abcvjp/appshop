@@ -2,7 +2,7 @@ import React from 'react';
 import List from '@material-ui/core/List';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
-import { uuid } from 'uuidv4';
+import * as uuid from 'short-uuid';
 import MiniCartItem from './MiniCartItem';
 import { deleteItemCart } from '../../actions/cartActions';
 
@@ -28,7 +28,7 @@ const MiniCartDetail = ({ cart_items }) => {
       <List className={classes.root} disablePadding dense>
         {cart_items.map((item, itemIndex) => (
           <MiniCartItem
-            key={uuid()}
+            key={uuid.generate()}
             item={item}
             deleteItem={deleteItem(itemIndex)}
           />

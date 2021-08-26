@@ -16,6 +16,14 @@ export const UPDATE_CART = 'UPDATE_CART';
 export const SHOW_ALERT_MESSAGE = 'SHOW_MESSAGE';
 export const CLOSE_ALERT_MESSAGE = 'CLOSE MESSAGE';
 
+// confim dialog
+export const OPEN_CONFIRM_DIALOG = 'OPEN_CONFIRM_DIALOG';
+export const CLOSE_CONFIRM_DIALOG = 'CLOSE_CONFIRM_DIALOG';
+
+// fullscreen loading
+export const OPEN_FULL_SCREEN_LOADING = 'OPEN_FULL_SCREEN_LOADING';
+export const CLOSE_FULL_SCREEN_LOADING = 'CLOSE_FULL_SCREEN_LOADING';
+
 // breadcrumbs
 
 export const SET_BREADCRUMBS = 'SET_BREADCRUMBS';

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     color: 'red',
     marginRight: theme.spacing(1)
   },
-  cost: {
+  root_price: {
     textDecoration: 'line-through',
     fontSize: theme.spacing(3),
     verticalAlign: 'middle',
@@ -49,11 +49,11 @@ const ProductDetail = ({ product }) => {
       <Box display="flex" direction="row" alignItems="center">
         <div className={classes.price}>
           $
-          {product.price * (1 - product.discount)}
-        </div>
-        <div className={classes.cost}>
-          $
           {product.price}
+        </div>
+        <div className={classes.root_price}>
+          $
+          {product.root_price}
         </div>
       </Box>
       <div className={`${classes.margin} ${classes.shortDes}`}>

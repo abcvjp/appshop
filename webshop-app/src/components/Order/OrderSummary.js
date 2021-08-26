@@ -8,8 +8,7 @@ import { grey } from '@material-ui/core/colors';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-import { uuid } from 'uuidv4';
-import { isObjectEmpty } from '../../utils/utilFuncs';
+import * as uuid from 'short-uuid';
 
 /* eslint-disable react/prop-types */
 
@@ -70,11 +69,12 @@ const OrderSummary = ({ orderItems = [], shippingMethod, paymentMethod }) => {
         </Box>
       </Grid>
 
-      {!isObjectEmpty(shippingMethod) && (
+      {shippingMethod && (
       <Grid key="shippingMethod" item>
         <Box display="flex" justifyContent="space-between">
           <Typography>
             Ship:
+            {' '}
             {shippingMethod.name}
           </Typography>
           <Typography>
@@ -85,7 +85,7 @@ const OrderSummary = ({ orderItems = [], shippingMethod, paymentMethod }) => {
       </Grid>
       )}
 
-      {!isObjectEmpty(paymentMethod) && (
+      {paymentMethod && (
       <Grid key="paymentMethod" item>
         <Box display="flex" justifyContent="space-between">
           <Typography>Payment method</Typography>
@@ -117,9 +117,9 @@ const OrderSummary = ({ orderItems = [], shippingMethod, paymentMethod }) => {
         <Collapse in={openCartDetail} timeout="auto" unmountOnExit>
           <List disablePadding dense>
             {orderItems.map((item) => (
-              <ListItem key={uuid()} button>
+              <ListItem key={uuid.generate()} button>
                 <ListItemAvatar>
-                  <Avatar src={item.product_thumbnail} />
+                  <Avatar src={item.product_thumbnail.url} />
                 </ListItemAvatar>
                 <ListItemText primary={item.product_name} secondary={`Price: ${item.price}\nQty: ${item.quantity}`} />
               </ListItem>

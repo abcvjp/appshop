@@ -78,7 +78,7 @@ const CartItem = ({
             onChange={setSelectedItem}
           />
           <Grid item key="thumbnail">
-            <Avatar className={classes.avatar} src={item.product_thumbnail} alt={item.product_name} variant="square" />
+            <Avatar className={classes.avatar} src={item.product_thumbnail.url} alt={item.product_name} variant="square" />
           </Grid>
           <Grid item key="item_name" className={classes.productName}>{item.product_name}</Grid>
         </Grid>

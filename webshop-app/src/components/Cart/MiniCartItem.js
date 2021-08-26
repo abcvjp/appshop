@@ -28,12 +28,13 @@ const MiniCartItem = ({ item, deleteItem }) => {
     <ListItem button>
       <ListItemAvatar>
         <Avatar
-          src={item.product_thumbnail}
+          variant="square"
+          src={item.product_thumbnail.url}
         />
       </ListItemAvatar>
       <ListItemText
         className={classes.itemText}
-        primary={<Link to={`${item.product_slug}`}>{item.product_name}</Link>}
+        primary={<Link to={`/product/${item.product_slug}`}>{item.product_name}</Link>}
         secondary={`${item.price}$ - Qty: ${item.quantity}`}
       />
       <ListItemSecondaryAction>

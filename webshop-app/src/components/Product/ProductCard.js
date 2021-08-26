@@ -52,21 +52,21 @@ const useStyles = makeStyles((theme) => ({
       background: 'transparent',
       color: blue[700],
     }
-
   }
 }));
 
 const ProductCard = ({ product, handleAddToCart }) => {
   const classes = useStyles();
-
+  const discount = 100 - Math.round((product.price / product.root_price) * 100);
   return (
     <Card className={classes.root}>
       <RouterLink to={`/product/${product.slug}`}>
         <CardMedia
           className={classes.media}
           component="img"
-          image="https://salt.tikicdn.com/cache/w444/ts/product/56/dd/e2/2612def5999d6417d9916a828cf054df.jpg"
-          alt={product.name}
+          image={product.images[0].url}
+          alt={product.images[0].alt}
+          title={product.images[0].title}
         />
       </RouterLink>
       <CardContent className={classes.content}>
@@ -82,7 +82,11 @@ const ProductCard = ({ product, handleAddToCart }) => {
           alignItems="center"
         >
           <Box mr={0.5} mt={0.5}><Rating size="small" defaultValue={2.5} precision={0.5} readOnly /></Box>
-          <Typography variant="body2">| Sold 1</Typography>
+          <Typography variant="body2">
+            | Sold
+            {' '}
+            {product.sold}
+          </Typography>
         </Box>
         <Box
           display="flex"
@@ -95,12 +99,9 @@ const ProductCard = ({ product, handleAddToCart }) => {
             {product.price}
           </Typography>
           <Typography variant="button" className={classes.discount}>
-            {product.discount > 0 ? `-${product.discount * 100}%` : null}
-            {' '}
-            -32%
+            {discount > 0 ? `-${discount}%` : null}
           </Typography>
         </Box>
-
       </CardContent>
       <CardActions>
         <Button

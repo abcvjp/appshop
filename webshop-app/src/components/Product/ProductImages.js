@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { uuid } from 'uuidv4';
+import * as uuid from 'short-uuid';
 import Carousel from 'react-material-ui-carousel';
 
 import { makeStyles } from '@material-ui/core';
@@ -64,7 +64,7 @@ const ProductImages = ({ images }) => {
       >
         {
           images.map((image) => (
-            <div key={uuid()} className={classes.imgBlock}>
+            <div key={uuid.generate()} className={classes.imgBlock}>
               <img
                 className={classes.image}
                 alt={image.alt}
@@ -78,7 +78,7 @@ const ProductImages = ({ images }) => {
         images.map((img, i) => (
           // eslint-disable-next-line
           <img
-            key={uuid()}
+            key={uuid.generate()}
             className={i === imgIndex ? classes.curIndImg : classes.indImg}
             src={img.url}
             alt={img.alt}
@@ -93,7 +93,7 @@ const ProductImages = ({ images }) => {
 };
 
 ProductImages.propTypes = {
-  images: PropTypes.objectOf(PropTypes.object)
+  images: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default ProductImages;

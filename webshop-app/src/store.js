@@ -17,6 +17,15 @@ const initialState = {
       isShown: false,
       type: null,
       content: null
+    },
+    confirmDialog: {
+      isOpen: false,
+      message: '',
+      onConfirm: () => {},
+      onCancel: () => {}
+    },
+    fullscreenLoading: {
+      isShown: false
     }
   }
 };

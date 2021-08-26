@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
   Typography, Divider, Radio, FormControlLabel, RadioGroup, Grid, makeStyles
 } from '@material-ui/core';
@@ -14,12 +15,12 @@ const useStyles = makeStyles((theme) => ({
     marginBlock: theme.spacing(2)
   }
 }));
-const ReviewAndPayment = ({ setPaymentMethod, paymentMethod }) => {
+const ReviewAndPayment = ({ paymentMethodId, setPaymentMethod }) => {
   const classes = useStyles();
   const [paymentMethods, setPaymentMethods] = useState([]);
 
-  const handlePaymentMethodChange = (event) => {
-    setPaymentMethod(paymentMethods[parseInt(event.target.value, 8) - 1]);
+  const handlePaymentMethodChange = (e) => {
+    setPaymentMethod(paymentMethods.find((i) => i.id === parseInt(e.target.value, 8)));
   };
 
   useEffect(() => {
@@ -27,7 +28,6 @@ const ReviewAndPayment = ({ setPaymentMethod, paymentMethod }) => {
       try {
         const response = await API.get('/payment/payment_method');
         setPaymentMethods(response.data.data);
-        setPaymentMethod(response.data.data[0]);
       } catch (error) {
         if (error.response) {
           // Request made and server responded
@@ -57,12 +57,16 @@ const ReviewAndPayment = ({ setPaymentMethod, paymentMethod }) => {
 
       {paymentMethods.length > 0
         ? (
-          <RadioGroup aria-label="gender" name="gender1" value={paymentMethod.id || ''} onChange={handlePaymentMethodChange}>
+          <RadioGroup aria-label="gender" name="gender1" value={paymentMethodId} onChange={handlePaymentMethodChange}>
             <Grid container direction="column">
               {paymentMethods.map((paymentMethod) => ( // eslint-disable-line
                 <Grid key={`shipping_method_${paymentMethod.id}`} item container justifyContent="space-between" alignItems="center" spacing={8}>
                   <Grid key="shipping_name" item>
-                    <FormControlLabel value={paymentMethod.id} control={<Radio />} label={paymentMethod.name} />
+                    <FormControlLabel
+                      value={paymentMethod.id}
+                      control={<Radio />}
+                      label={paymentMethod.name}
+                    />
                   </Grid>
                   <Grid key="shipping_detail" item>
                     <Typography variant="caption">
@@ -77,6 +81,11 @@ const ReviewAndPayment = ({ setPaymentMethod, paymentMethod }) => {
         : <Typography>Sorry, no available payment method now!</Typography>}
     </div>
   );
+};
+
+ReviewAndPayment.propTypes = {
+  paymentMethodId: PropTypes.number,
+  setPaymentMethod: PropTypes.func.isRequired
 };
 
 export default ReviewAndPayment;

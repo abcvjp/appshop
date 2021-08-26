@@ -70,7 +70,7 @@ const ProductList = ({ filters, sortElemnents }) => {
           sort
         };
         let response;
-        if (filters.q) {
+        if (filters && filters.q) {
           response = await productApi.searchProducts(queryParams);
         } else {
           response = await productApi.getAll(queryParams);
@@ -114,6 +114,7 @@ const ProductList = ({ filters, sortElemnents }) => {
           {`Found ${state.itemCount} items`}
         </Typography>
         <SortSelector
+          sortBy={state.sort}
           handleSortChange={handleSortChange}
           sortElemnents={sortElemnents}
         />
