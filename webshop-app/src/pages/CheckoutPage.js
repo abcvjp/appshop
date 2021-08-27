@@ -23,6 +23,7 @@ import ShippingMethod from 'src/components/Order/ShippingMethod';
 import { orderApi } from 'src/utils/api';
 import { openConfirmDialog } from 'src/actions/confirmDialog';
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
+import ErrorDialog from 'src/components/Order/ErrorDialog';
 import { isArrayEmpty } from '../utils/utilFuncs';
 
 const useStyles = makeStyles((theme) => ({
@@ -66,7 +67,7 @@ const CheckoutPage = () => {
     activeStep: 0,
     isOrderSuccess: false,
     placedOrder: {},
-    errors: []
+    error: ''
   });
 
   const [orderInfo, setOrderInfo] = useState({
@@ -78,6 +79,8 @@ const CheckoutPage = () => {
     shipping_method: null,
     payment_method: null
   });
+
+  console.log(orderInfo);
 
   const {
     email, customer_name, phone_number, address, shipping_note
@@ -98,7 +101,6 @@ const CheckoutPage = () => {
   };
 
   const handleShippingNext = () => {
-    console.log('call submit ref');
     shippingFormRef.current.handleSubmit();
   };
 
@@ -112,18 +114,14 @@ const CheckoutPage = () => {
     setState((prevState) => ({ ...prevState, ...data, activeStep: prevState.activeStep - 1 }));
   };
 
-  const handleReset = () => {
-    setState((prevState) => ({ ...prevState, activeStep: 0 }));
-  };
-
-  const callPlaceOrder = async () => {
+  const callPlaceOrder = () => {
     const order_items = orderItems.current.map((item) => {
       const {
         buy_able, product_slug, product_thumbnail, ...temp
       } = item;
       return temp;
     });
-    const response = await orderApi.createOrder({
+    return orderApi.createOrder({
       email,
       customer_name,
       phone_number,
@@ -133,7 +131,6 @@ const CheckoutPage = () => {
       payment_method_id,
       order_items
     });
-    return response.data.result;
   };
 
   const handlePlaceOrder = () => {
@@ -141,8 +138,14 @@ const CheckoutPage = () => {
       message: 'Confirm order?',
       onConfirm: async () => {
         dispatch(openFullScreenLoading());
-        const placedOrder = await callPlaceOrder();
-        setState((prevState) => ({ ...prevState, isOrderSuccess: true, placedOrder }));
+        try {
+          const response = await callPlaceOrder();
+          setState((prevState) => ({ ...prevState, isOrderSuccess: true, placedOrder: response.data.result }));
+        } catch (error) {
+          if (error.response) {
+            setState((prevState) => ({ ...prevState, isOrderSuccess: false, error: error.response.data.error.message }));
+          }
+        }
         dispatch(closeFullScreenLoading());
       }
     }));
@@ -192,6 +195,7 @@ const CheckoutPage = () => {
         <>
           <Container className={classes.root} maxWidth="lg">
             <Typography variant="h4" className={classes.title}>Checkout</Typography>
+
             <div className={classes.stepper}>
               <Stepper activeStep={state.activeStep} alternativeLabel>
                 {steps.map((label) => (
@@ -204,47 +208,31 @@ const CheckoutPage = () => {
 
             <Grid container spacing={3} justifyContent="space-between" alignItems="flex-start">
               <Grid item xs={12} md={8}>
-                <div>
-
-                  {state.errors.length > 0 && state.errors.map((error) => (
-                    <Typography className={classes.error}>{error}</Typography>
-                  ))}
-
-                  {state.activeStep === steps.length
-                    ? (
-                      <div>
-                        <Typography className={classes.instructions}>All steps completed</Typography>
-                        <Button onClick={handleReset}>Reset</Button>
-                      </div>
-                    )
-                    : (
-                      <div>
-                        {getStepContent(state.activeStep)}
-                        <Box className={classes.nextback}>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            disabled={state.activeStep === 0}
-                            onClick={handleBack}
-                          >
-                            BACK
-                          </Button>
-                          {state.activeStep === steps.length - 1
-                            ? (
-                              <Button variant="contained" color="primary" size="large" onClick={handlePlaceOrder}>
-                                PLACE ORDER
-                              </Button>
-                            )
-                            : (
-                              <Button variant="contained" color="primary" size="large" onClick={handleNext}>
-                                {state.activeStep === steps.length - 1 ? 'PLACE ORDER' : 'NEXT'}
-                              </Button>
-                            )}
-                        </Box>
-                      </div>
-                    )}
-                </div>
+                <>
+                  {getStepContent(state.activeStep)}
+                  <Box className={classes.nextback}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      disabled={state.activeStep === 0}
+                      onClick={handleBack}
+                    >
+                      BACK
+                    </Button>
+                    {state.activeStep === steps.length - 1
+                      ? (
+                        <Button variant="contained" color="primary" size="large" onClick={handlePlaceOrder}>
+                          PLACE ORDER
+                        </Button>
+                      )
+                      : (
+                        <Button variant="contained" color="primary" size="large" onClick={handleNext}>
+                          {state.activeStep === steps.length - 1 ? 'PLACE ORDER' : 'NEXT'}
+                        </Button>
+                      )}
+                  </Box>
+                </>
               </Grid>
 
               <Grid item md={4} style={{ flexGrow: 1 }}>
@@ -256,6 +244,7 @@ const CheckoutPage = () => {
               </Grid>
             </Grid>
             {state.isOrderSuccess && <SuccessDialog order={state.placedOrder} />}
+            {state.error && <ErrorDialog error={state.error} />}
           </Container>
         </>
       )}

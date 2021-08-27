@@ -20,7 +20,7 @@ const AlertMessage = () => {
   return (
     <Snackbar
       open={message.isShown}
-      autoHideDuration={3000}
+      autoHideDuration={5000}
       onClose={handleClose}
     >
       <Alert onClose={handleClose} severity={message.type}>

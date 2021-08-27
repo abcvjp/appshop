@@ -1,5 +1,5 @@
 import {
-  ADD_TO_CART, DELETE_CART, UPDATE_CART, DELETE_ITEM_CART, CHANGE_QUANTITY_ITEM_CART, SET_CART
+  ADD_TO_CART, DELETE_CART, UPDATE_CART, DELETE_ITEM_CART, CHANGE_QUANTITY_ITEM_CART, SET_CART, SELECT_ITEM_CART, SELECT_ALL_CART, UNSELECT_ITEM_CART, UNSELECT_ALL_CART
 } from '../constants/actionTypes';
 import { showAlertMessage } from './alertMessageActions';
 
@@ -11,12 +11,12 @@ export const setCart = ({ cart }) => ({
 });
 
 export const addToCart = ({
-  product_id, product_name, product_slug, product_thumbnail, price, quantity, buy_able
+  product_id, product_name, product_slug, product_thumbnail, price, quantity, buy_able, isSelected
 }) => ({
   type: ADD_TO_CART,
   payload: {
     item: {
-      product_id, product_name, product_slug, product_thumbnail, price, quantity, buy_able
+      product_id, product_name, product_slug, product_thumbnail, price, quantity, buy_able, isSelected
     }
   }
 });
@@ -29,6 +29,26 @@ export const deleteItemCart = ({ itemIndex }) => ({
 export const changeQuantityItemCart = ({ itemIndex, quantity }) => ({
   type: CHANGE_QUANTITY_ITEM_CART,
   payload: { itemIndex, quantity }
+});
+
+export const selectItemCart = ({ itemIndex }) => ({
+  type: SELECT_ITEM_CART,
+  payload: { itemIndex }
+});
+
+export const unselectItemCart = ({ itemIndex }) => ({
+  type: UNSELECT_ITEM_CART,
+  payload: { itemIndex }
+});
+
+export const selectAllCart = () => ({
+  type: SELECT_ALL_CART,
+  payload: null
+});
+
+export const unselectAllCart = () => ({
+  type: UNSELECT_ALL_CART,
+  payload: null
 });
 
 export const deleteCart = () => ({
@@ -45,7 +65,7 @@ export const checkAndAddToCart = ({
   product_id, product_name, price, quantity
 }) => async (dispatch) => {
   if (!quantity || Number.isNaN(quantity)) {
-    dispatch(showAlertMessage({ type: 'error', content: 'Product quantity is invalid' }));
+    dispatch(showAlertMessage({ type: 'error', content: 'Quantity is invalid' }));
   } else {
     API.get(`/product/${product_id}`).then((response) => response.data.data).then((productFromServer) => {
       if (productFromServer.disabled === true) {
@@ -62,7 +82,8 @@ export const checkAndAddToCart = ({
           product_thumbnail: productFromServer.images[0],
           price: productFromServer.price,
           quantity,
-          buy_able: true
+          buy_able: true,
+          isSelected: true
         }));
         dispatch(showAlertMessage({ type: 'warning', content: 'Added successfully. But product info has been changed, you should check again' }));
       } else {
@@ -73,12 +94,13 @@ export const checkAndAddToCart = ({
           product_thumbnail: productFromServer.images[0],
           price: productFromServer.price,
           quantity,
-          buy_able: true
+          buy_able: true,
+          isSelected: true
         }));
         dispatch(showAlertMessage({ type: 'success', content: 'Added successfully' }));
       }
     }).catch(() => {
-      showAlertMessage({ type: 'error', content: 'Something wrong happend' });
+      dispatch(showAlertMessage({ type: 'error', content: 'Something wrong happend' }));
     });
   }
 };
@@ -91,7 +113,6 @@ export const checkAndChangeQuantity = ({ itemIndex, quantity }) => async (dispat
     dispatch(changeQuantityItemCart({ itemIndex, quantity: 1 }));
   } else {
     const cart_item = getState().cart[itemIndex];
-    console.log(cart_item);
     API.get(`/product/${cart_item.product_id}`).then((response) => response.data.data).then((productFromServer) => {
       if (productFromServer.quantity === 0) {
         dispatch(showAlertMessage({ type: 'error', content: 'This product has sold out' }));
@@ -105,6 +126,61 @@ export const checkAndChangeQuantity = ({ itemIndex, quantity }) => async (dispat
       showAlertMessage({ type: 'error', content: 'Something wrong happend' });
     });
   }
+};
+
+export const checkItemsValid = ({ items, onSuccess, onFailed }) => async () => {
+  API.post('/cart/check_valid', {
+    cart_items: items.map((item) => ({
+      product_id: item.product_id,
+      product_name: item.product_name,
+      price: item.price,
+      quantity: item.quantity,
+    })),
+  }).then((response) => response.data).then((response) => {
+    if (response.success === true) {
+      if (onSuccess) onSuccess(response);
+    } else if (onFailed) onFailed(response);
+  }).catch(() => {
+    showAlertMessage({ type: 'error', content: 'Something wrong happend' });
+  });
+};
+
+export const checkCartValid = ({ onSuccess, onFailed }) => async (dispatch, getState) => {
+  API.post('/cart/check_valid', {
+    cart_items: getState().cart.map((item) => ({
+      product_id: item.product_id,
+      product_name: item.product_name,
+      price: item.price,
+      quantity: item.quantity,
+    })),
+  }).then((response) => response.data).then((response) => {
+    if (response.success === true) {
+      if (onSuccess) onSuccess(response);
+    } else if (onFailed) onFailed(response);
+  }).catch(() => {
+    showAlertMessage({ type: 'error', content: 'Something wrong happend' });
+  });
+};
+
+export const checkCartValidAndUpdate = () => async (dispatch, getState) => {
+  API.post('/cart/check_valid', {
+    cart_items: getState().cart.map((item) => ({
+      product_id: item.product_id,
+      product_name: item.product_name,
+      price: item.price,
+      quantity: item.quantity,
+    })),
+  }).then((response) => response.data).then((response) => {
+    const { success, errors } = response;
+    if (success === false) {
+      dispatch(showAlertMessage({ type: 'warning', content: 'Something wrong with your cart, you should check again' }));
+      dispatch(updateCart({
+        items: response.valid_items.map((item, i) => ({ ...item, errors: errors[i] }))
+      }));
+    }
+  }).catch(() => {
+    showAlertMessage({ type: 'error', content: 'Something wrong happend' });
+  });
 };
 
 // export const checkAndValidCart = async (dispatch, getState) => {

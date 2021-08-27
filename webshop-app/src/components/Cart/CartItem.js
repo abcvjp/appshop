@@ -5,6 +5,7 @@ import {
 } from '@material-ui/core';
 
 import { Delete } from '@material-ui/icons';
+import { roundPrice } from 'src/utils/utilFuncs';
 
 /* eslint-disable react/prop-types */
 
@@ -64,18 +65,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CartItem = ({
-  item, error, isSelected, handleChangeQtyItem, handleDeleteItem, setSelectedItem
+  item, handleChangeQtyItem, handleDeleteItem, handleSelectItemChange
 }) => {
   const classes = useStyles();
-
   return (
     <>
       <Grid className={classes.main} container>
         <Grid key="item" className={`${classes.margin} ${classes.name}`} item container xs={12} sm={7} spacing={3}>
           <Checkbox
             disableRipple
-            checked={item.buy_able ? isSelected : false}
-            onChange={setSelectedItem}
+            checked={item.isSelected}
+            onChange={handleSelectItemChange}
+            disabled={!item.buy_able}
           />
           <Grid item key="thumbnail">
             <Avatar className={classes.avatar} src={item.product_thumbnail.url} alt={item.product_name} variant="square" />
@@ -87,7 +88,7 @@ const CartItem = ({
           <Grid key="quantity" item className={classes.metricItem}>
             <TextField
               className={classes.qtyfield}
-              type="Number"
+              type="number"
               variant="outlined"
               margin="none"
               defaultValue={item.quantity}
@@ -100,7 +101,7 @@ const CartItem = ({
             />
           </Grid>
           <Grid key="subtotal" item className={classes.metricItem}>
-            {parseFloat(item.price * item.quantity)}
+            {roundPrice(item.price * item.quantity)}
           </Grid>
           <Grid key="delete" item className={classes.metricItem}>
             <IconButton
@@ -114,7 +115,7 @@ const CartItem = ({
           </Grid>
         </Grid>
       </Grid>
-      {error && <Box className={classes.error} key="error">{error.map((err) => `  ${err}`)}</Box>}
+      {item.errors && <Box className={classes.error} key="errors">{item.errors.map((err) => `  ${err}`)}</Box>}
     </>
   );
 };

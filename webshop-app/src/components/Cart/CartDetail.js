@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+
+import { useDispatch } from 'react-redux';
 import {
   Checkbox, Divider, Grid, IconButton, makeStyles, Paper
 } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 
+import * as uuid from 'short-uuid';
+import {
+  deleteItemCart, selectItemCart, checkAndChangeQuantity, unselectItemCart, selectAllCart, unselectAllCart, deleteCart
+} from 'src/actions/cartActions';
+import { openConfirmDialog } from 'src/actions/confirmDialog';
+import CartItem from './CartItem';
+
+/* eslint-disable react/prop-types */
 const useStyles = makeStyles((theme) => ({
   root: {
 
@@ -41,9 +51,49 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CartDetail = ({
-  cartItems, isSelectedAll, handleSelectedAllChange, handleDeleteAllConfirmOpen // eslint-disable-line
+  cartItems
 }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const isSelectedAll = cartItems.filter((item) => item.buy_able === true).every((item) => item.isSelected === true);
+
+  const handleSelectAllChange = useCallback(() => {
+    if (!isSelectedAll) {
+      dispatch(selectAllCart());
+    } else dispatch(unselectAllCart());
+  });
+
+  const handleDeleteAll = useCallback(() => {
+    dispatch(openConfirmDialog({
+      message: 'Are you sure want to delete all items in your cart?',
+      onConfirm: () => {
+        dispatch(deleteCart());
+      }
+    }));
+  });
+
+  const handleSelectItemChange = useCallback((itemIndex) => (e) => {
+    if (e.target.checked === true) {
+      dispatch(selectItemCart({ itemIndex }));
+    } else {
+      dispatch(unselectItemCart({ itemIndex }));
+    }
+  });
+
+  const handleDeleteItem = useCallback((itemIndex) => () => {
+    dispatch(openConfirmDialog({
+      message: 'Are you sure want to delete this item?',
+      onConfirm: () => {
+        dispatch(deleteItemCart({ itemIndex }));
+      }
+    }));
+  });
+
+  const handleChangeQtyItem = useCallback((itemIndex) => (event) => {
+    const quantity = parseInt(event.target.value, 10);
+    dispatch(checkAndChangeQuantity({ itemIndex, quantity }));
+  });
 
   return (
     <Paper elevation={0}>
@@ -52,7 +102,7 @@ const CartDetail = ({
           <Checkbox
             disableRipple
             checked={isSelectedAll}
-            onChange={handleSelectedAllChange}
+            onChange={handleSelectAllChange}
           />
           {// eslint-disable-next-line
           `All (${cartItems.length} items)`}
@@ -66,21 +116,26 @@ const CartDetail = ({
               className={classes.delete}
               disableFocusRipple
               disableRipple
-              onClick={handleDeleteAllConfirmOpen}
+              onClick={handleDeleteAll}
             >
               <Delete />
             </IconButton>
           </Grid>
         </Grid>
       </Grid>
-      {// eslint-disable-next-line
+      {
         cartItems.map((item, index) => (
-          <div key={`item ${index + 1}`}>
+          <div key={uuid.generate()}>
             <Divider variant="middle" />
-            {item}
+            <CartItem
+              item={item}
+              handleSelectItemChange={handleSelectItemChange(index)}
+              handleDeleteItem={handleDeleteItem(index)}
+              handleChangeQtyItem={handleChangeQtyItem(index)}
+            />
           </div>
         ))
-}
+      }
 
     </Paper>
   );

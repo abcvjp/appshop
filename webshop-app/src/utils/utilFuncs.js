@@ -2,24 +2,6 @@ export const isArrayEmpty = (arr) => (!((typeof arr !== 'undefined') && arr.leng
 
 export const isObjectEmpty = (obj) => Object.keys(obj).length === 0;
 
-export const createDataTree = (dataset) => {
-  const hashTable = Object.create(null);
-  dataset.forEach((aData) => {
-    hashTable[aData.id] = { ...aData, childs: [] };
-  });
-  const dataTree = [];
-  dataset.forEach((aData) => {
-    if (aData.parent_id) hashTable[aData.parent_id].childs.push(hashTable[aData.id]);
-    else dataTree.push(hashTable[aData.id]);
-  });
-  return dataTree;
-};
-
-export const generateBreadCrumbs = (string, map_name_slug) => string.split(' - ').map((name) => ({
-  name,
-  path: map_name_slug[name] ? map_name_slug[name] : ''
-}));
-
 export const convertObjToQuery = (query) => {
   let url = '';
   Object.keys(query).forEach((key, index) => {
@@ -40,3 +22,25 @@ export const cleanObj = (obj) => {
   });
   return obj;
 };
+
+export const createDataTree = (dataset) => {
+  const hashTable = Object.create(null);
+  dataset.forEach((aData) => {
+    hashTable[aData.id] = { ...aData, childs: [] };
+  });
+  const dataTree = [];
+  dataset.forEach((aData) => {
+    if (aData.parent_id) hashTable[aData.parent_id].childs.push(hashTable[aData.id]);
+    else dataTree.push(hashTable[aData.id]);
+  });
+  return dataTree;
+};
+
+export const generateBreadCrumbs = (string, map_name_slug) => string.split(' - ').map((name) => ({
+  name,
+  path: map_name_slug[name] ? map_name_slug[name] : ''
+}));
+
+export const roundPrice = (price) => (Math.round(price * 100) / 100);
+
+export const caculateTotalPrice = (items) => roundPrice(items.reduce((accumul, cur) => (accumul + cur.quantity * cur.price), 0));

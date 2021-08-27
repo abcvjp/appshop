@@ -39,6 +39,7 @@ const MiniCart = () => {
   const open = Boolean(anchorEl);
 
   const itemCount = cart_items.reduce((accumul, cur) => (accumul + cur.quantity), 0);
+
   return (
     <div onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
       <IconButton component={RouterLink} to="/cart" color="inherit">

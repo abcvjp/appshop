@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+
 import List from '@material-ui/core/List';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
@@ -21,7 +22,7 @@ const MiniCartDetail = ({ cart_items }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const deleteItem = (itemIndex) => () => dispatch(deleteItemCart({ itemIndex }));
+  const deleteItem = useCallback((itemIndex) => () => dispatch(deleteItemCart({ itemIndex })));
 
   return (
     <>

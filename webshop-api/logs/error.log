@@ -51,3 +51,20 @@
 {"level":"error","message":"Validation Failed","timestamp":"2021-08-26T04:50:12.819Z"}
 {"level":"error","message":"Validation Failed","timestamp":"2021-08-26T04:53:35.160Z"}
 {"level":"error","message":"Validation Failed","timestamp":"2021-08-26T04:54:42.687Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T06:24:43.893Z"}
+{"stack":"ConflictError: Price of ÁO KHOÁC DÙ NAM HAHAMAN has changed\n    at Object.exports.createOrder (/api/services/order.service.js:211:9)\n    at runMicrotasks (<anonymous>)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at async /api/controllers/order.controller.js:7:17","level":"error","message":"Price of ÁO KHOÁC DÙ NAM HAHAMAN has changed","timestamp":"2021-08-26T06:25:08.074Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T06:34:51.236Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T06:35:33.049Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T06:42:09.717Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T06:42:58.248Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T07:09:57.424Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T07:13:35.603Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T07:14:10.490Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T07:16:04.713Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T07:17:05.521Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-26T07:18:14.620Z"}
+{"stack":"InternalServerError: Cannot read property 'images' of undefined\n    at Object.exports.checkCartValid (/api/services/cart.service.js:97:9)\n    at runMicrotasks (<anonymous>)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at async /api/controllers/cart.controller.js:14:17","level":"error","message":"Cannot read property 'images' of undefined","timestamp":"2021-08-26T07:38:44.237Z"}
+{"level":"error","message":"Validation Failed","timestamp":"2021-08-27T03:13:39.972Z"}
+{"stack":"NotFoundError: Can't find any product\n    at Object.exports.getProducts (/api/services/product.service.js:100:9)\n    at runMicrotasks (<anonymous>)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at async /api/controllers/product.controller.js:45:12","level":"error","message":"Can't find any product","timestamp":"2021-08-27T03:55:14.542Z"}
+{"stack":"NotFoundError: Can't find any product\n    at Object.exports.getProducts (/api/services/product.service.js:100:9)\n    at runMicrotasks (<anonymous>)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at async /api/controllers/product.controller.js:45:12","level":"error","message":"Can't find any product","timestamp":"2021-08-27T03:55:14.552Z"}
+{"stack":"NotFoundError: Can't find any product\n    at Object.exports.getProducts (/api/services/product.service.js:100:9)\n    at runMicrotasks (<anonymous>)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at async /api/controllers/product.controller.js:45:12","level":"error","message":"Can't find any product","timestamp":"2021-08-27T03:55:14.612Z"}
