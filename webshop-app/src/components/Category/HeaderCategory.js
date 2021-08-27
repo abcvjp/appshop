@@ -1,4 +1,7 @@
-import * as React from 'react';
+import {
+  useCallback, forwardRef, useContext, createContext
+} from 'react';
+
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Menu from 'material-ui-popup-state/HoverMenu';
@@ -14,7 +17,7 @@ import {
 } from 'material-ui-popup-state/hooks';
 import { isArrayEmpty } from '../../utils/utilFuncs';
 
-const ParentPopupState = React.createContext(null);
+const ParentPopupState = createContext(null);
 
 const HeaderCategory = ({ category }) => {
   const popupState = usePopupState({
@@ -23,7 +26,7 @@ const HeaderCategory = ({ category }) => {
     deferOpenClose: true,
   });
 
-  function buildMenu(category) { // eslint-disable-line
+  const buildMenu = useCallback((category) => { // eslint-disable-line
     return isArrayEmpty(category.childs)
       ? (
         <MenuItem key={category.id} onClick={popupState.close}>
@@ -37,7 +40,8 @@ const HeaderCategory = ({ category }) => {
           {category.childs.map((c) => buildMenu(c))}
         </Submenu>
       );
-  }
+  });
+
   return (
     <div>
       <Button {...bindHover(popupState)}>
@@ -87,10 +91,10 @@ const submenuStyles = (theme) => ({
 const Submenu = withStyles(submenuStyles)(
   // Unfortunately, MUI <Menu> injects refs into its children, which causes a
   // warning in some cases unless we use forwardRef here.
-  React.forwardRef(({
+  forwardRef(({
     classes, title, path, popupId, children, ...props // eslint-disable-line
   }, ref) => {
-    const parentPopupState = React.useContext(ParentPopupState);
+    const parentPopupState = useContext(ParentPopupState);
     const popupState = usePopupState({
       popupId,
       variant: 'popover',

@@ -1,6 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles, Typography, Box } from '@material-ui/core';
+import {
+  makeStyles, Typography, Box, Divider, Grid
+} from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import { Rating } from '@material-ui/lab';
 
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root_price: {
     textDecoration: 'line-through',
-    fontSize: theme.spacing(3),
+    fontSize: theme.spacing(3.5),
     verticalAlign: 'middle',
     color: '#a5a5a5'
   },
@@ -43,9 +44,30 @@ const useStyles = makeStyles((theme) => ({
 const ProductDetail = ({ product }) => {
   const classes = useStyles();
   return (
-    <div>
+    <Box>
+
       <Typography variant="h6">{product.title}</Typography>
-      <Rating size="medium" defaultValue={2.5} precision={0.5} readOnly />
+
+      <Grid
+        container
+        justifyContent="flex-start"
+        alignItems="center"
+        spacing={2}
+        style={{ marginBlock: 8 }}
+      >
+        <Grid item>
+          <Rating size="medium" defaultValue={2.5} precision={0.5} readOnly />
+        </Grid>
+        <Divider flexItem orientation="vertical" variant="middle" />
+        <Grid item>
+          <Typography sx={{ fontSize: 24 }}>
+            Sold
+            {' '}
+            {product.sold}
+          </Typography>
+        </Grid>
+      </Grid>
+
       <Box display="flex" direction="row" alignItems="center">
         <div className={classes.price}>
           $
@@ -56,10 +78,11 @@ const ProductDetail = ({ product }) => {
           {product.root_price}
         </div>
       </Box>
-      <div className={`${classes.margin} ${classes.shortDes}`}>
+
+      <Box className={`${classes.margin} ${classes.shortDes}`}>
         {product.short_description}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

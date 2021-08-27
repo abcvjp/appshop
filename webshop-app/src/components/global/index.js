@@ -1,4 +1,3 @@
-import React from 'react';
 import ConfirmDialog from './ConfirmDialog';
 import FullScreenLoading from './FullscreenLoading';
 import AlertMessage from './AlertMessage';

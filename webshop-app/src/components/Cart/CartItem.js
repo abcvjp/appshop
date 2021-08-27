@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Avatar, IconButton, makeStyles, TextField, Box, Checkbox,
   Grid

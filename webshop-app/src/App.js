@@ -13,6 +13,7 @@ import HeaderBar from './components/HeaderBar';
 import Footer from './components/Footer';
 import Routing from './components/Routing';
 import GlobalComponents from './components/global';
+import GlobalStyles from './components/GlobalStyles';
 
 const theme = createTheme({
   palette: {
@@ -31,9 +32,9 @@ function App() {
   if (cartData) {
     dispatch(setCart({ cart: JSON.parse(cartData) }));
   }
-  console.log('app rerender');
   return (
     <ThemeProvider theme={theme}>
+      <GlobalStyles />
       <BrowserRouter>
         <HeaderBar />
         <Container maxWidth="lg">

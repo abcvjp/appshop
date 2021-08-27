@@ -1,6 +1,7 @@
-import React from 'react';
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
+
 import NativeSelect from '@material-ui/core/NativeSelect';
 import InputBase from '@material-ui/core/InputBase';
 import { Typography } from '@material-ui/core';
@@ -46,27 +47,29 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function SortSelector({ sortBy, handleSortChange, sortElemnents }) {
+const PageSizeSelector = ({ handlePageSizeChange, pageSize }) => {
   const classes = useStyles();
   return (
     <div className={classes.justify}>
-      <Typography className={classes.typo}>Sort by</Typography>
+      <Typography className={classes.typo}>Items per page:</Typography>
       <NativeSelect
-        variant="standard"
-        value={sortBy}
-        onChange={handleSortChange}
+        id="demo-customized-select-native"
+        value={pageSize}
+        onChange={handlePageSizeChange}
         input={<BootstrapInput />}
       >
-        {
-          sortElemnents.map((element) => <option key={element.name} value={element.value}>{element.name}</option>)
-        }
+        <option value="8">8</option>
+        <option value="16">16</option>
+        <option value="24">24</option>
+        <option value="48">48</option>
       </NativeSelect>
     </div>
   );
-}
-
-SortSelector.propTypes = {
-  sortBy: PropTypes.string.isRequired,
-  handleSortChange: PropTypes.func.isRequired,
-  sortElemnents: PropTypes.array.isRequired
 };
+
+PageSizeSelector.propTypes = {
+  pageSize: PropTypes.number.isRequired,
+  handlePageSizeChange: PropTypes.func.isRequired
+};
+
+export default memo(PageSizeSelector, (prevProps, nextProps) => (prevProps.pageSize === nextProps.pageSize));

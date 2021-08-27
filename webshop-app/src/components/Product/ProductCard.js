@@ -1,5 +1,7 @@
-import React from 'react';
+import { useState } from 'react';
+
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -12,6 +14,7 @@ import { Rating } from '@material-ui/lab';
 import { blue } from '@material-ui/core/colors';
 
 import { Link as RouterLink } from 'react-router-dom';
+import { checkAndAddToCart } from 'src/actions/cartActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,9 +58,26 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ProductCard = ({ product, handleAddToCart }) => {
+const ProductCard = ({ product }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleAddToCart = () => {
+    setIsAdding(true);
+    dispatch(checkAndAddToCart({
+      product_id: product.id,
+      product_name: product.name,
+      product_slug: product.slug,
+      price: product.price,
+      quantity: 1
+    }));
+    setIsAdding(false);
+  };
+
   const discount = 100 - Math.round((product.price / product.root_price) * 100);
+
   return (
     <Card className={classes.root}>
       <RouterLink to={`/product/${product.slug}`}>
@@ -110,6 +130,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
           color="primary"
           size="medium"
           disableElevation
+          disabled={isAdding}
           onClick={handleAddToCart}
         >
           Add to Cart
@@ -120,8 +141,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
 };
 
 ProductCard.propTypes = {
-  product: PropTypes.object.isRequired,
-  handleAddToCart: PropTypes.func
+  product: PropTypes.object.isRequired
 };
 
 export default ProductCard;

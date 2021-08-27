@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,10 +10,10 @@ import { checkItemsValid, checkCartValidAndUpdate } from 'src/actions/cartAction
 
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
 import { caculateTotalPrice } from 'src/utils/utilFuncs';
-import { showAlertMessage } from '../actions/alertMessageActions';
+import { showAlertMessage } from 'src/actions/alertMessageActions';
 
-import CartDetail from '../components/Cart/CartDetail';
-import CartSummary from '../components/Cart/CartSummary';
+import CartDetail from 'src/components/Cart/CartDetail';
+import CartSummary from 'src/components/Cart/CartSummary';
 
 const useStyles = makeStyles((theme) => ({
   root: {

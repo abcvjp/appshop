@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import {
+  useState, useEffect, useRef, useCallback
+} from 'react';
 import { useParams } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -10,18 +12,16 @@ import { generateBreadCrumbs, isArrayEmpty, isObjectEmpty } from 'src/utils/util
 import { checkAndAddToCart } from 'src/actions/cartActions';
 import { showAlertMessage } from 'src/actions/alertMessageActions';
 
-import Breadcrumbs from 'src/components/Breadcrumbs';
+import Breadcrumbs from 'src/components/accesscories/Breadcrumbs';
 import ProductDetail from 'src/components/Product/ProductDetail';
-import QuantitySelector from 'src/components/Product/QuantitySelector';
+import QuantitySelector from 'src/components/accesscories/QuantitySelector';
 import ProductImages from 'src/components/Product/ProductImages';
 import ProductDescription from 'src/components/Product/ProductDescription';
 import API from 'src/utils/apiClient';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-
-  },
-  main: {
+  detail: {
+    padding: theme.spacing(2)
   },
   marginBlock: {
     marginBlock: theme.spacing(2)
@@ -59,26 +59,28 @@ const ProductPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const mapCategoryNameSlug = useSelector((state) => state.categories.map_name_slug);
+
   const { productSlug } = useParams();
   const data = useRef({
     product: null,
     related_products: [],
     breadcrumbs: []
   });
-  const { product } = data.current;
-
   const [qty, setQty] = useState(1);
+
+  const { product } = data.current;
 
   const [, forceRerender] = useState(Date.now());
 
-  const handleQtyChange = (event) => {
-    const newQty = parseInt(event.target.value, 8);
+  const handleQtyChange = useCallback((event) => {
+    const newQty = parseInt(event.target.value, 10);
     if (newQty > product.quantity) {
       dispatch(showAlertMessage({ type: 'error', content: `You can only buy ${product.quantity} product` }));
     } else setQty(newQty);
-  };
+  });
 
-  const handleAddtoCart = () => {
+  const handleAddtoCart = useCallback(() => {
     dispatch(checkAndAddToCart({
       product_id: product.id,
       product_name: product.name,
@@ -86,9 +88,9 @@ const ProductPage = () => {
       price: product.price,
       quantity: qty
     }));
-  };
+  });
 
-  const handleBuyNow = () => {
+  const handleBuyNow = useCallback(() => {
     navigate('/checkout', {
       state: {
         pathname: '/checkout',
@@ -102,9 +104,8 @@ const ProductPage = () => {
         }]
       }
     });
-  };
+  });
 
-  const categoriesStore = useSelector((state) => state.categories);
   useEffect(() => {
     API.get(`/product?slug=${productSlug}`).then((response) => response.data.data).then((fproduct) => {
       data.current.product = fproduct;
@@ -115,34 +116,46 @@ const ProductPage = () => {
   }, [productSlug]);
 
   useEffect(() => {
-    if (data.current.product && !isObjectEmpty(categoriesStore.map_name_slug)) {
-      const { product } = data.current; // eslint-disable-line
+    if (product && !isObjectEmpty(mapCategoryNameSlug)) {
       data.current = {
         ...data.current,
         product,
-        breadcrumbs: generateBreadCrumbs(`${product.category.path} - ${product.name}`, categoriesStore.map_name_slug)
+        breadcrumbs: generateBreadCrumbs(`${product.category.path} - ${product.name}`, mapCategoryNameSlug)
       };
       forceRerender(Date.now());
     }
-  }, [data.current.product, categoriesStore.map_name_slug]);
+  }, [product, mapCategoryNameSlug]);
 
   return (
-    <div>
+    <>
       {!isArrayEmpty(data.current.breadcrumbs) && <Breadcrumbs breadcrumbs={data.current.breadcrumbs} />}
       {product && (
-      <div>
-        <Paper elevation={0} style={{ padding: 16 }}>
+      <>
+        <Paper className={classes.detail} elevation={0}>
           <Grid container direction="row" justifyContent="space-between" spacing={4}>
+
             <Grid key="product_images" item xs={12} md={6}>
               <ProductImages images={product.images} productName={product.name} />
             </Grid>
-            <Grid key="product_detail" className={`${classes.detail}`} item md={6}>
-              <ProductDetail product={product} />
-              <Divider light />
-              <div className={classes.marginBlock}>
-                <QuantitySelector qty={qty} handleQtyChange={handleQtyChange} />
-              </div>
-              <Box display="flex">
+
+            <Grid
+              key="product_detail"
+              className={`${classes.detail}`}
+              md={6}
+              item
+              container
+              direction="column"
+              justifyContent="space-between"
+            >
+              <Grid item>
+                <ProductDetail product={product} />
+              </Grid>
+
+              <Grid item>
+                <Divider light />
+                <Box sx={{ my: 2 }}>
+                  <QuantitySelector qty={qty} handleQtyChange={handleQtyChange} />
+                </Box>
                 <Button
                   className={classes.addcart}
                   variant="contained"
@@ -163,16 +176,18 @@ const ProductPage = () => {
                 >
                   BUY NOW
                 </Button>
-              </Box>
+              </Grid>
             </Grid>
           </Grid>
         </Paper>
-        <div className={classes.marginBlock}>
+
+        <Box sx={{ my: 4 }}>
           <ProductDescription description={product.description} />
-        </div>
-      </div>
+        </Box>
+
+      </>
       )}
-    </div>
+    </>
   );
 };
 

@@ -90,7 +90,6 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 		if (result.length < 1) throw createError(404, "Can't find any product")
 		const pagination = paginate(current_page, count, result, page_size)
 
-		console.log(result)
 		return {
 			success: true,
 			data: result,
@@ -140,6 +139,27 @@ exports.getProductById = async ({ id }) => {
 		return {
 			success: true,
 			data: productById
+		}
+	} catch (error) {
+		throw createError(error.statusCode || 500, error.message)
+	}
+}
+
+exports.getRelatedProducts = async ({ productId }) => {
+	try {
+		const productById = await Product.findByPk(productId, {
+			attributes: ['category_id']
+		})
+		if (!productById) throw createError(404, 'Product does not exist')
+		const relatedProducts = await Product.findAll({
+			where: {
+				category_id: productById.category_id
+			},
+			limit: 10
+		})
+		return {
+			success: true,
+			data: relatedProducts
 		}
 	} catch (error) {
 		throw createError(error.statusCode || 500, error.message)

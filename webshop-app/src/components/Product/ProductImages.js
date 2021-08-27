@@ -1,23 +1,17 @@
-import React, { useState } from 'react';
+import { useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import * as uuid from 'short-uuid';
 import Carousel from 'react-material-ui-carousel';
 
-import { makeStyles } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-  marginBlock: {
-    marginBlock: theme.spacing(2)
-  },
-  margin: {
-    margin: theme.spacing(2)
-  },
   imgBlock: {
     maxWidth: 500,
-    height: 600,
+    maxheight: 600,
     display: 'block',
     marginLeft: 'auto',
-    marginRight: 'auto'
+    marginRight: 'auto',
   },
   image: {
     width: '100%',
@@ -25,17 +19,13 @@ const useStyles = makeStyles((theme) => ({
   },
   indImg: {
     margin: theme.spacing(0.5),
-    maxHeight: 150,
-    maxWidth: 120,
-    height: '100%',
-    width: '100%'
+    height: 140,
+    width: 120,
   },
   curIndImg: {
     margin: theme.spacing(0.5),
-    maxHeight: 150,
-    maxWidth: 120,
-    height: '100%',
-    width: '100%',
+    height: 140,
+    width: 120,
     border: '2px solid transparent',
     borderColor: 'black'
   }
@@ -45,7 +35,7 @@ const ProductImages = ({ images }) => {
   const classes = useStyles();
   const [imgIndex, setImgIndex] = useState(0);
   return (
-    <div>
+    <Box>
       <Carousel
         index={imgIndex}
         autoPlay={false}
@@ -74,8 +64,8 @@ const ProductImages = ({ images }) => {
           ))
         }
       </Carousel>
-      {
-        images.map((img, i) => (
+      <Box mt={1}>
+        {images.map((img, i) => (
           // eslint-disable-next-line
           <img
             key={uuid.generate()}
@@ -86,9 +76,9 @@ const ProductImages = ({ images }) => {
               setImgIndex(i);
             }}
           />
-        ))
-      }
-    </div>
+        ))}
+      </Box>
+    </Box>
   );
 };
 
@@ -96,4 +86,4 @@ ProductImages.propTypes = {
   images: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default ProductImages;
+export default memo(ProductImages);

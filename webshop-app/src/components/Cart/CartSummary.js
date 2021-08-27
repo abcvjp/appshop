@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Box, Paper, Divider, Typography, Button,
   makeStyles

@@ -40,7 +40,7 @@ const exportFileHeaders = [
   createHeader('Address', 'address'),
   createHeader('Email', 'email'),
   createHeader('Phone number', 'phone_number'),
-  createHeader('Shipping note', 'shipping_note.name'),
+  createHeader('Shipping note', 'shipping_note'),
   createHeader('Payment method', 'payment_method.name'),
   createHeader('Shipping method', 'shipping_method.name'),
   createHeader('Created at', 'createdAt'),

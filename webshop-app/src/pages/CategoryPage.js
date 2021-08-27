@@ -1,26 +1,25 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
-  Grid, makeStyles, Paper, List, ListItem, Typography
+  Grid, makeStyles, Paper, List, ListItem, Typography, ListSubheader,
+  Link,
+  Box
 } from '@material-ui/core';
 import ProductList from 'src/components/Product/ProductList';
-import Breadcrumbs from 'src/components/Breadcrumbs';
-import { Link } from 'react-router-dom';
+import Breadcrumbs from 'src/components/accesscories/Breadcrumbs';
+import { Link as RouterLink } from 'react-router-dom';
+
 import { useSelector } from 'react-redux';
 import { generateBreadCrumbs, isArrayEmpty, isObjectEmpty } from 'src/utils/utilFuncs';
 import { useParams } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-
-  },
-  main: {
-  },
-  margin: {
-    margin: theme.spacing(2)
-  },
   bar: {
-    padding: theme.spacing(1.5),
+    padding: theme.spacing(2),
     borderRight: '1px solid #e6e6e6'
+  },
+  barTitle: {
+    color: 'black',
+    fontWeight: 'bold'
   }
 }));
 
@@ -55,25 +54,49 @@ const CategoryPage = () => {
   return (
     <>
       {!isArrayEmpty(data.current.breadcrumbs) && <Breadcrumbs breadcrumbs={data.current.breadcrumbs} />}
+
       <Paper elevation={1} square>
         <Grid container spacing={0}>
-          <Grid key="childs_category" item xs={12} sm={2} className={classes.bar}>
-            <List>
-              {data.current.childs.length > 0 && data.current.childs.map((child) => (
-                <ListItem key={child.name}>
-                  <Link to={`${child.slug}`}>{child.name}</Link>
-                </ListItem>
-              ))}
-            </List>
+
+          <Grid key="more" item xs={12} sm={2} className={classes.bar}>
+            {
+              data.current.childs.length > 0 && (
+              <List
+                subheader={(
+                  <ListSubheader>
+                    <Typography className={classes.barTitle}>
+                      Subcategories
+                    </Typography>
+                  </ListSubheader>
+              )}
+              >
+                {data.current.childs.map((child) => (
+                  <ListItem key={child.name}>
+                    <Link
+                      component={RouterLink}
+                      to={`/${child.slug}`}
+                      color="inherit"
+                    >
+                      {child.name}
+                    </Link>
+                  </ListItem>
+                ))}
+              </List>
+              )
+            }
           </Grid>
+
           <Grid key="product_list" item sm={10} className={classes.main}>
             {data.current.category && (
-            <Typography className={classes.margin} variant="h4">
-              {data.current.category.name}
-            </Typography>
+              <Box m={2}>
+                <Typography variant="h4">
+                  {data.current.category.name}
+                </Typography>
+              </Box>
             )}
             <ProductList filters={{ category_slug: categorySlug }} />
           </Grid>
+
         </Grid>
       </Paper>
     </>

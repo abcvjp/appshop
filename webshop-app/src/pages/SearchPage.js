@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { useLocation } from 'react-router';
 
 import {
@@ -7,7 +5,7 @@ import {
 } from '@material-ui/core';
 
 import ProductList from '../components/Product/ProductList';
-import Breadcrumbs from '../components/Breadcrumbs';
+import Breadcrumbs from '../components/accesscories/Breadcrumbs';
 
 const useStyles = makeStyles((theme) => ({
   root: {

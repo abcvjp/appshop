@@ -1,16 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import {
+  useState, useEffect, useRef, useCallback
+} from 'react';
 import PropTypes from 'prop-types';
 
-import { Typography, Box, makeStyles } from '@material-ui/core';
+import {
+  Typography, Box, Grid, makeStyles
+} from '@material-ui/core';
 
 import { Pagination } from '@material-ui/lab';
-import { DEFAULT_COLOR } from 'src/constants/ui';
 import { isArrayEmpty } from 'src/utils/utilFuncs';
 
 import { productApi } from 'src/utils/api';
+
+import * as uuid from 'short-uuid';
+import SortSelector from '../accesscories/SortSelector';
+import PageSizeSelector from '../accesscories/PageSizeSelector';
 import Products from './Products';
-import SortSelector from './SortSelector';
-import PageSizeSelector from './PageSizeSelector';
+import ProductCardSkeleton from '../skeletons.js/ProductCardSkeleton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,7 +35,9 @@ const useStyles = makeStyles((theme) => ({
 
 const ProductList = ({ filters, sortElemnents }) => {
   const classes = useStyles();
+
   const products = useRef([]);
+
   const initialState = {
     currentPage: 1,
     pageSize: 8,
@@ -37,30 +45,33 @@ const ProductList = ({ filters, sortElemnents }) => {
     itemCount: 0,
     sort: sortElemnents[0].value,
   };
-  const [state, setState] = useState(initialState);
 
-  const handleSortChange = (e) => {
-    setState({
-      ...state,
+  const [state, setState] = useState(initialState);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSortChange = useCallback((e) => {
+    setState((prevState) => ({
+      ...prevState,
       sort: e.target.value,
       currentPage: 1
-    });
-  };
+    }));
+  });
 
-  const handlePageSizeChange = (e) => {
-    setState({
-      ...state,
-      pageSize: parseInt(e.target.value, 8),
+  const handlePageSizeChange = useCallback((e) => {
+    setState((prevState) => ({
+      ...prevState,
+      pageSize: parseInt(e.target.value, 10),
       currentPage: 1
-    });
-  };
+    }));
+  });
 
-  const handlePageChange = (e, page) => {
-    setState({ ...state, currentPage: page });
-  };
+  const handlePageChange = useCallback((e, page) => {
+    setState((prevState) => ({ ...prevState, currentPage: page }));
+  });
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setIsLoading(true);
       try {
         const { currentPage, pageSize, sort } = state;
         const queryParams = {
@@ -103,9 +114,10 @@ const ProductList = ({ filters, sortElemnents }) => {
           console.log('Error', error.message);
         }
       }
+      setIsLoading(false);
     };
     fetchProducts();
-  }, [filters, state.currentPage, state.pageSize, state.sort]);
+  }, [state.currentPage, state.pageSize, state.sort]);
 
   return (
     <>
@@ -113,6 +125,7 @@ const ProductList = ({ filters, sortElemnents }) => {
         <Typography>
           {`Found ${state.itemCount} items`}
         </Typography>
+
         <SortSelector
           sortBy={state.sort}
           handleSortChange={handleSortChange}
@@ -120,16 +133,33 @@ const ProductList = ({ filters, sortElemnents }) => {
         />
       </Box>
 
-      {!isArrayEmpty(products.current) && <Products products={products.current} />}
+      {(!isArrayEmpty(products.current) && !isLoading) ? <Products products={products.current} /> : (
+        <Grid
+          className={classes.root}
+          container
+          justifyContent="flex-start"
+          alignItems="stretch"
+          spacing={1}
+        >
+          {
+              (new Array(state.pageSize)).fill(0).map(() => (
+                <Grid item key={uuid.generate()} className={classes.item} xs={12} sm={4} md={3} xl={2}>
+                  <ProductCardSkeleton />
+                </Grid>
+              ))
+            }
+        </Grid>
+      )}
 
       <Box className={classes.myflex} key="box2">
         <Pagination
           size="large"
-          color={DEFAULT_COLOR}
+          color="primary"
           count={state.pageCount}
           page={state.currentPage}
           onChange={handlePageChange}
         />
+
         <PageSizeSelector
           pageSize={state.pageSize}
           handlePageSizeChange={handlePageSizeChange}
@@ -146,6 +176,7 @@ ProductList.propTypes = {
 ProductList.defaultProps = {
   sortElemnents: [
     { name: 'Newest', value: 'createdAt.desc' },
+    { name: 'Oldest', value: 'createdAt.asc' },
     { name: 'Price (Low to High)', value: 'price.asc' },
     { name: 'Price (High to Low)', value: 'price.desc' },
     { name: 'Discount', value: 'discount.desc' },

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 import List from '@material-ui/core/List';
 import { makeStyles } from '@material-ui/core/styles';

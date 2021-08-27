@@ -24,6 +24,11 @@ module.exports = {
 			productId: Joi.string().guid({ version: 'uuidv4' }).required()
 		})
 	},
+	getRelatedProducts: {
+		params: Joi.object({
+			productId: Joi.string().guid({ version: 'uuidv4' }).required()
+		})
+	},
 	createProduct: {
 		body: Joi.object({
 			enable: Joi.boolean(),
