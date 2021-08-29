@@ -71,4 +71,4 @@ SortSelector.propTypes = {
   sortElemnents: PropTypes.array.isRequired
 };
 
-export default memo(SortSelector, (prevProps, nextProps) => (prevProps.sort === nextProps.sort));
+export default memo(SortSelector, (prevProps, nextProps) => (prevProps.sortBy === nextProps.sortBy));

@@ -1,9 +1,18 @@
+import { productApi } from 'src/utils/api';
+import cartApi from 'src/utils/api/cartApi';
 import {
-  ADD_TO_CART, DELETE_CART, UPDATE_CART, DELETE_ITEM_CART, CHANGE_QUANTITY_ITEM_CART, SET_CART, SELECT_ITEM_CART, SELECT_ALL_CART, UNSELECT_ITEM_CART, UNSELECT_ALL_CART
+  ADD_TO_CART,
+  DELETE_CART,
+  UPDATE_CART,
+  DELETE_ITEM_CART,
+  CHANGE_QUANTITY_ITEM_CART,
+  SET_CART,
+  SELECT_ITEM_CART,
+  SELECT_ALL_CART,
+  UNSELECT_ITEM_CART,
+  UNSELECT_ALL_CART
 } from '../constants/actionTypes';
 import { showAlertMessage } from './alertMessageActions';
-
-import API from '../utils/apiClient';
 
 export const setCart = ({ cart }) => ({
   type: SET_CART,
@@ -67,7 +76,9 @@ export const checkAndAddToCart = ({
   if (!quantity || Number.isNaN(quantity)) {
     dispatch(showAlertMessage({ type: 'error', content: 'Quantity is invalid' }));
   } else {
-    API.get(`/product/${product_id}`).then((response) => response.data.data).then((productFromServer) => {
+    productApi.getProduct({
+      id: product_id
+    }).then((response) => response.data.data).then((productFromServer) => {
       if (productFromServer.disabled === true) {
         dispatch(showAlertMessage({ type: 'error', content: 'This product has been disabled' }));
       } else if (productFromServer.quantity === 0) {
@@ -113,7 +124,7 @@ export const checkAndChangeQuantity = ({ itemIndex, quantity }) => async (dispat
     dispatch(changeQuantityItemCart({ itemIndex, quantity: 1 }));
   } else {
     const cart_item = getState().cart[itemIndex];
-    API.get(`/product/${cart_item.product_id}`).then((response) => response.data.data).then((productFromServer) => {
+    productApi.getProduct({ id: cart_item.product_id }).then((response) => response.data.data).then((productFromServer) => {
       if (productFromServer.quantity === 0) {
         dispatch(showAlertMessage({ type: 'error', content: 'This product has sold out' }));
       } else if (productFromServer.quantity < quantity) {
@@ -129,7 +140,7 @@ export const checkAndChangeQuantity = ({ itemIndex, quantity }) => async (dispat
 };
 
 export const checkItemsValid = ({ items, onSuccess, onFailed }) => async () => {
-  API.post('/cart/check_valid', {
+  cartApi.checkValid({
     cart_items: items.map((item) => ({
       product_id: item.product_id,
       product_name: item.product_name,
@@ -146,7 +157,7 @@ export const checkItemsValid = ({ items, onSuccess, onFailed }) => async () => {
 };
 
 export const checkCartValid = ({ onSuccess, onFailed }) => async (dispatch, getState) => {
-  API.post('/cart/check_valid', {
+  cartApi.checkValid({
     cart_items: getState().cart.map((item) => ({
       product_id: item.product_id,
       product_name: item.product_name,
@@ -163,7 +174,7 @@ export const checkCartValid = ({ onSuccess, onFailed }) => async (dispatch, getS
 };
 
 export const checkCartValidAndUpdate = () => async (dispatch, getState) => {
-  API.post('/cart/check_valid', {
+  cartApi.checkValid({
     cart_items: getState().cart.map((item) => ({
       product_id: item.product_id,
       product_name: item.product_name,
@@ -182,11 +193,3 @@ export const checkCartValidAndUpdate = () => async (dispatch, getState) => {
     showAlertMessage({ type: 'error', content: 'Something wrong happend' });
   });
 };
-
-// export const checkAndValidCart = async (dispatch, getState) => {
-// API.get('/cart/check_valid').then((response) => response.data).then((response) => {
-// if (response.success === true) {
-
-// }
-// });
-// };

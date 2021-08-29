@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useField } from 'formik';
 import {
   Typography, Divider, Radio, FormControlLabel, RadioGroup, Grid, makeStyles
 } from '@material-ui/core';
-import API from '../../utils/apiClient';
+import { orderApi } from 'src/utils/api';
 
 /* eslint-disable react/prop-types */
 
@@ -15,18 +16,22 @@ const useStyles = makeStyles((theme) => ({
     marginBlock: theme.spacing(2)
   }
 }));
-const ReviewAndPayment = ({ paymentMethodId, setPaymentMethod }) => {
+const ReviewAndPayment = ({ fieldName, setPaymentMethod }) => {
   const classes = useStyles();
   const [paymentMethods, setPaymentMethods] = useState([]);
 
+  const [field, meta, helpers] = useField(fieldName);
+
   const handlePaymentMethodChange = (e) => {
-    setPaymentMethod(paymentMethods.find((i) => i.id === parseInt(e.target.value, 8)));
+    const value = parseInt(e.target.value, 10);
+    helpers.setValue(value);
+    setPaymentMethod(paymentMethods.find((i) => i.id === value));
   };
 
   useEffect(() => {
     const fetchPaymentMethods = async () => {
       try {
-        const response = await API.get('/payment/payment_method');
+        const response = await orderApi.getPaymentMethods();
         setPaymentMethods(response.data.data);
       } catch (error) {
         if (error.response) {
@@ -49,15 +54,19 @@ const ReviewAndPayment = ({ paymentMethodId, setPaymentMethod }) => {
 	}, [])
 
   return (
-    <div>
+    <>
       <div className={classes.title}>
-        <Typography variant="h5" className={classes.margin}>Payment Method</Typography>
+        <Typography variant="h6" className={classes.margin}>Payment Method</Typography>
         <Divider />
       </div>
 
       {paymentMethods.length > 0
         ? (
-          <RadioGroup aria-label="gender" name="gender1" value={paymentMethodId} onChange={handlePaymentMethodChange}>
+          <RadioGroup
+            name={fieldName}
+            value={field.value}
+            onChange={handlePaymentMethodChange}
+          >
             <Grid container direction="column">
               {paymentMethods.map((paymentMethod) => ( // eslint-disable-line
                 <Grid key={`shipping_method_${paymentMethod.id}`} item container justifyContent="space-between" alignItems="center" spacing={8}>
@@ -79,12 +88,18 @@ const ReviewAndPayment = ({ paymentMethodId, setPaymentMethod }) => {
           </RadioGroup>
         )
         : <Typography>Sorry, no available payment method now!</Typography>}
-    </div>
+
+      {meta.touched && meta.error && (
+        <Typography color="error" variant="caption">
+          {meta.error}
+        </Typography>
+      )}
+    </>
   );
 };
 
 ReviewAndPayment.propTypes = {
-  paymentMethodId: PropTypes.number,
+  fieldName: PropTypes.string.isRequired,
   setPaymentMethod: PropTypes.func.isRequired
 };
 

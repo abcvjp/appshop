@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import {
   Grid, makeStyles, Box, Divider, Typography, Collapse, List, ListItem, ListItemText, ListItemAvatar, Avatar
 } from '@material-ui/core';
@@ -8,7 +8,8 @@ import { grey } from '@material-ui/core/colors';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-import * as uuid from 'short-uuid';
+import shortid from 'shortid';
+import { caculateTotalPrice } from 'src/utils/utilFuncs';
 
 /* eslint-disable react/prop-types */
 
@@ -36,8 +37,10 @@ const useStyles = makeStyles((theme) => ({
 const OrderSummary = ({ orderItems = [], shippingMethod, paymentMethod }) => {
   const classes = useStyles();
   const [openCartDetail, setOpenCartDetail] = useState(false);
-  const subtotal = orderItems.length > 0 ? orderItems.reduce((accumul, cur) => (accumul + cur.quantity * cur.price), 0) : 0;
+
+  const subtotal = orderItems.length > 0 ? caculateTotalPrice(orderItems) : 0;
   const shippingFee = shippingMethod ? shippingMethod.fee : 0;
+
   const handleClickCartDetail = () => {
     setOpenCartDetail(!openCartDetail);
   };
@@ -110,14 +113,14 @@ const OrderSummary = ({ orderItems = [], shippingMethod, paymentMethod }) => {
 
       <Grid key="orderItems" item>
         <ListItem button onClick={handleClickCartDetail}>
-          <ListItemText primary={`${orderItems.length} item in Cart`} />
+          <ListItemText primary={`${orderItems.length} item to buy`} />
           {openCartDetail ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Divider />
         <Collapse in={openCartDetail} timeout="auto" unmountOnExit>
           <List disablePadding dense>
             {orderItems.map((item) => (
-              <ListItem key={uuid.generate()} button>
+              <ListItem key={shortid.generate()} button>
                 <ListItemAvatar>
                   <Avatar src={item.product_thumbnail.url} />
                 </ListItemAvatar>
@@ -132,4 +135,4 @@ const OrderSummary = ({ orderItems = [], shippingMethod, paymentMethod }) => {
   );
 };
 
-export default OrderSummary;
+export default memo(OrderSummary, (prevProps, nextProps) => (prevProps.shippingMethod === nextProps.shippingMethod && prevProps.paymentMethod === nextProps.paymentMethod));

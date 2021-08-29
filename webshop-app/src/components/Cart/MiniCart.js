@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   checkOut: {
     borderTopLeftRadius: 0,
-    borderTopRightRadius: 0
+    borderTopRightRadius: 0,
   }
 }));
 const MiniCart = () => {
@@ -41,10 +41,24 @@ const MiniCart = () => {
   const itemCount = cart_items.reduce((accumul, cur) => (accumul + cur.quantity), 0);
 
   return (
-    <div onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
-      <IconButton component={RouterLink} to="/cart" color="inherit">
-        <Badge badgeContent={itemCount} color="secondary">
-          <ShoppingCartIcon />
+    <div
+      onMouseEnter={handlePopoverOpen}
+      onMouseLeave={handlePopoverClose}
+    >
+      <IconButton
+        color="inherit"
+        size="medium"
+        component={RouterLink}
+        to="/cart"
+      >
+        <Badge
+          badgeContent={itemCount}
+          color="error"
+        >
+          <div style={{ fontSize: '2rem' }}>
+
+            <ShoppingCartIcon fontSize="inherit" />
+          </div>
         </Badge>
       </IconButton>
       <Popover
@@ -71,13 +85,20 @@ const MiniCart = () => {
           ? (
             <>
               <MiniCartDetail cart_items={cart_items} />
-              <Button className={classes.checkOut} variant="contained" color="primary" size="large" href="/cart" fullWidth>
+              <Button
+                className={classes.checkOut}
+                variant="contained"
+                color="primary"
+                size="large"
+                href="/cart"
+                fullWidth
+              >
                 VIEW CART & CHECK OUT
               </Button>
 
             </>
           )
-          : <Box m={1}><Typography>Your cart is current empty, let buy some product!</Typography></Box>}
+          : <Box m={1}><Typography>Your cart is current empty</Typography></Box>}
       </Popover>
     </div>
   );

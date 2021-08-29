@@ -25,9 +25,16 @@ const useStyles = makeStyles((theme) => ({
 const CartSummary = ({ subtotal, discount = 0, handleProceedToCheckout }) => {
   const classes = useStyles();
   return (
-    <Paper elevation={0} className={classes.root}>
-      <Typography className={classes.margin} variant="h6">Summary</Typography>
+    <Paper
+      elevation={0}
+      className={classes.root}
+    >
+      <Box mb={2}>
+        <Typography variant="h6">Summary</Typography>
+      </Box>
+
       <Divider key="divider_1" variant="fullWidth" />
+
       <Box className={classes.margin} display="flex" justifyContent="space-between">
         <Typography>Subtotal</Typography>
         <Typography>
@@ -35,6 +42,7 @@ const CartSummary = ({ subtotal, discount = 0, handleProceedToCheckout }) => {
           {subtotal}
         </Typography>
       </Box>
+
       <Box className={classes.margin} display="flex" justifyContent="space-between">
         <Typography>Discount</Typography>
         <Typography>
@@ -42,7 +50,9 @@ const CartSummary = ({ subtotal, discount = 0, handleProceedToCheckout }) => {
           {discount}
         </Typography>
       </Box>
+
       <Divider key="divider_2" variant="fullWidth" />
+
       <Box className={classes.margin} display="flex" justifyContent="space-between">
         <Typography>Order Total</Typography>
         <Typography className={classes.total}>
@@ -50,6 +60,7 @@ const CartSummary = ({ subtotal, discount = 0, handleProceedToCheckout }) => {
           {discount + subtotal}
         </Typography>
       </Box>
+
       <Button
         className={classes.checkout}
         color="primary"
@@ -61,6 +72,7 @@ const CartSummary = ({ subtotal, discount = 0, handleProceedToCheckout }) => {
       >
         Proceed To Checkout
       </Button>
+
     </Paper>
   );
 };

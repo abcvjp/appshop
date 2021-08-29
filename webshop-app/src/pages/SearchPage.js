@@ -44,8 +44,8 @@ const SearchPage = () => {
             <List />
           </Grid>
           <Grid key="product_list" item sm={10} className={classes.main}>
-            <Typography className={classes.margin} variant="h4">
-              Search for:
+            <Typography className={classes.margin} variant="h5">
+              Search for
               {' '}
               {`"${keyword}"`}
             </Typography>

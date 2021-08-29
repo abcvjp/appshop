@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useField } from 'formik';
 import {
   Typography, Divider, makeStyles, Radio, FormControlLabel, RadioGroup, Grid
 } from '@material-ui/core';
-import API from '../../utils/apiClient';
+import { orderApi } from 'src/utils/api';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -20,17 +21,22 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ShippingMethod = ({ shippingMethodId, setShippingMethod }) => {
+const ShippingMethod = ({ fieldName, setShippingMethod }) => {
   const classes = useStyles();
   const [shippingMethods, setShippingMethods] = useState([]);
+
+  const [field, meta, helpers] = useField(fieldName);
+
   const handleShippingMethodChange = (e) => {
-    setShippingMethod(shippingMethods.find((i) => i.id === parseInt(e.target.value, 8)));
+    const value = parseInt(e.target.value, 10);
+    helpers.setValue(value);
+    setShippingMethod(shippingMethods.find((i) => i.id === value));
   };
 
   useEffect(() => {
     const fetchShippingMethods = async () => {
       try {
-        const response = await API.get('/shipping/shipping_method');
+        const response = await orderApi.getShippingMethods();
         setShippingMethods(response.data.data);
       } catch (error) {
         if (error.response) {
@@ -53,18 +59,18 @@ const ShippingMethod = ({ shippingMethodId, setShippingMethod }) => {
   }, [])
 
   return (
-    <div>
+    <>
       <div className={classes.title}>
-        <Typography variant="h5" className={classes.margin}>Shipping Methods</Typography>
+        <Typography variant="h6" className={classes.margin}>Shipping Methods</Typography>
         <Divider />
       </div>
 
       {shippingMethods.length > 0
         ? (
           <RadioGroup
-            aria-label="gender"
-            name="gender1"
-            value={shippingMethodId}
+            name={fieldName}
+            onBlur={field.onBlur}
+            value={field.value}
             onChange={handleShippingMethodChange}
           >
             <Grid container direction="column">
@@ -93,12 +99,18 @@ const ShippingMethod = ({ shippingMethodId, setShippingMethod }) => {
         )
         : <Typography>Sorry, no available shipping method now!</Typography>}
 
-    </div>
+      {meta.touched && meta.error && (
+      <Typography color="error" variant="caption">
+        {meta.error}
+      </Typography>
+      )}
+
+    </>
   );
 };
 
 ShippingMethod.propTypes = {
-  shippingMethodId: PropTypes.number,
+  fieldName: PropTypes.string.isRequired,
   setShippingMethod: PropTypes.func.isRequired
 };
 

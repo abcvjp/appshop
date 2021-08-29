@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
   },
   title: {
-    marginBlock: theme.spacing(2),
+    marginBlock: theme.spacing(3),
   },
   detail: {
     flexGrow: 1,
@@ -95,7 +95,7 @@ const CartPage = () => {
             </Grid>
           </>
         )
-        : <Typography>Your cart is empty</Typography>}
+        : <Typography>Your cart is empty, let buy some product!</Typography>}
 
     </div>
   );

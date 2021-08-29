@@ -33,7 +33,7 @@ export const createDataTree = (dataset) => {
     if (aData.parent_id) hashTable[aData.parent_id].childs.push(hashTable[aData.id]);
     else dataTree.push(hashTable[aData.id]);
   });
-  return dataTree;
+  return [dataTree, hashTable];
 };
 
 export const generateBreadCrumbs = (string, map_name_slug) => string.split(' - ').map((name) => ({

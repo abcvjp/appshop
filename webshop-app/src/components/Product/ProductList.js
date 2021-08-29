@@ -12,11 +12,11 @@ import { isArrayEmpty } from 'src/utils/utilFuncs';
 
 import { productApi } from 'src/utils/api';
 
-import * as uuid from 'short-uuid';
-import SortSelector from '../accesscories/SortSelector';
-import PageSizeSelector from '../accesscories/PageSizeSelector';
+import shortid from 'shortid';
+import SortSelector from 'src/components/accesscories/SortSelector';
+import PageSizeSelector from 'src/components/accesscories/PageSizeSelector';
+import ProductCardSkeleton from 'src/components/skeletons/ProductCardSkeleton';
 import Products from './Products';
-import ProductCardSkeleton from '../skeletons.js/ProductCardSkeleton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,18 +33,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const initialState = {
+  currentPage: 1,
+  pageSize: 8,
+  pageCount: 1,
+  itemCount: 0,
+  sort: 'createdAt.desc',
+};
+
 const ProductList = ({ filters, sortElemnents }) => {
   const classes = useStyles();
 
   const products = useRef([]);
-
-  const initialState = {
-    currentPage: 1,
-    pageSize: 8,
-    pageCount: 1,
-    itemCount: 0,
-    sort: sortElemnents[0].value,
-  };
 
   const [state, setState] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
@@ -94,13 +94,7 @@ const ProductList = ({ filters, sortElemnents }) => {
         }));
       } catch (error) {
         products.current = [];
-        setState({
-          currentPage: 1,
-          pageSize: 8,
-          pageCount: 1,
-          itemCount: 0,
-          sort: '',
-        });
+        setState(initialState);
         if (error.response) {
           // Request made and server responded
           console.log(error.response.data);
@@ -117,7 +111,7 @@ const ProductList = ({ filters, sortElemnents }) => {
       setIsLoading(false);
     };
     fetchProducts();
-  }, [state.currentPage, state.pageSize, state.sort]);
+  }, [state.currentPage, state.pageSize, state.sort, filters]);
 
   return (
     <>
@@ -143,7 +137,7 @@ const ProductList = ({ filters, sortElemnents }) => {
         >
           {
               (new Array(state.pageSize)).fill(0).map(() => (
-                <Grid item key={uuid.generate()} className={classes.item} xs={12} sm={4} md={3} xl={2}>
+                <Grid item key={shortid.generate()} className={classes.item} xs={12} sm={4} md={3}>
                   <ProductCardSkeleton />
                 </Grid>
               ))

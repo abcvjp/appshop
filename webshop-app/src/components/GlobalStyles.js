@@ -1,6 +1,6 @@
 import { createStyles, makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => createStyles({
+const useStyles = makeStyles(() => createStyles({
   '@global': {
     '*': {
       boxSizing: 'border-box',
@@ -25,9 +25,9 @@ const useStyles = makeStyles((theme) => createStyles({
       height: '100%',
       width: '100%'
     },
-    '.paperBox': {
-      padding: theme.spacing(2)
-    }
+  },
+  paperBox: {
+    padding: 2
   }
 }));
 

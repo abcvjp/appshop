@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 
-import * as uuid from 'short-uuid';
+import shortid from 'shortid';
 import {
   deleteItemCart, selectItemCart, checkAndChangeQuantity, unselectItemCart, selectAllCart, unselectAllCart, deleteCart
 } from 'src/actions/cartActions';
@@ -16,10 +16,9 @@ import CartItem from './CartItem';
 /* eslint-disable react/prop-types */
 const useStyles = makeStyles((theme) => ({
   root: {
-
+    padding: theme.spacing(2)
   },
   itemsHeaderLeft: {
-    flexGrow: 1,
     justifyContent: 'flex-start',
     alignItems: 'center'
   },
@@ -40,10 +39,9 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'nowrap',
     [theme.breakpoints.down('xs')]: {
       flexWrap: 'wrap'
-    }
-  },
-  margin: {
-    margin: theme.spacing(1)
+    },
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1)
   },
   delete: {
     color: 'grey'
@@ -96,21 +94,32 @@ const CartDetail = ({
   });
 
   return (
-    <Paper elevation={0}>
+    <Paper elevation={0} className={classes.root}>
       <Grid key="header" className={classes.itemsHeader} container>
-        <Grid key="item" className={`${classes.margin} ${classes.itemsHeaderLeft}`} item container sm={7} spacing={3}>
-          <Checkbox
-            disableRipple
-            checked={isSelectedAll}
-            onChange={handleSelectAllChange}
-          />
-          {// eslint-disable-next-line
-          `All (${cartItems.length} items)`}
+
+        <Grid key="item" className={classes.itemsHeaderLeft} item container sm={7} spacing={2}>
+          <Grid key="select" item>
+            <Checkbox
+              disableRipple
+              checked={isSelectedAll}
+              onChange={handleSelectAllChange}
+            />
+          </Grid>
+          <Grid key="item_name" item>
+            {`All (${cartItems.length} items)`}
+          </Grid>
         </Grid>
-        <Grid key="other" className={`${classes.margin} ${classes.itemsHeaderRight}`} item container sm={5}>
-          <Grid item key="price" className={classes.rightItem}>Price</Grid>
-          <Grid item key="quantity" className={classes.rightItem}>Qty</Grid>
-          <Grid item key="subtotal" className={classes.rightItem}>Subtotal</Grid>
+
+        <Grid key="other" className={`${classes.itemsHeaderRight}`} item container sm={5}>
+          <Grid item key="price" className={classes.rightItem}>
+            Price
+          </Grid>
+          <Grid item key="quantity" className={classes.rightItem}>
+            Qty
+          </Grid>
+          <Grid item key="subtotal" className={classes.rightItem}>
+            Subtotal
+          </Grid>
           <Grid item key="delete" className={classes.rightItem}>
             <IconButton
               className={classes.delete}
@@ -121,12 +130,13 @@ const CartDetail = ({
               <Delete />
             </IconButton>
           </Grid>
+
         </Grid>
       </Grid>
       {
         cartItems.map((item, index) => (
-          <div key={uuid.generate()}>
-            <Divider variant="middle" />
+          <div key={shortid.generate()}>
+            <Divider />
             <CartItem
               item={item}
               handleSelectItemChange={handleSelectItemChange(index)}

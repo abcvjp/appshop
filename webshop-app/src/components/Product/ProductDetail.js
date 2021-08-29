@@ -6,9 +6,6 @@ import { grey } from '@material-ui/core/colors';
 import { Rating } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-
-  },
   margin: {
     marginBlock: theme.spacing(2)
   },

@@ -23,7 +23,7 @@ const Products = ({ products }) => {
     >
       {
         products.map((product) => (
-          <Grid item key={product.id} className={classes.item} xs={12} sm={4} md={3} xl={2}>
+          <Grid item key={product.id} className={classes.item} xs={12} sm={4} md={3}>
             <ProductCard
               product={product}
             />

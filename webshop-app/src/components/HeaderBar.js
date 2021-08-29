@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 const HeaderBar = () => {
   const classes = useStyles();
   return (
-    <div>
+    <>
       <CssBaseline />
       <AppBar position="sticky" color="inherit" elevation={0}>
         <Container maxWidth="lg">
@@ -48,7 +48,7 @@ const HeaderBar = () => {
         </Container>
         <Divider />
       </AppBar>
-    </div>
+    </>
   );
 };
 export default HeaderBar;

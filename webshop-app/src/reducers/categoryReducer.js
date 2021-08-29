@@ -13,13 +13,12 @@ const initialState = {
 export default function categoryReducer(state = initialState, action) {
   switch (action.type) {
     case SET_CATEGORIES: {
-      const all = {};
-      const tree = createDataTree(action.categories);
+      const [tree, all] = createDataTree(action.categories);
       const map_slug_id = {};
       const map_name_slug = {};
       const map_name_id = {};
       action.categories.forEach((category) => {
-        all[category.id] = category;
+        // all[category.id] = category;
         map_slug_id[category.slug] = category.id;
         map_name_slug[category.name] = category.slug;
         map_name_id[category.name] = category.id;

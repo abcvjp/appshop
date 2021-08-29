@@ -1,8 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import {
-  Grid, makeStyles, Typography,
-  Container,
+  useEffect, useRef, useState, useCallback
+} from 'react';
+import { useDispatch } from 'react-redux';
+import * as Yup from 'yup';
+import {
+  Grid,
+  makeStyles,
+  Typography,
+  Paper,
   Box
 } from '@material-ui/core';
 
@@ -24,20 +29,23 @@ import { orderApi } from 'src/utils/api';
 import { openConfirmDialog } from 'src/actions/confirmDialog';
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
 import ErrorDialog from 'src/components/Order/ErrorDialog';
-import { isArrayEmpty } from '../utils/utilFuncs';
+import { isArrayEmpty } from 'src/utils/utilFuncs';
+
+import { useFormik, FormikProvider } from 'formik';
+import { deleteCart } from 'src/actions/cartActions';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  paper: {
+    padding: theme.spacing(2)
   },
   title: {
-    marginBlock: theme.spacing(2)
+    marginBlock: theme.spacing(3)
   },
   backButton: {
     marginRight: theme.spacing(1),
   },
   stepper: {
-    maxWidth: 600,
-    marginBlock: theme.spacing(4)
+    marginBlock: theme.spacing(3)
   },
   nextback: {
     display: 'flex',
@@ -58,8 +66,8 @@ const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const orderItems = useRef([]);
-  const shippingFormRef = useRef();
 
   const [, forceRerender] = useState(Date.now());
 
@@ -70,57 +78,34 @@ const CheckoutPage = () => {
     error: ''
   });
 
-  const [orderInfo, setOrderInfo] = useState({
-    email: '',
-    customer_name: '',
-    phone_number: '',
-    address: '',
-    shipping_note: '',
-    shipping_method: null,
-    payment_method: null
+  const [shippingMethod, setShippingMethod] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState(null);
+
+  const handleNext = useCallback(() => {
+    setState((prevState) => ({ ...prevState, activeStep: prevState.activeStep + 1 }));
   });
 
-  console.log(orderInfo);
-
-  const {
-    email, customer_name, phone_number, address, shipping_note
-  } = orderInfo;
-  const shipping_method_id = orderInfo.shipping_method ? orderInfo.shipping_method.id : null;
-  const payment_method_id = orderInfo.payment_method ? orderInfo.payment_method.id : null;
-
-  useEffect(() => {
-    orderItems.current = location.state.orderItems;
-    if (isArrayEmpty(orderItems.current)) {
-      navigate('/cart');
-    }
-    forceRerender(Date.now());
-  }, [location]);
-
-  const handleSubmitShippingForm = async (values) => {
-    setOrderInfo((prevState) => ({ ...prevState, ...values }));
-  };
-
-  const handleShippingNext = () => {
-    shippingFormRef.current.handleSubmit();
-  };
-
-  const handleNext = () => {
-    if (state.activeStep === 0) {
-      handleShippingNext();
-    }
-    setState((prevState) => ({ ...prevState, activeStep: prevState.activeStep + 1 }));
-  };
-  const handleBack = (data) => {
+  const handleBack = useCallback((data) => {
     setState((prevState) => ({ ...prevState, ...data, activeStep: prevState.activeStep - 1 }));
-  };
+  });
 
-  const callPlaceOrder = () => {
+  const callPlaceOrder = useCallback((orderInfo) => {
     const order_items = orderItems.current.map((item) => {
       const {
-        buy_able, product_slug, product_thumbnail, ...temp
+        buy_able, product_slug, product_thumbnail, isSelected, ...temp
       } = item;
       return temp;
     });
+    const {
+      email,
+      customer_name,
+      phone_number,
+      address,
+      shipping_note,
+      shipping_method_id,
+      payment_method_id
+    } = orderInfo;
+
     return orderApi.createOrder({
       email,
       customer_name,
@@ -131,16 +116,17 @@ const CheckoutPage = () => {
       payment_method_id,
       order_items
     });
-  };
+  });
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = useCallback(async (orderInfo) => {
     dispatch(openConfirmDialog({
       message: 'Confirm order?',
       onConfirm: async () => {
         dispatch(openFullScreenLoading());
         try {
-          const response = await callPlaceOrder();
+          const response = await callPlaceOrder(orderInfo);
           setState((prevState) => ({ ...prevState, isOrderSuccess: true, placedOrder: response.data.result }));
+          dispatch(deleteCart());
         } catch (error) {
           if (error.response) {
             setState((prevState) => ({ ...prevState, isOrderSuccess: false, error: error.response.data.error.message }));
@@ -149,30 +135,52 @@ const CheckoutPage = () => {
         dispatch(closeFullScreenLoading());
       }
     }));
-  };
+  });
 
-  const setPaymentMethod = (payment_method) => {
-    setOrderInfo((prevState) => ({ ...prevState, payment_method }));
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      customer_name: '',
+      phone_number: '',
+      address: '',
+      shipping_note: '',
+      shipping_method_id: '',
+      payment_method_id: ''
+    },
+    validationSchema: Yup.object().shape({
+      customer_name: Yup.string().max(100).required('Full name is required'),
+      email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+      phone_number: Yup.string().matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Phone number is not valid').required('Phone number is required'),
+      address: Yup.string().min(10).max(255).required('Shipping address is required'),
+      shipping_note: Yup.string().max(255),
+      shipping_method_id: Yup.number().required('Shipping method is required'),
+      payment_method_id: Yup.number().required('Payment method is required')
+    }),
+    onSubmit: handlePlaceOrder,
+    validateOnChange: true,
+    validateOnBlur: false
+  });
 
-  const setShippingMethod = (shipping_method) => {
-    setOrderInfo((prevState) => ({ ...prevState, shipping_method }));
-  };
+  const handleClickPlaceOrder = useCallback(async () => {
+    await formik.setFieldTouched('shipping_method_id', true);
+    await formik.setFieldTouched('payment_method_id', true);
+    if (formik.isValid) {
+      await formik.submitForm();
+    } else if (formik.errors.payment_method_id) {
+      setState((prevState) => ({ ...prevState, activeStep: 1 }));
+    } else {
+      setState((prevState) => ({ ...prevState, activeStep: 0 }));
+    }
+  }, [formik.isValid, formik.errors]);
 
-  function getStepContent(stepIndex) {
+  const getStepContent = (stepIndex) => {
     switch (stepIndex) {
       case 0:
         return (
           <>
-            <ShippingForm
-              initialValues={{
-                email, customer_name, phone_number, address, shipping_note
-              }}
-              ref={shippingFormRef}
-              onSubmit={handleSubmitShippingForm}
-            />
+            <ShippingForm />
             <ShippingMethod
-              shippingMethodId={shipping_method_id}
+              fieldName="shipping_method_id"
               setShippingMethod={setShippingMethod}
             />
           </>
@@ -180,36 +188,50 @@ const CheckoutPage = () => {
       case 1:
         return (
           <ReviewAndPayment
-            paymentMethodId={payment_method_id}
+            fieldName="payment_method_id"
             setPaymentMethod={setPaymentMethod}
           />
         );
       default:
         return 'Unknown stepIndex';
     }
-  }
+  };
+
+  useEffect(() => {
+    orderItems.current = location.state.orderItems;
+    if (isArrayEmpty(orderItems.current)) {
+      navigate('/cart');
+    }
+    forceRerender(Date.now());
+  }, [location]);
 
   return (
     <>
       {!isArrayEmpty(orderItems.current) && (
         <>
-          <Container className={classes.root} maxWidth="lg">
-            <Typography variant="h4" className={classes.title}>Checkout</Typography>
+          <Typography variant="h5" className={classes.title}>
+            Checkout
+          </Typography>
 
-            <div className={classes.stepper}>
-              <Stepper activeStep={state.activeStep} alternativeLabel>
-                {steps.map((label) => (
-                  <Step key={label}>
-                    <StepLabel>{label}</StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
-            </div>
+          <Paper className={`${classes.paper} ${classes.stepper}`} elevation={0}>
+            <Stepper activeStep={state.activeStep} alternativeLabel>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Paper>
 
-            <Grid container spacing={3} justifyContent="space-between" alignItems="flex-start">
+          <Paper elevation={0} className={classes.paper}>
+
+            <Grid container spacing={4} justifyContent="space-between" alignItems="flex-start">
               <Grid item xs={12} md={8}>
                 <>
-                  {getStepContent(state.activeStep)}
+                  <FormikProvider value={formik}>
+                    {getStepContent(state.activeStep)}
+                  </FormikProvider>
+
                   <Box className={classes.nextback}>
                     <Button
                       variant="contained"
@@ -222,7 +244,7 @@ const CheckoutPage = () => {
                     </Button>
                     {state.activeStep === steps.length - 1
                       ? (
-                        <Button variant="contained" color="primary" size="large" onClick={handlePlaceOrder}>
+                        <Button variant="contained" color="primary" size="large" onClick={handleClickPlaceOrder}>
                           PLACE ORDER
                         </Button>
                       )
@@ -238,14 +260,14 @@ const CheckoutPage = () => {
               <Grid item md={4} style={{ flexGrow: 1 }}>
                 <OrderSummary
                   orderItems={orderItems.current}
-                  shippingMethod={orderInfo.shipping_method}
-                  paymentMethod={orderInfo.payment_method}
+                  shippingMethod={shippingMethod}
+                  paymentMethod={paymentMethod}
                 />
               </Grid>
             </Grid>
             {state.isOrderSuccess && <SuccessDialog order={state.placedOrder} />}
             {state.error && <ErrorDialog error={state.error} />}
-          </Container>
+          </Paper>
         </>
       )}
     </>

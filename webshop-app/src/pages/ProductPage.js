@@ -17,7 +17,7 @@ import ProductDetail from 'src/components/Product/ProductDetail';
 import QuantitySelector from 'src/components/accesscories/QuantitySelector';
 import ProductImages from 'src/components/Product/ProductImages';
 import ProductDescription from 'src/components/Product/ProductDescription';
-import API from 'src/utils/apiClient';
+import { productApi } from 'src/utils/api';
 
 const useStyles = makeStyles((theme) => ({
   detail: {
@@ -107,7 +107,9 @@ const ProductPage = () => {
   });
 
   useEffect(() => {
-    API.get(`/product?slug=${productSlug}`).then((response) => response.data.data).then((fproduct) => {
+    productApi.getProduct({
+      slug: productSlug
+    }).then((response) => response.data.data).then((fproduct) => {
       data.current.product = fproduct;
       forceRerender(Date.now());
     }).catch((err) => {
