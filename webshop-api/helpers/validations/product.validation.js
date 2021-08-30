@@ -40,7 +40,7 @@ module.exports = {
 			root_price: Joi.number().precision(3).min(0).required(),
 			quantity: Joi.number().integer().min(1).required(),
 			short_description: Joi.string().trim().min(20).max(300).required(),
-			description: Joi.string().min(20).max(2500).required(),
+			description: Joi.string().min(20).max(30000).required(),
 			images: Joi.array().items(Joi.object({
 				url: Joi.string().trim().required().min(10),
 				alt: Joi.string().trim().min(10),

@@ -4,6 +4,7 @@ import shortid from 'shortid';
 import Carousel from 'react-material-ui-carousel';
 
 import { Box, makeStyles } from '@material-ui/core';
+import ProductImageViewer from './ProductImageViewer';
 
 const useStyles = makeStyles((theme) => ({
   imgBlock: {
@@ -15,17 +16,22 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     width: '100%',
-    maxHeight: '100%',
+    maxHeight: '100%'
+  },
+  containerIndImg: {
+    maxHeight: theme.spacing(12),
+    maxWidth: theme.spacing(12),
+    display: 'inline-block',
+    marginRight: theme.spacing(1)
   },
   indImg: {
-    margin: theme.spacing(0.5),
-    height: 140,
-    width: 120,
+    maxWidth: '100%',
+    maxHeight: '100%'
   },
   curIndImg: {
-    margin: theme.spacing(0.5),
-    height: 140,
-    width: 120,
+    maxWidth: '100%',
+    maxHeight: '100%',
+    objectFit: 'fill',
     border: '2px solid transparent',
     borderColor: 'black'
   }
@@ -34,8 +40,18 @@ const useStyles = makeStyles((theme) => ({
 const ProductImages = ({ images }) => {
   const classes = useStyles();
   const [imgIndex, setImgIndex] = useState(0);
+  const [isViewerOpen, setViewerOpen] = useState(false);
+
+  const handleViewerClose = () => {
+    setViewerOpen(false);
+  };
+
+  const handleViewerOpen = () => {
+    setViewerOpen(true);
+  };
+
   return (
-    <Box>
+    <>
       <Carousel
         index={imgIndex}
         autoPlay={false}
@@ -54,31 +70,48 @@ const ProductImages = ({ images }) => {
       >
         {
           images.map((image) => (
-            <div key={shortid.generate()} className={classes.imgBlock}>
+            <div
+              key={shortid.generate()}
+              className={classes.imgBlock}
+            >
+              { // eslint-disable-next-line
               <img
                 className={classes.image}
                 alt={image.alt}
                 src={image.url}
+                onClick={handleViewerOpen}
               />
+              }
             </div>
           ))
         }
       </Carousel>
-      <Box mt={1}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        mt={1}
+      >
         {images.map((img, i) => (
-          // eslint-disable-next-line
-          <img
-            key={shortid.generate()}
-            className={i === imgIndex ? classes.curIndImg : classes.indImg}
-            src={img.url}
-            alt={img.alt}
-            onClick={() => {
-              setImgIndex(i);
-            }}
-          />
+          <div className={classes.containerIndImg} key={shortid.generate()}>
+            {// eslint-disable-next-line
+            <img
+              className={i === imgIndex ? classes.curIndImg : classes.indImg}
+              src={img.url}
+              alt={img.alt}
+              onClick={() => {
+                setImgIndex(i);
+              }}
+            />
+            }
+
+          </div>
         ))}
       </Box>
-    </Box>
+      <ProductImageViewer
+        open={isViewerOpen}
+        handleClose={handleViewerClose}
+      />
+    </>
   );
 };
 

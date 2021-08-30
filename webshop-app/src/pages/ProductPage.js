@@ -136,18 +136,23 @@ const ProductPage = () => {
         <Paper className={classes.detail} elevation={0}>
           <Grid container direction="row" justifyContent="space-between" spacing={4}>
 
-            <Grid key="product_images" item xs={12} md={6}>
+            <Grid
+              key="product_images"
+              item
+              xs={12}
+              md={5}
+            >
               <ProductImages images={product.images} productName={product.name} />
             </Grid>
 
             <Grid
               key="product_detail"
               className={`${classes.detail}`}
-              md={6}
+              md={7}
               item
               container
               direction="column"
-              justifyContent="space-between"
+              justifyContent="flex-start"
             >
               <Grid item>
                 <ProductDetail product={product} />

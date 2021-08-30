@@ -16,7 +16,7 @@ module.exports = {
       quantity: 2,
       order_id: '9e648f69-8381-4f67-b7d7-4743a78f7f34',
       product_id: '08452667-319d-4f19-abfe-9db953a18587',
-      product_name: 'ÁO KHOÁC DÙ NAM HAHAMAN',
+      product_name: 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY',
       createdAt: new Date(),
       updatedAt: new Date()
     }
