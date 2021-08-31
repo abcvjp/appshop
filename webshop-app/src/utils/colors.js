@@ -1,5 +1,3 @@
-import { grey as materialGrey } from '@material-ui/core/colors';
-
 const dark = {
   50: '#e3e6e8',
   100: '#bac0c5',
@@ -18,7 +16,7 @@ const dark = {
   A400: '#005ef4',
   A700: '#0054da'
 };
-dark.main = dark['250'];
+dark.main = dark['700'];
 
 const skyBlue = {
   50: '#ecfbff',
@@ -36,15 +34,47 @@ const skyBlue = {
   A400: '#d7f3ff',
   A700: '#beecff'
 };
-skyBlue.main = skyBlue['200'];
+skyBlue.main = skyBlue['900'];
+
+const blue = {
+  50: '#e3f2fd',
+  100: '#bbdefb',
+  200: '#90caf9',
+  300: '#64b5f6',
+  400: '#42a5f5',
+  500: '#2196f3',
+  600: '#1e88e5',
+  700: '#1976d2',
+  800: '#1565c0',
+  900: '#0d47a1',
+  A100: '#82b1ff',
+  A200: '#448aff',
+  A400: '#2979ff',
+  A700: '#2962ff'
+};
+blue.main = blue['600'];
 
 const grey = {
-  ...materialGrey,
-  main: materialGrey[700]
+  50: '#fafafa',
+  100: '#f5f5f5',
+  200: '#eeeeee',
+  300: '#e0e0e0',
+  400: '#bdbdbd',
+  500: '#9e9e9e',
+  600: '#757575',
+  700: '#616161',
+  800: '#424242',
+  900: '#212121',
+  A100: '#d5d5d5',
+  A200: '#aaaaaa',
+  A400: '#303030',
+  A700: '#616161'
 };
+grey.main = grey['600'];
 
 export {
   dark,
   skyBlue,
+  blue,
   grey
 };

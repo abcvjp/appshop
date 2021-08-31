@@ -2,12 +2,14 @@ import PropTypes from 'prop-types';
 import {
   makeStyles, Typography, Box, Divider, Grid
 } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
 import { Rating } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
     marginBlock: theme.spacing(2)
+  },
+  sold: {
+    color: theme.palette.grey.main
   },
   price: {
     fontSize: theme.spacing(4),
@@ -18,15 +20,14 @@ const useStyles = makeStyles((theme) => ({
   },
   root_price: {
     textDecoration: 'line-through',
-    fontSize: theme.spacing(3.5),
+    fontSize: theme.spacing(4),
     verticalAlign: 'middle',
-    color: '#a5a5a5'
+    color: theme.palette.grey.main
   },
   shortDes: {
     fontSize: theme.spacing(2),
     fontWeight: 400,
-    clear: 'both',
-    color: grey[700]
+    clear: 'both'
   },
   qty: {
     width: theme.spacing(8),
@@ -57,7 +58,7 @@ const ProductDetail = ({ product }) => {
         </Grid>
         <Divider flexItem orientation="vertical" variant="middle" />
         <Grid item>
-          <Typography sx={{ fontSize: 24 }}>
+          <Typography sx={{ fontSize: 24 }} className={classes.sold}>
             Sold
             {' '}
             {product.sold}
@@ -77,7 +78,9 @@ const ProductDetail = ({ product }) => {
       </Box>
 
       <Box className={`${classes.margin} ${classes.shortDes}`}>
-        {product.short_description}
+        <Typography variant="body2">
+          {product.short_description}
+        </Typography>
       </Box>
     </Box>
   );

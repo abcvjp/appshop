@@ -14,7 +14,6 @@ import {
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import Button from '@material-ui/core/Button';
 
 import { useLocation } from 'react-router';
 import { useNavigate } from 'react-router-dom';
@@ -33,6 +32,7 @@ import { isArrayEmpty } from 'src/utils/utilFuncs';
 
 import { useFormik, FormikProvider } from 'formik';
 import { deleteCart } from 'src/actions/cartActions';
+import ContainedButton from 'src/components/styled-material/ContainedButton';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -233,25 +233,37 @@ const CheckoutPage = () => {
                   </FormikProvider>
 
                   <Box className={classes.nextback}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="large"
-                      disabled={state.activeStep === 0}
-                      onClick={handleBack}
-                    >
-                      BACK
-                    </Button>
-                    {state.activeStep === steps.length - 1
+                    {state.activeStep === 0
                       ? (
-                        <Button variant="contained" color="primary" size="large" onClick={handleClickPlaceOrder}>
-                          PLACE ORDER
-                        </Button>
+                        <ContainedButton
+                          onClick={() => navigate(-1)}
+                        >
+                          BACK TO PREV
+                        </ContainedButton>
                       )
                       : (
-                        <Button variant="contained" color="primary" size="large" onClick={handleNext}>
+                        <ContainedButton
+                          onClick={handleBack}
+                        >
+                          BACK
+                        </ContainedButton>
+                      )}
+
+                    {state.activeStep === steps.length - 1
+                      ? (
+                        <ContainedButton
+                          onClick={handleClickPlaceOrder}
+                        >
+                          PLACE ORDER
+                        </ContainedButton>
+                      )
+                      : (
+                        <ContainedButton
+                          size="large"
+                          onClick={handleNext}
+                        >
                           {state.activeStep === steps.length - 1 ? 'PLACE ORDER' : 'NEXT'}
-                        </Button>
+                        </ContainedButton>
                       )}
                   </Box>
                 </>

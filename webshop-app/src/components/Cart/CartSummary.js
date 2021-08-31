@@ -1,7 +1,8 @@
 import {
-  Box, Paper, Divider, Typography, Button,
+  Box, Paper, Divider, Typography,
   makeStyles
 } from '@material-ui/core';
+import ContainedButton from '../styled-material/ContainedButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,17 +62,14 @@ const CartSummary = ({ subtotal, discount = 0, handleProceedToCheckout }) => {
         </Typography>
       </Box>
 
-      <Button
+      <ContainedButton
         className={classes.checkout}
-        color="primary"
-        variant="contained"
         size="large"
         fullWidth
-        disableElevation
         onClick={handleProceedToCheckout}
       >
         Proceed To Checkout
-      </Button>
+      </ContainedButton>
 
     </Paper>
   );

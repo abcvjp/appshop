@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  makeStyles, Popover, Typography, Box, Button
+  makeStyles, Popover, Typography, Box
 } from '@material-ui/core';
-
 import { Link as RouterLink } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ContainedButton from '../styled-material/ContainedButton';
 import MiniCartDetail from './MiniCartDetail';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,8 +21,14 @@ const useStyles = makeStyles((theme) => ({
   checkOut: {
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
+    color: 'white',
+    backgroundColor: theme.palette.secondary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.main
+    }
   }
 }));
+
 const MiniCart = () => {
   const classes = useStyles();
   const cart_items = useSelector((state) => state.cart);
@@ -85,16 +91,12 @@ const MiniCart = () => {
           ? (
             <>
               <MiniCartDetail cart_items={cart_items} />
-              <Button
-                className={classes.checkOut}
-                variant="contained"
-                color="primary"
-                size="large"
+              <ContainedButton
                 href="/cart"
                 fullWidth
               >
                 VIEW CART & CHECK OUT
-              </Button>
+              </ContainedButton>
 
             </>
           )

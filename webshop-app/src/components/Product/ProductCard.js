@@ -11,7 +11,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Box, Link } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
-import { blue } from '@material-ui/core/colors';
 
 import { Link as RouterLink } from 'react-router-dom';
 import { checkAndAddToCart } from 'src/actions/cartActions';
@@ -33,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
   content: {
     padding: theme.spacing(2)
   },
+  sold: {
+    color: theme.palette.grey.main
+  },
   price: {
     fontWeight: 600
   },
@@ -46,14 +48,14 @@ const useStyles = makeStyles((theme) => ({
   },
   addbutton: {
     fontWeight: 600,
-    background: blue[700],
+    background: theme.palette.secondary.main,
     color: '#ffffff',
     border: 'solid 2px',
-    borderColor: blue[700],
+    borderColor: theme.palette.secondary.main,
     transition: 'all 0.5s ease-in-out 0s',
     '&:hover': {
       background: 'transparent',
-      color: blue[700],
+      color: theme.palette.secondary.main,
     }
   }
 }));
@@ -102,7 +104,7 @@ const ProductCard = ({ product }) => {
           alignItems="center"
         >
           <Box mr={0.5} mt={0.5}><Rating size="small" defaultValue={2.5} precision={0.5} readOnly /></Box>
-          <Typography variant="body2">
+          <Typography variant="body2" className={classes.sold}>
             | Sold
             {' '}
             {product.sold}

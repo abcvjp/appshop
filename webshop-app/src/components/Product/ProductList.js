@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    margin: theme.spacing(2)
+    margin: theme.spacing(2),
+    color: theme.palette.grey.main
   }
 }));
 
@@ -114,7 +115,7 @@ const ProductList = ({ filters, sortElemnents }) => {
 
   return (
     <>
-      <Box className={classes.toolbar} key="box1">
+      <Box className={classes.toolbar} key="toolbar1">
         <Typography>
           {`Found ${state.itemCount} items`}
         </Typography>
@@ -137,7 +138,7 @@ const ProductList = ({ filters, sortElemnents }) => {
             )
       }
 
-      <Box className={classes.toolbar} key="box2">
+      <Box className={classes.toolbar} key="toolbar2">
         <Pagination
           size="large"
           color="primary"

@@ -1,16 +1,16 @@
 import { createTheme } from '@material-ui/core/styles';
-import { lightBlue, red } from '@material-ui/core/colors';
-import { dark, grey } from 'src/utils/colors';
+import { red } from '@material-ui/core/colors';
+import {
+  blue, dark, grey
+} from 'src/utils/colors';
 
 const theme = createTheme({
   palette: {
-    secondary: {
-      main: lightBlue[500]
-    },
+    secondary: blue,
     primary: dark,
     error: red,
     status: {
-      danger: 'orange',
+      danger: 'red',
       warning: 'orange'
     },
     white: 'white',
@@ -24,6 +24,9 @@ const theme = createTheme({
     h6: {
       fontWeight: 400
     }
+  },
+  stepper: {
+    iconColor: blue.main
   }
 });
 

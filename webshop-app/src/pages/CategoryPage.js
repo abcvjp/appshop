@@ -35,8 +35,6 @@ const CategoryPage = () => {
 
   const categoriesStore = useSelector((state) => state.categories);
 
-  console.log(categoriesStore);
-
   useEffect(() => {
     // CHECK CATEGORY IN STORE OTHERWISE FETCH CATEGORY BY SLUG
     if (!isObjectEmpty(categoriesStore.map_slug_id)) {
@@ -59,7 +57,7 @@ const CategoryPage = () => {
         <Paper elevation={1} square>
           <Grid container spacing={0}>
 
-            <Grid key="more" item xs={12} sm={2} className={classes.bar}>
+            <Grid key="more" item xs={12} sm={3} lg={2} className={classes.bar}>
               {!isArrayEmpty(data.current.category.childs) && (
                 <>
                   <Typography variant="subtitle2">SUBCATEGORY</Typography>
@@ -72,7 +70,7 @@ const CategoryPage = () => {
               )}
             </Grid>
 
-            <Grid key="product_list" item sm={10} className={classes.main}>
+            <Grid key="product_list" item sm={9} lg={10} className={classes.main}>
               <Box m={2}>
                 <Typography variant="h5">
                   {data.current.category.name}

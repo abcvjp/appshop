@@ -47,7 +47,14 @@ const MiniCartItem = ({ item, deleteItem }) => {
         secondary={`${item.price}$ - Qty: ${item.quantity}`}
       />
       <ListItemSecondaryAction>
-        <IconButton onClick={deleteItem} className={classes.deleteButton} edge="end" disableRipple disableFocusRipple disableTouchRipple>
+        <IconButton
+          className={classes.deleteButton}
+          edge="end"
+          disableRipple
+          disableFocusRipple
+          disableTouchRipple
+          onClick={deleteItem}
+        >
           <Delete />
         </IconButton>
       </ListItemSecondaryAction>
