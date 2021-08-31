@@ -56,6 +56,7 @@ const HeaderCategory = ({ category }) => {
         </Link>
 
       </Button>
+      {!isArrayEmpty(category.childs) && (
       <ParentPopupState.Provider value={popupState}>
         <Menu
           {...bindMenu(popupState)}
@@ -66,6 +67,7 @@ const HeaderCategory = ({ category }) => {
           {category.childs.map((c) => buildMenu(c))}
         </Menu>
       </ParentPopupState.Provider>
+      )}
     </div>
   );
 };
