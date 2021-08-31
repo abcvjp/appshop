@@ -86,6 +86,7 @@ const ProductImages = ({ images }) => {
           ))
         }
       </Carousel>
+
       <Box
         display="flex"
         justifyContent="center"
@@ -103,14 +104,17 @@ const ProductImages = ({ images }) => {
               }}
             />
             }
-
           </div>
         ))}
       </Box>
+
+      {isViewerOpen && (
       <ProductImageViewer
-        open={isViewerOpen}
+        initialIndex={imgIndex}
+        images={images}
         handleClose={handleViewerClose}
       />
+      )}
     </>
   );
 };

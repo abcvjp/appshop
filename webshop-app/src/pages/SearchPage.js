@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { useLocation } from 'react-router';
 
 import {
-  Grid, makeStyles, Paper, List, Typography
+  Grid, makeStyles, Paper, Typography, Box
 } from '@material-ui/core';
 
+import PriceRangeFilter from 'src/components/accesscories/PriceRangeFilter';
 import ProductList from '../components/Product/ProductList';
 import Breadcrumbs from '../components/accesscories/Breadcrumbs';
 
@@ -17,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2)
   },
   bar: {
-    padding: theme.spacing(1.5),
+    padding: theme.spacing(2),
     borderRight: '1px solid #e6e6e6'
   }
 }));
@@ -30,6 +32,14 @@ const SearchPage = () => {
   const classes = useStyles();
   const keyword = useQuery().get('q');
 
+  const [filters, setFilters] = useState({
+    price: null
+  });
+
+  const handeApplyPriceRange = (priceRange) => {
+    setFilters((prev) => ({ ...prev, price: priceRange }));
+  };
+
   return (
     <>
       <Breadcrumbs breadcrumbs={[{
@@ -41,7 +51,13 @@ const SearchPage = () => {
       <Paper elevation={1} square>
         <Grid container spacing={0} wrap="wrap">
           <Grid key="childs_category" item xs={12} sm={2} className={classes.bar}>
-            <List />
+            <Box my={2}>
+              <Typography variant="subtitle2">Price</Typography>
+            </Box>
+            <PriceRangeFilter
+              initialValues={filters.price}
+              onApply={handeApplyPriceRange}
+            />
           </Grid>
           <Grid key="product_list" item sm={10} className={classes.main}>
             <Typography className={classes.margin} variant="h5">
@@ -49,7 +65,7 @@ const SearchPage = () => {
               {' '}
               {`"${keyword}"`}
             </Typography>
-            <ProductList filters={{ q: keyword }} />
+            <ProductList filters={{ q: keyword, ...filters }} />
           </Grid>
         </Grid>
       </Paper>

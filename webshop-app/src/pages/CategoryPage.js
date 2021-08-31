@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import {
   Grid, makeStyles, Paper, Typography,
-  Box
+  Box,
+  Divider
 } from '@material-ui/core';
 
 import ProductList from 'src/components/Product/ProductList';
@@ -11,14 +12,12 @@ import { useSelector } from 'react-redux';
 import { generateBreadCrumbs, isArrayEmpty, isObjectEmpty } from 'src/utils/utilFuncs';
 import { useParams } from 'react-router';
 import CategoryChildrenTree from 'src/components/Category/CategoryChildrenTree';
+import PriceRangeFilter from 'src/components/accesscories/PriceRangeFilter';
 
 const useStyles = makeStyles((theme) => ({
   bar: {
     padding: theme.spacing(2),
     borderRight: '1px solid #e6e6e6'
-  },
-  main: {
-
   }
 }));
 
@@ -28,12 +27,20 @@ const CategoryPage = () => {
 
   const data = useRef({
     category: null,
-    filters: null,
     breadcrumbs: []
   });
+
+  const [filters, setFilters] = useState({
+    price: null
+  });
+
   const [, forceRerender] = useState(Date.now());
 
   const categoriesStore = useSelector((state) => state.categories);
+
+  const handeApplyPriceRange = (priceRange) => {
+    setFilters((prev) => ({ ...prev, price: priceRange }));
+  };
 
   useEffect(() => {
     // CHECK CATEGORY IN STORE OTHERWISE FETCH CATEGORY BY SLUG
@@ -42,7 +49,6 @@ const CategoryPage = () => {
       const category = categoriesStore.all[categoryId];
       data.current = {
         category,
-        filters: null,
         breadcrumbs: generateBreadCrumbs(category.path, categoriesStore.map_name_slug)
       };
       forceRerender(Date.now());
@@ -57,27 +63,37 @@ const CategoryPage = () => {
         <Paper elevation={1} square>
           <Grid container spacing={0}>
 
-            <Grid key="more" item xs={12} sm={3} lg={2} className={classes.bar}>
+            <Grid key="more" item xs={12} md={2} className={classes.bar}>
               {!isArrayEmpty(data.current.category.childs) && (
                 <>
-                  <Typography variant="subtitle2">SUBCATEGORY</Typography>
-                  <Box mt={1}>
+                  <Typography variant="subtitle2">Subcategory</Typography>
+                  <Box my={2}>
                     <CategoryChildrenTree
                       childs={data.current.category.childs}
                     />
                   </Box>
+                  <Divider />
                 </>
               )}
+
+              <Box my={2}>
+                <Typography variant="subtitle2">Price</Typography>
+              </Box>
+              <PriceRangeFilter
+                initialValues={filters.price}
+                onApply={handeApplyPriceRange}
+              />
+
             </Grid>
 
-            <Grid key="product_list" item sm={9} lg={10} className={classes.main}>
+            <Grid key="product_list" item md={10}>
               <Box m={2}>
                 <Typography variant="h5">
                   {data.current.category.name}
                 </Typography>
               </Box>
               <ProductList
-                filters={{ category_slug: categorySlug, ...data.current.filters }}
+                filters={{ category_slug: categorySlug, ...filters }}
               />
             </Grid>
 
