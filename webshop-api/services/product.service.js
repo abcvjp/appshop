@@ -7,7 +7,7 @@ const { calculateLimitAndOffset, paginate } = require('paginate-info')
 const { roundPrice } = require('../helpers/logicFunc.helper')
 const { deleteObjProps } = require('../helpers/js.helper')
 
-exports.getProducts = async ({ current_page, page_size, sort, category_id, category_slug, enable, published, in_stock, include, exclude }) => {
+exports.getProducts = async ({ current_page, page_size, sort, category_id, category_slug, enable, published, in_stock, price, include, exclude }) => {
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		if (category_id !== undefined) {
@@ -26,6 +26,7 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					${published !== undefined ? `p.published = ${published ? 1 : 0}` : '1=1'}
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
+					AND ${price !== undefined ? `p.price BETWEEN ${price.split(',')[0]} AND ${price.split(',')[1]}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`, { nest: true })
 			// console.log(rows)
@@ -52,6 +53,7 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					${published !== undefined ? `p.published = ${published ? 1 : 0}` : '1=1'}
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
+					AND ${price !== undefined ? `p.price BETWEEN ${price.split(',')[0]} AND ${price.split(',')[1]}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`, { nest: true })
 			var count = rows.length
@@ -71,6 +73,11 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 			}
 			if (published !== undefined) {
 				filter.published = published ? 1 : 0
+			}
+			if (price !== undefined) {
+				filter.price = {
+					[Sequelize.Op.between]: price.split(',')
+				}
 			}
 			var { rows, count } = await Product.findAndCountAll({
 				include: {

@@ -9,8 +9,9 @@ module.exports = {
 			category_id: Joi.string().guid({ version: 'uuidv4' }),
 			category_slug: Joi.string().min(1),
 			enable: Joi.bool(),
-			published: Joi.boolean(),
-			in_stock: Joi.bool()
+			published: Joi.bool(),
+			in_stock: Joi.bool(),
+			price: Joi.string().trim()
 		})
 	},
 	getProduct: {

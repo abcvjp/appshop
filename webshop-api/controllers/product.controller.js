@@ -38,17 +38,21 @@ exports.deleteProducts = asyncHandler(async (req, res, next) => {
 })
 
 exports.getProducts = asyncHandler(async (req, res, next) => {
-	const { current_page, page_size, sort, category_id, category_slug, enable, published, in_stock } = req.query
+	const { current_page, page_size, sort, category_id, category_slug, enable, published, in_stock, price } = req.query
 	const user = req.user
 	let result
 	if (user && user.role === Role.Admin) {
-		result = await productService.getProducts({ current_page, page_size, sort, category_id, category_slug, enable, published, in_stock })
+		result = await productService.getProducts({ current_page, page_size, sort, category_id, category_slug,
+			enable, published, in_stock,
+			price
+		})
 	} else {
 		result = await productService.getProducts({
 			current_page, page_size, sort, category_id, category_slug,
 			enable: true,
 			published: true,
 			in_stock: true,
+			price,
 			exclude: ['enable', 'published']
 		})
 	}
