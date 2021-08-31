@@ -9,7 +9,8 @@ module.exports = {
 			page_size: Joi.number().integer().min(1),
 			sort: Joi.string().min(1),
 			enable: Joi.bool(),
-			in_stock: Joi.bool()
+			in_stock: Joi.bool(),
+			price: Joi.string().trim()
 		})
 	}
 }

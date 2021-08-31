@@ -4,7 +4,7 @@ const createError = require('http-errors')
 const { calculateLimitAndOffset, paginate } = require('paginate-info')
 const { deleteObjProps } = require('../helpers/js.helper')
 
-exports.searchProducts = async ({ keyword, category_id, current_page, page_size, sort, enable, published, in_stock, exclude }) => {
+exports.searchProducts = async ({ keyword, category_id, current_page, page_size, sort, enable, published, in_stock, price, exclude }) => {
 	try {
 		const { limit, offset } = calculateLimitAndOffset(current_page, page_size)
 		if (category_id !== undefined) {
@@ -25,6 +25,7 @@ exports.searchProducts = async ({ keyword, category_id, current_page, page_size,
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
+					AND ${price !== undefined ? `p.price BETWEEN ${price.split(',')[0]} AND ${price.split(',')[1]}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
 			`, { nest: true })
 			var count = rows.length
@@ -42,6 +43,7 @@ exports.searchProducts = async ({ keyword, category_id, current_page, page_size,
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
+					AND ${price !== undefined ? `p.price BETWEEN ${price.split(',')[0]} AND ${price.split(',')[1]}` : '1=1'}
 				ORDER BY ${sort ? sort.replace('.', ' ') : 'relevance DESC'};
 			`, { nest: true })
 			var count = rows.length
