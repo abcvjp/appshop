@@ -4,7 +4,7 @@ import {
 import PropTypes from 'prop-types';
 
 import {
-  Typography, Box, Grid, makeStyles
+  Typography, Box, makeStyles
 } from '@material-ui/core';
 
 import { Pagination } from '@material-ui/lab';
@@ -12,11 +12,10 @@ import { isArrayEmpty } from 'src/utils/utilFuncs';
 
 import { productApi } from 'src/utils/api';
 
-import shortid from 'shortid';
 import SortSelector from 'src/components/accesscories/SortSelector';
 import PageSizeSelector from 'src/components/accesscories/PageSizeSelector';
-import ProductCardSkeleton from 'src/components/skeletons/ProductCardSkeleton';
 import Products from './Products';
+import ProductListSkeleton from '../skeletons/ProductListSkeleton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   item: {
     width: '25%',
   },
-  myflex: {
+  toolbar: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -115,7 +114,7 @@ const ProductList = ({ filters, sortElemnents }) => {
 
   return (
     <>
-      <Box className={classes.myflex} key="box1">
+      <Box className={classes.toolbar} key="box1">
         <Typography>
           {`Found ${state.itemCount} items`}
         </Typography>
@@ -127,25 +126,18 @@ const ProductList = ({ filters, sortElemnents }) => {
         />
       </Box>
 
-      {(!isArrayEmpty(products.current) && !isLoading) ? <Products products={products.current} /> : (
-        <Grid
-          className={classes.root}
-          container
-          justifyContent="flex-start"
-          alignItems="stretch"
-          spacing={1}
-        >
-          {
-              (new Array(state.pageSize)).fill(0).map(() => (
-                <Grid item key={shortid.generate()} className={classes.item} xs={12} sm={4} md={3}>
-                  <ProductCardSkeleton />
-                </Grid>
-              ))
-            }
-        </Grid>
-      )}
+      {
+        // eslint-disable-next-line
+        isLoading ? <ProductListSkeleton size={state.pageSize} />
+          : !isArrayEmpty(products.current) ? <Products products={products.current} />
+            : (
+              <Box m={2}>
+                <Typography>There are no available product now!</Typography>
+              </Box>
+            )
+      }
 
-      <Box className={classes.myflex} key="box2">
+      <Box className={classes.toolbar} key="box2">
         <Pagination
           size="large"
           color="primary"

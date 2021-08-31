@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
   bar: {
     padding: theme.spacing(2),
     borderRight: '1px solid #e6e6e6'
+  },
+  main: {
+
   }
 }));
 
