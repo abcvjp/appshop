@@ -5,7 +5,7 @@ const categoryValidation = require("../helpers/validations/category.validation")
 
 const { authenticate, authorize } = require("../controllers/user.controller");
 const Role = require("../helpers/roles.helper");
-const { validate } = require("express-validation");
+const { validate } = require("../helpers/validator.helper");
 
 router.get(
   "/all",
