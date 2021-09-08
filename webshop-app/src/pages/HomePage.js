@@ -13,6 +13,7 @@ import ProductListSkeleton from 'src/components/skeletons/ProductListSkeleton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    marginBlock: theme.spacing(3)
   },
   title: {
     paddingTop: theme.spacing(4),

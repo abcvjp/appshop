@@ -26,7 +26,7 @@ function App() {
       <GlobalStyles />
       <BrowserRouter>
         <HeaderBar />
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" style={{ minHeight: '80%' }}>
           <Routing />
         </Container>
       </BrowserRouter>
