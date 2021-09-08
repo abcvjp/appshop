@@ -27,7 +27,8 @@ exports.searchProducts = async ({
 					UNION
 					SELECT c.id, c.name, c.parent_id, c.slug FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
 				)
-				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, p.quantity, p.sold,
+				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, 1-p.price/p.root_price AS discount,
+					p.quantity, p.sold,
 					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug',
 					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
@@ -48,7 +49,7 @@ exports.searchProducts = async ({
                 }`
               : "1=1"
           }
-				ORDER BY ${sort ? sort.replace(".", " ") : "relevance DESC"};
+				ORDER BY ${sort !== undefined ? sort.replace(".", " ") : "relevance DESC"};
 			`,
         { nest: true }
       );
@@ -57,7 +58,8 @@ exports.searchProducts = async ({
     } else {
       const rows = await sequelize.query(
         `
-				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, p.quantity, p.sold,
+				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, 1-p.price/p.root_price AS discount,
+					p.quantity, p.sold,
 					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt,
 					c.name as 'category.name', c.id as 'category.id', c.name as 'category.name', c.slug as 'category.slug',
@@ -79,7 +81,7 @@ exports.searchProducts = async ({
                 }`
               : "1=1"
           }
-				ORDER BY ${sort ? sort.replace(".", " ") : "relevance DESC"};
+				ORDER BY ${sort !== undefined ? sort.replace(".", " ") : "relevance DESC"};
 			`,
         { nest: true }
       );

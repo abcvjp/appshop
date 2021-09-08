@@ -18,7 +18,8 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					UNION
 					SELECT c.id, c.name, c.parent_id, c.slug FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
 				)
-				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, p.quantity, p.sold,
+				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, 1-p.price/p.root_price AS discount,
+					p.quantity, p.sold,
 					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
@@ -27,7 +28,7 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 					AND ${price !== undefined ? `p.price BETWEEN ${price.split(',')[0]} AND ${price.split(',')[1]}` : '1=1'}
-				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
+				ORDER BY ${sort !== undefined ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`, { nest: true })
 			// console.log(rows)
 			var count = rows.length
@@ -45,7 +46,8 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					UNION
 					SELECT c.id, c.name, c.parent_id, c.slug FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
 				)
-				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, p.quantity, p.sold,
+				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, 1-p.price/p.root_price AS discount,
+					p.quantity, p.sold,
 					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
@@ -54,7 +56,7 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${in_stock !== undefined ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}` : '1=1'}
 					AND ${price !== undefined ? `p.price BETWEEN ${price.split(',')[0]} AND ${price.split(',')[1]}` : '1=1'}
-				ORDER BY ${sort ? sort.replace('.', ' ') : 'createdAt DESC'};
+				ORDER BY ${sort !== undefined ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`, { nest: true })
 			var count = rows.length
 			var result = rows.slice(offset, offset + limit)
@@ -90,7 +92,7 @@ exports.getProducts = async ({ current_page, page_size, sort, category_id, categ
 					exclude: ['category_id'].concat(exclude)
 				},
 				limit, offset,
-				order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
+				order: sort !== undefined ? [sort.split('.')] : [['createdAt', 'DESC']]
 			})
 			var result = rows
 		}
