@@ -37,5 +37,14 @@ module.exports = {
     200: {
       $ref: "#/components/responses/OperationSuccess",
     },
+    400: {
+      $ref: "#/components/responses/ValidationFailed",
+    },
+    401: {
+      $ref: "#/components/responses/Unauthorized",
+    },
+    403: {
+      $ref: "#/components/responses/Forbidden",
+    },
   },
 };

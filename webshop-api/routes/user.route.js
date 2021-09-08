@@ -15,7 +15,7 @@ router.get(
 router.post("/signup", validate(userValidation.signup), userController.signup);
 router.post("/login", validate(userValidation.login), userController.login);
 router.get("/refresh_token", userController.refreshToken);
-router.get("/logout", userController.logout);
+router.get("/logout", authenticate({ required: true }), userController.logout);
 router.get(
   "/:userId",
   validate(userValidation.getUserById),

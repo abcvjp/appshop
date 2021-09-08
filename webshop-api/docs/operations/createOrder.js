@@ -116,5 +116,8 @@ module.exports = {
         },
       },
     },
+    400: {
+      $ref: "#/components/responses/ValidationFailed",
+    },
   },
 };

@@ -1,6 +1,6 @@
 module.exports = {
-  NotFound: {
-    description: "No result found",
+  Forbidden: {
+    description: "Forbidden/authorize error",
     content: {
       "application/json": {
         schema: {
@@ -19,7 +19,7 @@ module.exports = {
               properties: {
                 message: {
                   type: "string",
-                  example: "Can't find any result",
+                  example: "You don't have permission to access this",
                 },
               },
             },
