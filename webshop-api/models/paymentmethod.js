@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class PaymentMethod extends Model {
     /**
@@ -11,29 +9,33 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       PaymentMethod.hasMany(models.Order, {
-        foreignKey: { name: 'payment_method_id', allowNull: false },
-        onDelete: 'RESTRICT'
-      })
+        foreignKey: { name: "payment_method_id", allowNull: false },
+        onDelete: "RESTRICT",
+      });
     }
-  };
-  PaymentMethod.init({
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
+  }
+
+  PaymentMethod.init(
+    {
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      enable: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
+      detail: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
-    enable: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true
-    },
-    detail: {
-      type: DataTypes.STRING,
-      allowNull: true
+    {
+      sequelize,
+      modelName: "PaymentMethod",
     }
-  }, {
-    sequelize,
-    modelName: 'PaymentMethod',
-  });
+  );
   return PaymentMethod;
 };

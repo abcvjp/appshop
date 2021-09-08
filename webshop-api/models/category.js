@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Category extends Model {
     /**
@@ -10,67 +8,74 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Category.hasMany(models.Product, { foreignKey: { name: 'category_id', allowNull: false }, as: 'products' })
+      Category.hasMany(models.Product, {
+        foreignKey: { name: "category_id", allowNull: false },
+        as: "products",
+      });
       Category.hasMany(Category, {
         foreignKey: {
-          name: 'parent_id',
+          name: "parent_id",
           allowNull: true,
         },
-        as: 'childs',
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
-      })
+        as: "childs",
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      });
     }
-  };
-  Category.init({
-    id: {
-      primaryKey: true,
-      allowNull: false,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4
+  }
+
+  Category.init(
+    {
+      id: {
+        primaryKey: true,
+        allowNull: false,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      published: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      path: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      slug: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          isLowercase: true,
+        },
+      },
+      meta_title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      meta_description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      meta_keywords: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    published: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    path: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    slug: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        isLowercase: true
-      }
-    },
-    meta_title: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    meta_description: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    meta_keywords: {
-      type: DataTypes.STRING,
-      allowNull: true
+    {
+      sequelize,
+      modelName: "Category",
     }
-  }, {
-    sequelize,
-    modelName: 'Category',
-  });
+  );
   return Category;
 };

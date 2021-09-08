@@ -16,12 +16,17 @@ const morgan = require('morgan');
 
 var app = express();
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDoc = require('./docs');
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+
 app.use(cors({
   origin: config.get('cors.whiteList'),
   credentials: config.get('cors.credentials')
 }))
-app.use(bodyParser.json())
-app.use(boolParser())
+app.use(bodyParser.json());
+app.use(boolParser());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
