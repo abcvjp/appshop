@@ -10,7 +10,7 @@
     "username": "hoaideptrai",
     "password": "123456",
     "database": "webshop_db",
-    "host": "dbtest",
+    "host": "db-test",
     "dialect": "mysql"
   },
   "production": {

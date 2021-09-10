@@ -4,7 +4,13 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www --legacy-watch"
+    "dev": "nodemon ./bin/www --legacy-watch",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=5000 --watchAll",
+    "pre-test": "cross-env NODE_ENV=test sh -c 'npm run migrate:reset && npm run seed:reset'",
+    "migrate": "sequelize-cli db:migrate",
+    "migrate:reset": "sequelize-cli db:migrate:undo:all && npm run migrate",
+    "seed": "sequelize-cli db:seed:all",
+    "seed:reset": "sequelize-cli db:seed:undo:all && npm run seed"
   },
   "dependencies": {
     "@joi/date": "^2.1.0",
@@ -37,6 +43,15 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "sequelize-mig": "^3.1.3"
+    "cross-env": "^7.0.3",
+    "jest": "^27.1.1",
+    "sequelize-mig": "^3.1.3",
+    "supertest": "^6.1.6"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
