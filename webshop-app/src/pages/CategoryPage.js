@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { Helmet } from 'react-helmet';
 import {
   Grid, makeStyles, Paper, Typography,
   Box,
@@ -13,6 +14,8 @@ import { generateBreadCrumbs, isArrayEmpty, isObjectEmpty } from 'src/utils/util
 import { useParams } from 'react-router';
 import CategoryChildrenTree from 'src/components/Category/CategoryChildrenTree';
 import PriceRangeFilter from 'src/components/accesscories/PriceRangeFilter';
+
+import { APP_TITLE } from 'src/constants/appInfo';
 
 const useStyles = makeStyles((theme) => ({
   bar: {
@@ -57,14 +60,24 @@ const CategoryPage = () => {
 
   return (
     <>
+
       {!isArrayEmpty(data.current.breadcrumbs) && <Breadcrumbs breadcrumbs={data.current.breadcrumbs} />}
 
       {data.current.category && (
-        <Paper elevation={1} square>
-          <Grid container spacing={0}>
+        <>
+          <Helmet>
+            <title>
+              {`${data.current.category.meta_title} | ${APP_TITLE}`}
+            </title>
+            <meta name="description" content={data.current.category.meta_description} />
+            <meta name="keywords" content={data.current.category.meta_keywords} />
+          </Helmet>
 
-            <Grid key="more" item xs={12} md={2} className={classes.bar}>
-              {!isArrayEmpty(data.current.category.childs) && (
+          <Paper elevation={1} square>
+            <Grid container spacing={0}>
+
+              <Grid key="more" item xs={12} md={2} className={classes.bar}>
+                {!isArrayEmpty(data.current.category.childs) && (
                 <>
                   <Typography variant="subtitle2">Subcategory</Typography>
                   <Box my={2}>
@@ -74,31 +87,32 @@ const CategoryPage = () => {
                   </Box>
                   <Divider />
                 </>
-              )}
+                )}
 
-              <Box my={2}>
-                <Typography variant="subtitle2">Price</Typography>
-              </Box>
-              <PriceRangeFilter
-                initialValues={filters.price}
-                onApply={handeApplyPriceRange}
-              />
+                <Box my={2}>
+                  <Typography variant="subtitle2">Price</Typography>
+                </Box>
+                <PriceRangeFilter
+                  initialValues={filters.price}
+                  onApply={handeApplyPriceRange}
+                />
+
+              </Grid>
+
+              <Grid key="product_list" item md={10}>
+                <Box m={2}>
+                  <Typography variant="h5">
+                    {data.current.category.name}
+                  </Typography>
+                </Box>
+                <ProductList
+                  filters={{ category_slug: categorySlug, ...filters }}
+                />
+              </Grid>
 
             </Grid>
-
-            <Grid key="product_list" item md={10}>
-              <Box m={2}>
-                <Typography variant="h5">
-                  {data.current.category.name}
-                </Typography>
-              </Box>
-              <ProductList
-                filters={{ category_slug: categorySlug, ...filters }}
-              />
-            </Grid>
-
-          </Grid>
-        </Paper>
+          </Paper>
+        </>
       )}
 
     </>

@@ -2,6 +2,7 @@ import {
   useEffect, useRef, useState, useCallback
 } from 'react';
 import { useDispatch } from 'react-redux';
+import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
 import {
   Grid,
@@ -33,6 +34,8 @@ import { isArrayEmpty } from 'src/utils/utilFuncs';
 import { useFormik, FormikProvider } from 'formik';
 import { deleteCart } from 'src/actions/cartActions';
 import ContainedButton from 'src/components/styled-material/ContainedButton';
+
+import { APP_TITLE } from 'src/constants/appInfo';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -207,6 +210,14 @@ const CheckoutPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          Checkout |
+          {' '}
+          {APP_TITLE}
+        </title>
+      </Helmet>
+
       {!isArrayEmpty(orderItems.current) && (
         <>
           <Typography variant="h5" className={classes.title}>

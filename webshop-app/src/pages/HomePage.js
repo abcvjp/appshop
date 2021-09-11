@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { Helmet } from 'react-helmet';
 import {
   makeStyles,
   Container,
@@ -10,6 +11,8 @@ import Products from 'src/components/Product/Products';
 import { productApi } from 'src/utils/api';
 import { isArrayEmpty } from 'src/utils/utilFuncs';
 import ProductListSkeleton from 'src/components/skeletons/ProductListSkeleton';
+
+import { APP_TITLE } from 'src/constants/appInfo';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,6 +50,11 @@ const HomePage = () => {
 
   return (
     <Container className={classes.root}>
+
+      <Helmet>
+        <title>{APP_TITLE}</title>
+      </Helmet>
+
       <Typography variant="h5" className={classes.title}>New Product</Typography>
       <Paper elevation={0}>
         {

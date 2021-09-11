@@ -5,6 +5,8 @@ import { useParams } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { Helmet } from 'react-helmet';
+
 import {
   Grid, makeStyles, Box, Paper, Divider, Button
 } from '@material-ui/core';
@@ -18,6 +20,8 @@ import QuantitySelector from 'src/components/accesscories/QuantitySelector';
 import ProductImages from 'src/components/Product/ProductImages';
 import ProductDescription from 'src/components/Product/ProductDescription';
 import { productApi } from 'src/utils/api';
+
+import { APP_TITLE } from 'src/constants/appInfo';
 
 const useStyles = makeStyles((theme) => ({
   detail: {
@@ -133,6 +137,14 @@ const ProductPage = () => {
       {!isArrayEmpty(data.current.breadcrumbs) && <Breadcrumbs breadcrumbs={data.current.breadcrumbs} />}
       {product && (
       <>
+        <Helmet>
+          <title>
+            {`${product.meta_title} | ${APP_TITLE}`}
+          </title>
+          <meta name="description" content={product.meta_description} />
+          <meta name="keywords" content={product.meta_keywords} />
+        </Helmet>
+
         <Paper className={classes.detail} elevation={0}>
           <Grid container direction="row" justifyContent="space-between" spacing={4}>
 

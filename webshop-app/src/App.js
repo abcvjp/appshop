@@ -14,6 +14,9 @@ import Footer from 'src/components/Footer';
 import Routing from 'src/components/Routing';
 import GlobalComponents from 'src/components/global';
 import GlobalStyles from 'src/components/GlobalStyles';
+import { Helmet } from 'react-helmet';
+
+import { APP_TITLE, APP_AUTHOR, APP_DESCRIPTION } from './constants/appInfo';
 
 function App() {
   const dispatch = useDispatch();
@@ -22,17 +25,25 @@ function App() {
     dispatch(setCart({ cart: JSON.parse(cartData) }));
   }
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyles />
-      <BrowserRouter>
-        <HeaderBar />
-        <Container maxWidth="lg" style={{ minHeight: '80%' }}>
-          <Routing />
-        </Container>
-      </BrowserRouter>
-      <Footer />
-      <GlobalComponents />
-    </ThemeProvider>
+    <>
+      <Helmet>
+        <title>{APP_TITLE}</title>
+        <meta name="author" content={APP_AUTHOR} />
+        <meta name="description" content={APP_DESCRIPTION} />
+      </Helmet>
+
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <BrowserRouter>
+          <HeaderBar />
+          <Container maxWidth="lg" style={{ minHeight: '80%' }}>
+            <Routing />
+          </Container>
+        </BrowserRouter>
+        <Footer />
+        <GlobalComponents />
+      </ThemeProvider>
+    </>
   );
 }
 

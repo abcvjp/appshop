@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { Helmet } from 'react-helmet';
+
 import {
   Grid, makeStyles, Typography,
 } from '@material-ui/core';
@@ -14,6 +16,7 @@ import { showAlertMessage } from 'src/actions/alertMessageActions';
 
 import CartDetail from 'src/components/Cart/CartDetail';
 import CartSummary from 'src/components/Cart/CartSummary';
+import { APP_TITLE } from 'src/constants/appInfo';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +79,15 @@ const CartPage = () => {
 
   return (
     <div className={classes.root}>
+
+      <Helmet>
+        <title>
+          Cart |
+          {' '}
+          {APP_TITLE}
+        </title>
+      </Helmet>
+
       <Typography variant="h5" className={classes.title}>Shopping Cart</Typography>
       {cartItems.length > 0
         ? (

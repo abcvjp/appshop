@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router';
 
+import { Helmet } from 'react-helmet';
+
 import {
   Grid, makeStyles, Paper, Typography, Box
 } from '@material-ui/core';
+
+import { APP_TITLE } from 'src/constants/appInfo';
 
 import PriceRangeFilter from 'src/components/accesscories/PriceRangeFilter';
 import ProductList from '../components/Product/ProductList';
@@ -42,6 +46,15 @@ const SearchPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          Search for
+          {' '}
+          {`"${keyword}" | ${APP_TITLE}`}
+
+        </title>
+      </Helmet>
+
       <Breadcrumbs breadcrumbs={[{
         name: `Search results for: '${keyword}'`,
         path: ''
