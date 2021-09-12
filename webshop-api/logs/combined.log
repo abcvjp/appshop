@@ -135,3 +135,22 @@
 {"stack":"ConflictError: Email already exists\n    at Object.exports.signup (/api/services/user.service.js:88:11)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at async /api/controllers/user.controller.js:17:17","level":"error","message":"Email already exists","timestamp":"2021-09-12T04:35:21.504Z"}
 {"timestamp":"12/Sep/2021:04:35:21 +0000","client":"::ffff:172.24.0.3","method":"POST","url":"/user/signup","status":409,"contentLength":"60","responseTime":5.104,"level":"info","message":"HTTP Access Log: POST /user/signup 409 5.104 ms - 60"}
 {"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T04:35:42.016Z"}
+{"timestamp":"12/Sep/2021:04:36:35 +0000","client":"::ffff:172.24.0.3","method":"GET","url":"/category/all","status":304,"contentLength":"-","responseTime":152.267,"level":"info","message":"HTTP Access Log: GET /category/all 304 152.267 ms - -"}
+{"timestamp":"12/Sep/2021:04:36:35 +0000","client":"::ffff:172.24.0.3","method":"GET","url":"/product/all?sort=createdAt.desc&page_size=4","status":304,"contentLength":"-","responseTime":92.227,"level":"info","message":"HTTP Access Log: GET /product/all?sort=createdAt.desc&page_size=4 304 92.227 ms - -"}
+{"timestamp":"12/Sep/2021:04:36:35 +0000","client":"::ffff:172.24.0.3","method":"GET","url":"/product/all?sort=sold.desc&page_size=4","status":304,"contentLength":"-","responseTime":86.956,"level":"info","message":"HTTP Access Log: GET /product/all?sort=sold.desc&page_size=4 304 86.956 ms - -"}
+{"timestamp":"12/Sep/2021:04:50:13 +0000","client":"::ffff:172.24.0.3","method":"GET","url":"/product/all?category_slug=thoi-trang-nam&current_page=1&page_size=8&sort=createdAt.desc","status":304,"contentLength":"-","responseTime":42.932,"level":"info","message":"HTTP Access Log: GET /product/all?category_slug=thoi-trang-nam&current_page=1&page_size=8&sort=createdAt.desc 304 42.932 ms - -"}
+{"timestamp":"12/Sep/2021:04:50:17 +0000","client":"::ffff:172.24.0.3","method":"POST","url":"/cart/check_valid","status":200,"contentLength":"30","responseTime":13.117,"level":"info","message":"HTTP Access Log: POST /cart/check_valid 200 13.117 ms - 30"}
+{"timestamp":"12/Sep/2021:04:50:24 +0000","client":"::ffff:172.24.0.3","method":"POST","url":"/cart/check_valid","status":200,"contentLength":"30","responseTime":3.754,"level":"info","message":"HTTP Access Log: POST /cart/check_valid 200 3.754 ms - 30"}
+{"timestamp":"12/Sep/2021:04:50:24 +0000","client":"::ffff:172.24.0.3","method":"GET","url":"/shipping/shipping_method","status":304,"contentLength":"-","responseTime":6.495,"level":"info","message":"HTTP Access Log: GET /shipping/shipping_method 304 6.495 ms - -"}
+{"timestamp":"12/Sep/2021:04:50:27 +0000","client":"::ffff:172.24.0.3","method":"GET","url":"/product/all?sort=createdAt.desc&page_size=4","status":304,"contentLength":"-","responseTime":26.871,"level":"info","message":"HTTP Access Log: GET /product/all?sort=createdAt.desc&page_size=4 304 26.871 ms - -"}
+{"timestamp":"12/Sep/2021:04:50:27 +0000","client":"::ffff:172.24.0.3","method":"GET","url":"/product/all?sort=sold.desc&page_size=4","status":304,"contentLength":"-","responseTime":31.488,"level":"info","message":"HTTP Access Log: GET /product/all?sort=sold.desc&page_size=4 304 31.488 ms - -"}
+{"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T04:54:07.575Z"}
+{"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T04:54:39.090Z"}
+{"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T04:57:49.677Z"}
+{"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T04:59:33.423Z"}
+{"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T05:00:39.171Z"}
+{"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T05:01:27.129Z"}
+{"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T05:02:05.593Z"}
+{"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T05:03:36.414Z"}
+{"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T05:04:16.905Z"}
+{"message":"Server is listening on port 5000","level":"info","timestamp":"2021-09-12T05:04:55.257Z"}
