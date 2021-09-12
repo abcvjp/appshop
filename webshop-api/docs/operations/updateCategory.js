@@ -8,6 +8,18 @@ module.exports = {
       access_token: [],
     },
   ],
+  parameters: [
+    {
+      name: "categoryId",
+      in: "path",
+      description: "category id",
+      schema: {
+        type: "string",
+        format: "uuidv4",
+      },
+      required: true,
+    },
+  ],
   requestBody: {
     required: true,
     content: {

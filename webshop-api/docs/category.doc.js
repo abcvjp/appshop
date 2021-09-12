@@ -12,10 +12,10 @@ module.exports = {
   "/category": {
     get: getCategory,
     post: createCategory,
-    put: updateCategory,
     delete: deleteCategories,
   },
   "/category/{categoryId}": {
     delete: deleteCategory,
+    put: updateCategory,
   },
 };
