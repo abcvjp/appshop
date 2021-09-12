@@ -1,6 +1,4 @@
 const userService = require('../services/user.service')
-const { JWT } = require('../helpers')
-const debug = require('debug')
 const createError = require('http-errors')
 const asyncHandler = require('express-async-handler')
 
@@ -21,9 +19,9 @@ exports.signup = asyncHandler(async (req, res, next) => {
 })
 
 exports.logout = asyncHandler(async (req, res, next) => {
-	const { access_token } = req.cookies
-	if (access_token) {
-		const result = await userService.deleteRefreshToken({ access_token })
+	const { user } = req
+	if (user) {
+		await userService.deleteRefreshToken({ user })
 		res.clearCookie('access_token')
 		res.clearCookie('refresh_token')
 		res.status(200).json({ success: true })
@@ -40,7 +38,7 @@ exports.refreshToken = asyncHandler(async (req, res, next) => {
 		res.cookie('refresh_token', result.refresh_token, { httpOnly: true, path: '/user' })
 		res.status(200).json(result)
 	} else {
-		throw createError(409, 'You do not have refresh token')
+		throw createError(400, 'You do not have refresh token')
 	}
 })
 
@@ -59,9 +57,9 @@ exports.authenticate = ({ required }) => asyncHandler(async (req, res, next) => 
 	const { access_token } = req.cookies
 	if (access_token) {
 		const user = await userService.authenticate({ access_token })
-		req.user = user
+		req.user = user ? user : null
 		if (required === true && !user) {
-			throw createError(403, 'Your access token is invalid')
+			throw createError(403, 'Authentication failed')
 		}
 	} else if (required === true) {
 		throw createError(401, 'You must login to get access')

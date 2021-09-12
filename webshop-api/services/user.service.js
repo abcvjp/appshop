@@ -2,6 +2,7 @@ const User = require("../models").User;
 const createError = require("http-errors");
 const { Bcrypt, JWT } = require("../helpers");
 const { uuid } = require("uuidv4");
+const { Op } = require("../models").Sequelize
 
 exports.login = async ({ username, password }) => {
   try {
@@ -11,11 +12,11 @@ exports.login = async ({ username, password }) => {
     }
     if (Bcrypt.verifyPassword(password, user.hash)) {
       const { id, email, role, full_name, avatar } = user;
-      const token_id = uuid();
+      const access_token_id = uuid();
       const access_token = JWT.generateAccessToken({
         username,
         role,
-        token_id,
+        access_token_id,
       });
       const refresh_token_id = uuid();
       const refresh_token = JWT.generateRefreshToken({
@@ -49,13 +50,21 @@ exports.login = async ({ username, password }) => {
 
 exports.signup = async ({ username, password, email, full_name }) => {
   try {
-    const userByName = await User.findOne({ where: { username } });
-    if (userByName) {
-      throw createError(409, "User already exists");
-    }
-    const userByEmail = await User.findOne({ where: { email } });
-    if (userByEmail) {
-      throw createError(409, "Email already exists");
+    const userFromServer = await User.findOne({
+      where: {
+        [Op.or]: [
+          { username },
+          { email }
+        ]
+      }
+    });
+    if (userFromServer) {
+      if (userFromServer.username === username) {
+        throw createError(409, "Username already exists");
+      }
+      if (userFromServer.email === email) {
+        throw createError(409, "Email already exists");
+      }
     }
     const id = uuid();
     const hash = Bcrypt.hashPassword(password);
@@ -82,19 +91,17 @@ exports.signup = async ({ username, password, email, full_name }) => {
 
 exports.refreshToken = async ({ refresh_token }) => {
   try {
-    const user = await User.findOne({
-      where: { refresh_token },
-    });
+    const user = await JWT.verifyRefreshToken(refresh_token);
     if (!user) {
       throw createError(401, "Refresh token is not valid");
     }
-    const { id, username, email, role, full_name } = user;
-    const token_id = uuid();
+    const { username, email, role } = user;
+    const access_token_id = uuid();
     const newAccessToken = JWT.generateAccessToken({
       username,
       email,
       role,
-      token_id,
+      access_token_id,
     });
     const refresh_token_id = uuid();
     const newRefreshToken = JWT.generateRefreshToken({
@@ -103,7 +110,16 @@ exports.refreshToken = async ({ refresh_token }) => {
       role,
       refresh_token_id,
     });
-    await user.update({ refresh_token: newRefreshToken });
+    await User.update(
+      {
+        refresh_token: newRefreshToken
+      },
+      {
+        where: {
+          username
+        }
+      }
+    );
     return {
       success: true,
       access_token: newAccessToken,
@@ -114,15 +130,10 @@ exports.refreshToken = async ({ refresh_token }) => {
   }
 };
 
-exports.deleteRefreshToken = async ({ access_token }) => {
+exports.deleteRefreshToken = async ({ user }) => {
   try {
-    const user = JWT.verifyAccessToken(access_token);
-    if (user) {
-      const userInDb = await User.findOne({ username: user.username });
-      await userInDb.update({ refresh_token: null });
-    } else {
-      throw createError(401, "Acess token is not valid");
-    }
+    const userInDb = await User.findOne({ username: user.username });
+    await userInDb.update({ refresh_token: null });
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
   }
