@@ -16,7 +16,7 @@ import {
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
-  Users as UsersIcon,
+  // Users as UsersIcon,
   Folder as CategoryIcon,
   ShoppingCart as OrderIcon,
   FileText as ReportIcon
@@ -29,11 +29,11 @@ const items = [
     icon: BarChartIcon,
     title: 'Dashboard'
   },
-  {
-    href: '/management/customer',
-    icon: UsersIcon,
-    title: 'Customers'
-  },
+  // {
+  // href: '/management/customer',
+  // icon: UsersIcon,
+  // title: 'Customers'
+  // },
   {
     href: '/management/category',
     icon: CategoryIcon,

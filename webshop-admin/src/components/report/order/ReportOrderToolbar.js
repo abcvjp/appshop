@@ -69,10 +69,6 @@ const ReportOrderToolbar = () => {
           justifyContent: 'flex-end'
         }}
       >
-        <Button key="import">
-          Import
-        </Button>
-
         <CSVLink
           headers={exportFileHeaders}
           data={state.reports}
@@ -182,7 +178,7 @@ const ReportOrderToolbar = () => {
                   }
                 </Select>
               </Grid>
-              <Grid item key="sort">
+              <Grid item key="groupBy">
                 <InputLabel>Group By</InputLabel>
                 <Select
                   native

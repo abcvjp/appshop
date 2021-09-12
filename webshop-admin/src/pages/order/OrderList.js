@@ -114,17 +114,21 @@ const OrderList = () => {
     const fetchOrders = async () => {
       dispatch({ type: 'SET_LOADING' });
       const { filters } = state;
-      const response = await orderApi.getOrders({
-        current_page: state.currentPage + 1,
-        page_size: state.pageSize,
-        ...filters,
-        sort: state.sort
-      });
-      dispatch({
-        type: 'SET_ORDERS',
-        orders: response.data.data,
-        count: response.data.pagination.count
-      });
+      try {
+        const response = await orderApi.getOrders({
+          current_page: state.currentPage + 1,
+          page_size: state.pageSize,
+          ...filters,
+          sort: state.sort
+        });
+        dispatch({
+          type: 'SET_ORDERS',
+          orders: response.data.data,
+          count: response.data.pagination.count
+        });
+      } catch (err) {
+        console.log(err);
+      }
       dispatch({ type: 'SET_UNLOADING' });
     };
     fetchOrders();

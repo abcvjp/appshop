@@ -113,23 +113,26 @@ const ReportOrder = () => {
     const fetchReports = async () => {
       dispatch({ type: 'SET_LOADING' });
       const { filters } = state;
-      const response = await reportApi.getOrderReport({
-        current_page: state.currentPage + 1,
-        page_size: state.pageSize,
-        ...filters,
-        group_by: state.group_by,
-        sort: state.sort
-      });
-      dispatch({
-        type: 'SET_REPORTS',
-        reports: response.data.data,
-        count: response.data.pagination.count
-      });
+      try {
+        const response = await reportApi.getOrderReport({
+          current_page: state.currentPage + 1,
+          page_size: state.pageSize,
+          ...filters,
+          group_by: state.group_by,
+          sort: state.sort
+        });
+        dispatch({
+          type: 'SET_REPORTS',
+          reports: response.data.data,
+          count: response.data.pagination.count
+        });
+      } catch (err) {
+        console.log('fetch report order error');
+      }
       dispatch({ type: 'SET_UNLOADING' });
     };
     fetchReports();
   }, [state.pageSize, state.currentPage, state.filters, state.sort, state.group_by, state.triggerFetch]);
-  console.log('report order');
   return (
     <Page
       title="Order Reports"

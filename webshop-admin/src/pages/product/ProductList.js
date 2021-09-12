@@ -126,20 +126,24 @@ const ProductList = () => {
 
   const fetchProducts = async () => {
     dispatch({ type: 'SET_LOADING' });
-    const response = await productApi.getAll({
-      current_page: state.currentPage + 1,
-      page_size: state.pageSize,
-      category_id: state.filters.categoryId,
-      enable: state.filters.enable,
-      in_stock: state.filters.inStock,
-      published: state.filters.published,
-      sort: state.sort
-    });
-    dispatch({
-      type: 'SET_PRODUCTS',
-      products: response.data.data,
-      count: response.data.pagination.count
-    });
+    try {
+      const response = await productApi.getAll({
+        current_page: state.currentPage + 1,
+        page_size: state.pageSize,
+        category_id: state.filters.categoryId,
+        enable: state.filters.enable,
+        in_stock: state.filters.inStock,
+        published: state.filters.published,
+        sort: state.sort
+      });
+      dispatch({
+        type: 'SET_PRODUCTS',
+        products: response.data.data,
+        count: response.data.pagination.count
+      });
+    } catch (err) {
+      console.log(err);
+    }
     dispatch({ type: 'SET_UNLOADING' });
   };
 

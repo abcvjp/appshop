@@ -88,5 +88,7 @@ export const statusColors = {
   DISABLED: 'red',
   ENABLED: 'green',
   Published: 'green',
-  Unpublished: 'red'
+  Unpublished: 'red',
+  PUBLISHED: 'green',
+  UNPUBLISHED: 'red'
 };

@@ -136,9 +136,6 @@ const ProductListToolbar = () => {
           justifyContent: 'flex-end'
         }}
       >
-        <Button key="import">
-          Import
-        </Button>
         <CSVLink
           headers={exportFileHeaders}
           data={state.products}

@@ -18,27 +18,29 @@ const OrderItemList = ({ items }) => (
       <TableBody>
         {items.map((item) => (
           <TableRow key={item.product_id} hover>
-            <Box
-              sx={{
-                alignItems: 'center',
-                display: 'flex',
-                padding: 2
-              }}
-            >
-              <Avatar
-                src={item.product_thumbnail}
-                sx={{ mr: 2 }}
-                variant="rounded"
-              />
-              <Typography
-                color="textPrimary"
-                variant="body1"
-                component={Link}
-                to={`/management/product/${item.product_id}/edit`}
+            <TableCell>
+              <Box
+                sx={{
+                  alignItems: 'center',
+                  display: 'flex',
+                  padding: 2
+                }}
               >
-                {item.product_name}
-              </Typography>
-            </Box>
+                <Avatar
+                  src={item.product_thumbnail ? item.product_thumbnail.url : null}
+                  sx={{ mr: 2 }}
+                  variant="rounded"
+                />
+                <Typography
+                  color="textPrimary"
+                  variant="body1"
+                  component={Link}
+                  to={`/management/product/${item.product_id}/edit`}
+                >
+                  {item.product_name}
+                </Typography>
+              </Box>
+            </TableCell>
             <TableCell align="left">{item.price}</TableCell>
             <TableCell align="left">{item.quantity}</TableCell>
           </TableRow>

@@ -16,9 +16,6 @@ const ViewOrderToolbar = () => (
         justifyContent: 'flex-end'
       }}
     >
-      <Button key="import">
-        Import
-      </Button>
       <Button key="export" sx={{ mx: 1 }}>
         Export
       </Button>
@@ -35,7 +32,7 @@ const ViewOrderToolbar = () => (
     <Box key={2} sx={{ mt: 3 }}>
       <Card>
         <CardContent>
-          <Typography>Hoai dep trai</Typography>
+          <Typography>View order</Typography>
         </CardContent>
       </Card>
     </Box>

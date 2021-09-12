@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
+import { CategoryListContext } from 'src/utils/contexts';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -14,17 +14,34 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
+  LinearProgress
 } from '@material-ui/core';
-import { openConfirmDialog } from '../../actions/confirmDialog';
+import { openConfirmDialog } from 'src/actions/confirmDialog';
 
-import { categoryApi } from '../../utils/api';
+import { categoryApi } from 'src/utils/api';
+import StatusLabel from '../StatusLabel';
 
-const CategoryListResults = ({ categories }) => {
-  const dispatch = useDispatch();
+const CategoryListResults = () => {
+  const dispatchGlobal = useDispatch();
+  const { state, dispatch } = useContext(CategoryListContext);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
+  const { categories } = state;
+  // const selectedCategories = categories.filter((item) => selectedCategoryIds.includes(item.id));
+
+  const handleLimitChange = useCallback((event) => {
+    dispatch({
+      type: 'CHANGE_PAGE_SIZE',
+      pageSize: event.target.value
+    });
+  }, []);
+
+  const handlePageChange = useCallback((event, newPage) => {
+    dispatch({
+      type: 'CHANGE_CURRENT_PAGE',
+      currentPage: newPage
+    });
+  }, []);
 
   const handleSelectAll = (event) => {
     let newSelectedCategoryIds;
@@ -58,30 +75,61 @@ const CategoryListResults = ({ categories }) => {
     setSelectedCategoryIds(newSelectedCategoryIds);
   };
 
-  const handleDeleteSelected = () => {
-    dispatch(openConfirmDialog({
-      message: 'Are you sure want to delete all selected categories and ALL OF ITS CHILDREN?',
+  const handleDeleteSelected = useCallback(() => {
+    dispatchGlobal(openConfirmDialog({
+      message: 'Are you sure want to delete all selected categories?',
       onConfirm: async () => {
         await categoryApi.deleteCategories(selectedCategoryIds);
-        selectedCategoryIds.forEach((id) => {
-          categories.splice(categories.findIndex((i) => i.id === id), 1);
-        });
         setSelectedCategoryIds([]);
+        dispatch({
+          type: 'TRIGGER_FETCH'
+        });
       }
     }));
-  };
+  }, [selectedCategoryIds]);
 
-  const handleLimitChange = (event) => {
-    setLimit(parseInt(event.target.value, 8));
-  };
+  // const checkPublishSelected = () => selectedCategories.every((item) => item.published === false);
+  // const handlePublishSelected = () => {
+  // dispatchGlobal(openConfirmDialog({
+  // message: 'Are you sure want to publish all selected categories?',
+  // onConfirm: async () => {
+  // const categoriesTemp = selectedCategoryIds.map((id) => ({
+  // id,
+  // published: true
+  // }));
+  // await categoryApi.updateCategories(categoriesTemp);
+  // dispatch({
+  // type: 'UPDATE_CATEGORIES',
+  // categories: categoriesTemp
+  // });
+  // setSelectedCategoryIds([]);
+  // }
+  // }));
+  // };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
+  // const checkHideSelected = () => selectedCategories.every((item) => item.published === true);
+  // const handleHideSelected = () => {
+  // dispatchGlobal(openConfirmDialog({
+  // message: 'Are you sure want to publish all selected categories?',
+  // onConfirm: async () => {
+  // const categoriesTemp = selectedCategoryIds.map((id) => ({
+  // id,
+  // published: false
+  // }));
+  // await categoryApi.updateCategories(categoriesTemp);
+  // dispatch({
+  // type: 'UPDATE_CATEGORIES',
+  // categories: categoriesTemp
+  // });
+  // setSelectedCategoryIds([]);
+  // }
+  // }));
+  // };
 
   return (
     <Card>
       <Box sx={{ minWidth: 1050 }}>
+        {state.isLoading && <LinearProgress />}
         <Table>
           <TableHead>
             <TableRow>
@@ -106,7 +154,10 @@ const CategoryListResults = ({ categories }) => {
                       Path
                     </TableCell>
                     <TableCell>
-                      Description
+                      Published
+                    </TableCell>
+                    <TableCell>
+                      Created At
                     </TableCell>
                     <TableCell align="right">
                       Actions
@@ -114,22 +165,20 @@ const CategoryListResults = ({ categories }) => {
                   </>
                 ) : (
                   <TableCell>
-                    <Box m={0.5} display="inline-block">
-                      <Button
-                        color="primary"
-                        size="small"
-                        variant="outlined"
-                        onClick={handleDeleteSelected}
-                      >
-                        Delete
-                      </Button>
-                    </Box>
+                    <Button
+                      color="primary"
+                      size="small"
+                      variant="outlined"
+                      onClick={handleDeleteSelected}
+                    >
+                      Delete
+                    </Button>
                   </TableCell>
                 )}
             </TableRow>
           </TableHead>
           <TableBody>
-            {categories.slice(page * limit, page * limit + limit).map((category) => (
+            {categories.map((category) => (
               <TableRow
                 hover
                 key={category.id}
@@ -143,31 +192,26 @@ const CategoryListResults = ({ categories }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  <Box
-                    sx={{
-                      alignItems: 'center',
-                      display: 'flex'
-                    }}
+                  <Link
+                    target="_blank"
+                    href={`${process.env.REACT_APP_APP_BASE}/${category.slug}`}
                   >
-                    <Link
-                      target="_blank"
-                      href={`${process.env.REACT_APP_APP_BASE}/${category.slug}`}
-                      rel="noreferrer"
+                    <Typography
+                      color="textPrimary"
+                      variant="body1"
                     >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {category.name}
-                      </Typography>
-                    </Link>
-                  </Box>
+                      {category.name}
+                    </Typography>
+                  </Link>
                 </TableCell>
                 <TableCell>
                   {category.path}
                 </TableCell>
                 <TableCell>
-                  {category.description}
+                  {category.published ? <StatusLabel status="PUBLISHED" /> : <StatusLabel status="UNPUBLISHED" />}
+                </TableCell>
+                <TableCell>
+                  {new Date(category.createdAt).toLocaleString('en-us')}
                 </TableCell>
                 <TableCell align="right">
                   <Box m={0.5} display="inline-block">
@@ -189,19 +233,15 @@ const CategoryListResults = ({ categories }) => {
       </Box>
       <TablePagination
         component="div"
-        count={categories.length}
+        count={state.count}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
+        page={state.currentPage}
+        rowsPerPage={state.pageSize}
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
   );
-};
-
-CategoryListResults.propTypes = {
-  categories: PropTypes.array.isRequired
 };
 
 export default CategoryListResults;
