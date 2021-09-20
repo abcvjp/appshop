@@ -21,5 +21,11 @@ router.get(
   validate(userValidation.getUserById),
   userController.getUserById
 );
+router.put(
+  "/:userId",
+  authenticate({ required: true }),
+  validate(userValidation.updateUserInfo),
+  userController.updateUserInfo
+);
 
 module.exports = router;

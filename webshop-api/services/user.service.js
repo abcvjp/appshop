@@ -11,7 +11,7 @@ exports.login = async ({ username, password }) => {
       throw createError(404, "User doesn't exist");
     }
     if (Bcrypt.verifyPassword(password, user.hash)) {
-      const { id, email, role, full_name, avatar } = user;
+      const { id, email, phone_number, role, full_name, avatar } = user;
       const access_token = JWT.generateAccessTokenByUser(user);
       const refresh_token = JWT.generateRefreshTokenByUser(user);
       await user.update({
@@ -24,6 +24,7 @@ exports.login = async ({ username, password }) => {
           username,
           full_name,
           email,
+          phone_number,
           role,
           avatar,
         },
@@ -38,11 +39,11 @@ exports.login = async ({ username, password }) => {
   }
 };
 
-exports.signup = async ({ username, password, email, full_name }) => {
+exports.signup = async ({ username, password, email, phone_number, full_name }) => {
   try {
     const userFromServer = await User.findOne({
       where: {
-        [Op.or]: [{ username }, { email }],
+        [Op.or]: [{ username }, { email }, {phone_number}],
       },
     });
     if (userFromServer) {
@@ -52,6 +53,9 @@ exports.signup = async ({ username, password, email, full_name }) => {
       if (userFromServer.email === email) {
         throw createError(409, "Email already exists");
       }
+      if (userFromServer.phone_number === phone_number) {
+        throw createError(409, "Phone number already exists");
+      }
     }
     const id = uuid();
     const hash = Bcrypt.hashPassword(password);
@@ -60,6 +64,7 @@ exports.signup = async ({ username, password, email, full_name }) => {
       username,
       hash,
       email,
+      phone_number,
       full_name,
     });
     return {
@@ -68,6 +73,7 @@ exports.signup = async ({ username, password, email, full_name }) => {
         username,
         full_name,
         email,
+        phone_number,
         role: newUser.role,
       },
     };
@@ -168,3 +174,40 @@ exports.getAll = async () => {
     throw createError(error.statusCode || 500, error.message);
   }
 };
+
+exports.updateUserInfo = async ({ id, username, full_name, email, phone_number, avatar}) => {
+  try {
+    if (username !== undefined) {
+      const userByUsername = await User.findOne({ where: { username } });
+      if (userByUsername && userByUsername.id !== id) throw createError(409, "Username already exists");
+    }
+    if (email !== undefined) {
+      const userByEmail = await User.findOne({ where: { email } });
+      if (userByEmail && userByEmail.id !== id) throw createError(409, "Email already exists");
+    }
+    if (phone_number !== undefined) {
+      const userByPhoneNumber = await User.findOne({ where: { phone_number } });
+      if (userByPhoneNumber && userByPhoneNumber.id !== id) throw createError(409, "Phone number already exists");
+    }
+    const user = await User.findOne({
+      where: { id },
+      attributes: {
+        exclude: ["refresh_token", "hash"],
+      },
+    });
+    if (!user) throw createError(404, "User does not exist");
+    await user.update({
+      // username,
+      full_name,
+      email,
+      phone_number,
+      avatar
+    });
+    return {
+      success: true,
+      result: user
+    };
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+}

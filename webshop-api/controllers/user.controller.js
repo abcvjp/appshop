@@ -1,6 +1,7 @@
 const userService = require('../services/user.service')
 const createError = require('http-errors')
 const asyncHandler = require('express-async-handler')
+const Role = require("../helpers/roles.helper");
 
 exports.login = asyncHandler(async (req, res, next) => {
 	const { username, password } = req.body
@@ -13,8 +14,8 @@ exports.login = asyncHandler(async (req, res, next) => {
 })
 
 exports.signup = asyncHandler(async (req, res, next) => {
-	const { username, password, email, full_name } = req.body
-	const result = await userService.signup({ username, password, email, full_name })
+	const { username, password, email, phone_number, full_name } = req.body
+	const result = await userService.signup({ username, password, email, phone_number, full_name })
 	res.status(200).json(result)
 })
 
@@ -50,6 +51,16 @@ exports.getAll = asyncHandler(async (req, res, next) => {
 exports.getUserById = asyncHandler(async (req, res, next) => {
 	const userId = req.params.userId
 	const result = await userService.getUserById({ id: userId })
+	res.status(200).json(result)
+})
+
+exports.updateUserInfo = asyncHandler(async (req, res, next) => {
+	const userId = req.params.userId
+	if (!(req.user.id === userId || req.user.role === Role.Admin)) {
+		throw createError(403, "You don't have permission to perform this")
+	}
+	const { username, full_name, email, phone_number, avatar } = req.body
+	const result = await userService.updateUserInfo({ id: userId, username, full_name, email, phone_number, avatar })
 	res.status(200).json(result)
 })
 

@@ -6,6 +6,8 @@ module.exports = [
     role: "admin",
     full_name: "Peter Parker",
     email: "toidaidot@yahoo.com",
+    phone_number: "0123456789",
+    avatar: 'https://thuthuatnhanh.com/wp-content/uploads/2018/07/anh-dai-dien-dep-652x580.jpg',
     hash: "$2b$10$jNrqky8emMKbJgI/zMbtoulTZTRwO9ACLuxO/E08CSLx0GooDeqIO", // pass: 123456
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -16,6 +18,7 @@ module.exports = [
     role: "user",
     full_name: "Xuan Thị Mai",
     email: "xuanthimai@gmail.com",
+    phone_number: "0369121581",
     hash: "$2b$10$jNrqky8emMKbJgI/zMbtoulTZTRwO9ACLuxO/E08CSLx0GooDeqIO", // pass: 123456
     createdAt: new Date(),
     updatedAt: new Date(),

@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
 import {
   Box,
   Button,
@@ -7,179 +10,186 @@ import {
   CardHeader,
   Divider,
   Grid,
-  TextField
+  TextField,
+  Typography
 } from '@material-ui/core';
+import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
+import { userApi } from 'src/utils/api';
+import { setUser } from 'src/actions/user';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
+const AccountProfileDetails = () => {
+  const dispatch = useDispatch();
 
-const AccountProfileDetails = (props) => {
-  const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA'
+  const user = useSelector((state) => state.user);
+  const {
+    id, username, full_name, email, phone_number
+  } = user;
+  const [state, setState] = useState({
+    errorMessage: null,
+    successMessage: null
   });
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
+  const formik = useFormik({
+    initialValues: {
+      username,
+      full_name,
+      email,
+      phone_number
+    },
+    validationSchema: Yup.object().shape({
+      username: Yup.string().min(4).max(20).required('Username is required'),
+      full_name: Yup.string().min(1).max(50).required('Full name is required'),
+      email: Yup.string().min(1).max(50).email('Email is invalid'),
+      phone_number: Yup.string().matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Phone number is not valid').length(10).required('Phone number is required'),
+    }),
+    onSubmit: async (values) => {
+      dispatch(openFullScreenLoading());
+      try {
+        const response = await userApi.updateUserInfo(id, values);
+        dispatch(setUser(response.data.result));
+        setState({ successMessage: 'Updated user information successfully', errorMessage: null });
+      } catch (err) {
+        console.log(err);
+        setState({ successMessage: null, errorMessage: err.response.data.error.message });
+      }
+      dispatch(closeFullScreenLoading());
+    }
+  });
+  const {
+    values, touched, errors, handleChange, handleBlur, handleSubmit
+  } = formik;
 
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      {...props}
-    >
-      <Card>
-        <CardHeader
-          subheader="The information can be edited"
-          title="Profile"
-        />
-        <Divider />
-        <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
-                onChange={handleChange}
-                required
-                value={values.firstName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Last name"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Email Address"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
-              >
-                {states.map((option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
-          </Grid>
-        </CardContent>
-        <Divider />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2
-          }}
+    <Card>
+      <CardHeader
+        subheader="The information can be edited"
+        title="Profile"
+      />
+      <Divider />
+      <CardContent>
+        {state.errorMessage && (
+          <Box mb={1}>
+            <Typography color="error">
+              {state.errorMessage}
+            </Typography>
+          </Box>
+        )}
+        {state.successMessage && (
+          <Box mb={1}>
+            <Typography style={{ color: 'green' }}>
+              {state.successMessage}
+            </Typography>
+          </Box>
+        )}
+        <Grid
+          container
+          spacing={3}
         >
-          <Button
-            color="primary"
-            variant="contained"
+          <Grid
+            item
+            md={6}
+            xs={12}
           >
-            Save details
-          </Button>
-        </Box>
-      </Card>
-    </form>
+            <TextField
+              InputLabelProps={{ shrink: true, color: 'primary' }}
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              key="username"
+              label="User name"
+              error={Boolean(touched.username && errors.username)}
+              helperText={touched.username && errors.username}
+              name="username"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.username}
+              required
+              disabled
+            />
+          </Grid>
+          <Grid
+            item
+            md={6}
+            xs={12}
+          >
+            <TextField
+              InputLabelProps={{ shrink: true, color: 'primary' }}
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              key="full_name"
+              label="Full name"
+              error={Boolean(touched.full_name && errors.full_name)}
+              helperText={touched.full_name && errors.full_name}
+              name="full_name"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.full_name}
+              required
+            />
+          </Grid>
+          <Grid
+            item
+            md={6}
+            xs={12}
+          >
+            <TextField
+              InputLabelProps={{ shrink: true, color: 'primary' }}
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              key="email"
+              label="Email"
+              error={Boolean(touched.email && errors.email)}
+              helperText={touched.email && errors.email}
+              name="email"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.email}
+              required
+            />
+          </Grid>
+          <Grid
+            item
+            md={6}
+            xs={12}
+          >
+            <TextField
+              InputLabelProps={{ shrink: true, color: 'primary' }}
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              key="phone_number"
+              label="Phone number"
+              error={Boolean(touched.phone_number && errors.phone_number)}
+              helperText={touched.phone_number && errors.phone_number}
+              name="phone_number"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.phone_number}
+              required
+            />
+          </Grid>
+
+        </Grid>
+      </CardContent>
+      <Divider />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          p: 2
+        }}
+      >
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={handleSubmit}
+        >
+          Save details
+        </Button>
+      </Box>
+    </Card>
   );
 };
 
