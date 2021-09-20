@@ -20,22 +20,22 @@ const generateRefreshToken = (data) => {
 };
 
 const generateAccessTokenByUser = (user) => {
-  const { username, email, role } = user;
+  const { id, username, role } = user;
   const access_token_id = uuid();
   return generateAccessToken({
+    id,
     username,
-    email,
     role,
     access_token_id,
   });
 };
 
 const generateRefreshTokenByUser = (user) => {
-  const { username, email, role } = user;
+  const { id, username, role } = user;
   const refresh_token_id = uuid();
   return generateRefreshToken({
+    id,
     username,
-    email,
     role,
     refresh_token_id,
   });
