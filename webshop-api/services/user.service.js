@@ -211,3 +211,24 @@ exports.updateUserInfo = async ({ id, username, full_name, email, phone_number, 
     throw createError(error.statusCode || 500, error.message);
   }
 }
+
+exports.resetPassword = async ({ id, current_password, new_password}) => {
+  try {
+    const user = await User.findOne({ where: { id } });
+    if (!user) {
+      throw createError(404, "User doesn't exist");
+    }
+    if (Bcrypt.verifyPassword(current_password, user.hash)) {
+      await user.update({
+        hash: Bcrypt.hashPassword(new_password)
+      });
+      return {
+        success: true,
+      };
+    } else {
+      throw createError(401, "Current password is incorrect");
+    }
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+}

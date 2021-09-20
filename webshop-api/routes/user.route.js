@@ -27,5 +27,11 @@ router.put(
   validate(userValidation.updateUserInfo),
   userController.updateUserInfo
 );
+router.post(
+  "/:userId/reset-password",
+  authenticate({ required: true }),
+  validate(userValidation.resetPassword),
+  userController.resetPassword
+);
 
 module.exports = router;
