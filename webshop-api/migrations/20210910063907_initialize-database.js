@@ -582,6 +582,7 @@ const migrationCommands = (transaction) => [
       {
         indexName: "name_title_keyword_idx",
         name: "name_title_keyword_idx",
+        type: "FULLTEXT",
         transaction,
       },
     ],
