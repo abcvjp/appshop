@@ -46,6 +46,12 @@ module.exports = (sequelize, DataTypes) => {
           isEmail: true,
         },
       },
+      phone_number: {
+        type: DataTypes.STRING,
+        field: "phone_number",
+        allowNull: false,
+        unique: true
+      },
       hash: {
         type: DataTypes.STRING,
         field: "hash",

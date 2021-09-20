@@ -139,5 +139,6 @@ exports.userMatcher = expect.objectContaining({
   id: expect.any(String),
   username: expect.any(String),
   email: expect.any(String),
+  phone_number: expect.any(String),
   role: expect.any(String),
 });

@@ -24,6 +24,10 @@ module.exports = {
         type: "string",
         nullable: false,
       },
+      phone_number: {
+        type: "string",
+        nullable: false,
+      },
       avatar: {
         type: "string",
         format: "uri",
