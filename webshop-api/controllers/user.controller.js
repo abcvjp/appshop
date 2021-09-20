@@ -64,6 +64,16 @@ exports.updateUserInfo = asyncHandler(async (req, res, next) => {
 	res.status(200).json(result)
 })
 
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+	const userId = req.params.userId
+	if (req.user.id !== userId) {
+		throw createError(403, "You don't have permission to perform this")
+	}
+	const { current_password, new_password } = req.body
+	const result = await userService.updateUserInfo({ id: userId, current_password, new_password })
+	res.status(200).json(result)
+})
+
 exports.authenticate = ({ required }) => asyncHandler(async (req, res, next) => {
 	const { access_token } = req.cookies
 	if (access_token) {

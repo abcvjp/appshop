@@ -32,5 +32,14 @@ module.exports = {
 		params: Joi.object({
 			userId: Joi.string().guid({ version: 'uuidv4' }).required()
 		})
-	}
+	},
+	resetPassword: {
+		body: Joi.object({
+			current_password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).min(6).max(100).required(),
+			new_password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).min(6).max(100).required(),
+		}),
+		params: Joi.object({
+			userId: Joi.string().guid({ version: 'uuidv4' }).required()
+		})
+	},
 }
