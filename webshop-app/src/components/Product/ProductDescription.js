@@ -1,8 +1,20 @@
 import { memo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Tab, Tabs, Paper } from '@material-ui/core';
+import {
+  Tab, Tabs, Paper, makeStyles
+} from '@material-ui/core';
+
+const useStyles = makeStyles(() => ({
+  description: {
+    maxWidth: '100%',
+    img: {
+      maxWidth: '100%'
+    }
+  }
+}));
 
 const ProductDescription = ({ description }) => {
+  const classes = useStyles();
   const [tabIndex, setTabIndex] = useState(1);
 
   const handleTabChange = (event, index) => {
@@ -12,7 +24,7 @@ const ProductDescription = ({ description }) => {
   const tabPanel = (index) => {
     switch (index) {
       case 1:
-        return <div dangerouslySetInnerHTML={{ __html: description }} />; // eslint-disable-line
+        return <div className={classes.description} dangerouslySetInnerHTML={{ __html: description }} />; // eslint-disable-line
       case 2:
         return 'review';
       default:
