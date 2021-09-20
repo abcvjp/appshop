@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
 import {
   Box,
   Button,
@@ -6,21 +9,60 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  TextField
+  TextField,
+  Typography
 } from '@material-ui/core';
+import { openConfirmDialog } from 'src/actions/confirmDialog';
+import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
+import { userApi } from 'src/utils/api';
 
 const SettingsPassword = (props) => {
-  const [values, setValues] = useState({
-    password: '',
-    confirm: ''
+  const dispatch = useDispatch();
+
+  const userId = useSelector((state) => state.user.id);
+  const [state, setState] = useState({
+    errorMessage: null,
+    successMessage: null
   });
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
+  const formik = useFormik({
+    initialValues: {
+      current_password: '',
+      new_password: '',
+      confirm_new_password: ''
+    },
+    validationSchema: Yup.object().shape({
+      current_password: Yup.string().min(6).max(100).matches(new RegExp('^[a-zA-Z0-9]{3,30}$'), 'Password format is invalid')
+        .required('Current password is required'),
+      new_password: Yup.string().min(6).max(100).matches(new RegExp('^[a-zA-Z0-9]{3,30}$'), 'Password format is invalid')
+        .required('New password is required'),
+      confirm_new_password: Yup.string().min(6).max(100).matches(new RegExp('^[a-zA-Z0-9]{3,30}$'), 'Password format is invalid')
+        .oneOf([Yup.ref('new_password'), null], 'Does not match with password')
+        .required('Confirm new password is required'),
+    }),
+    onSubmit: async (values) => {
+      dispatch(openConfirmDialog({
+        message: 'Are you sure want to change your password?',
+        onConfirm: async () => {
+          dispatch(openFullScreenLoading());
+          try {
+            await userApi.resetPassword(userId, {
+              current_password: values.current_password,
+              new_password: values.new_password
+            });
+            setState({ successMessage: 'Your password is changed successfully', errorMessage: null });
+          } catch (err) {
+            console.log(err);
+            setState({ successMessage: null, errorMessage: err.response.data.error.message });
+          }
+          dispatch(closeFullScreenLoading());
+        }
+      }));
+    }
+  });
+  const {
+    values, touched, errors, handleChange, handleBlur, handleSubmit
+  } = formik;
 
   return (
     <form {...props}>
@@ -31,25 +73,64 @@ const SettingsPassword = (props) => {
         />
         <Divider />
         <CardContent>
+          {state.errorMessage && (
+          <Box mb={1}>
+            <Typography color="error">
+              {state.errorMessage}
+            </Typography>
+          </Box>
+          )}
+          {state.successMessage && (
+          <Box mb={1}>
+            <Typography style={{ color: 'green' }}>
+              {state.successMessage}
+            </Typography>
+          </Box>
+          )}
           <TextField
             fullWidth
-            label="Password"
-            margin="normal"
-            name="password"
-            onChange={handleChange}
-            type="password"
-            value={values.password}
             variant="outlined"
+            margin="normal"
+            key="current_password"
+            label="Current password"
+            type="password"
+            error={Boolean(touched.current_password && errors.current_password)}
+            helperText={touched.current_password && errors.current_password}
+            name="current_password"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            value={values.current_password}
+            required
           />
           <TextField
             fullWidth
-            label="Confirm password"
-            margin="normal"
-            name="confirm"
-            onChange={handleChange}
-            type="password"
-            value={values.confirm}
             variant="outlined"
+            margin="normal"
+            key="new_password"
+            label="New password"
+            type="password"
+            error={Boolean(touched.new_password && errors.new_password)}
+            helperText={touched.new_password && errors.new_password}
+            name="new_password"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            value={values.new_password}
+            required
+          />
+          <TextField
+            fullWidth
+            variant="outlined"
+            margin="normal"
+            key="confirm_new_password"
+            label="Confirm new password"
+            type="password"
+            error={Boolean(touched.confirm_new_password && errors.confirm_new_password)}
+            helperText={touched.confirm_new_password && errors.confirm_new_password}
+            name="confirm_new_password"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            value={values.confirm_new_password}
+            required
           />
         </CardContent>
         <Divider />
@@ -63,8 +144,9 @@ const SettingsPassword = (props) => {
           <Button
             color="primary"
             variant="contained"
+            onClick={handleSubmit}
           >
-            Update
+            Change password
           </Button>
         </Box>
       </Card>
