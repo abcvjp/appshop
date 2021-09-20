@@ -90,7 +90,9 @@ exports.checkCartValid = async ({ cart_items }) => {
       }
       if (temp.length > 0) errors[i] = temp;
       valid_item.buy_able = buy_able;
-      valid_item.product_thumbnail = serverProduct.images[0];
+      valid_item.product_thumbnail = serverProduct
+        ? serverProduct.images[0]
+        : null;
       return valid_item;
     });
 

@@ -22,6 +22,7 @@ router.post(
 router.get(
   "/:orderId",
   authenticate({ required: true }),
+  authorize(Role.Admin),
   validate(orderValidation.getOrderById),
   orderController.getOrderById
 );
@@ -49,6 +50,7 @@ router.delete(
 router.put(
   "/:orderId/cancel",
   authenticate({ required: true }),
+  authorize(Role.Admin),
   validate(orderValidation.cancelOrder),
   orderController.cancelOrder
 );

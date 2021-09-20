@@ -31,7 +31,7 @@ exports.searchProducts = async ({
 					p.quantity, p.sold,
 					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug',
-					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
+					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE) as relevance
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
 				WHERE
 					${published !== undefined ? `p.published = ${published ? 1 : 0}` : "1=1"}
@@ -41,7 +41,7 @@ exports.searchProducts = async ({
               ? `p.quantity ${in_stock ? `${"> 0"}` : `${" = 0"}`}`
               : "1=1"
           }
-					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
+					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)
 					AND ${
             price !== undefined
               ? `p.price BETWEEN ${price.split(",")[0]} AND ${
@@ -63,7 +63,7 @@ exports.searchProducts = async ({
 					p.short_description, p.description, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt,
 					c.name as 'category.name', c.id as 'category.id', c.name as 'category.name', c.slug as 'category.slug',
-					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE) as relevance
+					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE) as relevance
 				FROM Products p INNER JOIN Categories c ON p.category_id = c.id
 				WHERE
 					${published !== undefined ? `p.published = ${published ? 1 : 0}` : "1=1"}
@@ -73,7 +73,7 @@ exports.searchProducts = async ({
               ? `p.quantity ${in_stock ? `${"> 0"}` : `${" = 0"}`}`
               : "1=1"
           }
-					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN NATURAL LANGUAGE MODE)
+					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)
 					AND ${
             price !== undefined
               ? `p.price BETWEEN ${price.split(",")[0]} AND ${

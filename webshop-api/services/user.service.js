@@ -2,28 +2,18 @@ const User = require("../models").User;
 const createError = require("http-errors");
 const { Bcrypt, JWT } = require("../helpers");
 const { uuid } = require("uuidv4");
-const { Op } = require("../models").Sequelize
+const { Op } = require("../models").Sequelize;
 
 exports.login = async ({ username, password }) => {
   try {
     const user = await User.findOne({ where: { username } });
     if (!user) {
-      throw createError(409, "User doesn't exist");
+      throw createError(404, "User doesn't exist");
     }
     if (Bcrypt.verifyPassword(password, user.hash)) {
       const { id, email, role, full_name, avatar } = user;
-      const access_token_id = uuid();
-      const access_token = JWT.generateAccessToken({
-        username,
-        role,
-        access_token_id,
-      });
-      const refresh_token_id = uuid();
-      const refresh_token = JWT.generateRefreshToken({
-        username,
-        role,
-        refresh_token_id,
-      });
+      const access_token = JWT.generateAccessTokenByUser(user);
+      const refresh_token = JWT.generateRefreshTokenByUser(user);
       await user.update({
         refresh_token,
       });
@@ -52,11 +42,8 @@ exports.signup = async ({ username, password, email, full_name }) => {
   try {
     const userFromServer = await User.findOne({
       where: {
-        [Op.or]: [
-          { username },
-          { email }
-        ]
-      }
+        [Op.or]: [{ username }, { email }],
+      },
     });
     if (userFromServer) {
       if (userFromServer.username === username) {
@@ -92,34 +79,29 @@ exports.signup = async ({ username, password, email, full_name }) => {
 exports.refreshToken = async ({ refresh_token }) => {
   try {
     const user = await JWT.verifyRefreshToken(refresh_token);
+    const { username } = user;
+
+    const userFromServer = await User.findOne({
+      where: {
+        username,
+      },
+    });
+
     if (!user) {
       throw createError(401, "Refresh token is not valid");
     }
-    const { username, email, role } = user;
-    const access_token_id = uuid();
-    const newAccessToken = JWT.generateAccessToken({
-      username,
-      email,
-      role,
-      access_token_id,
+    if (userFromServer.refresh_token !== refresh_token) {
+      throw createError(409, "Refresh token is no longer usable");
+    }
+
+    const newAccessToken = JWT.generateAccessTokenByUser(user);
+
+    const newRefreshToken = JWT.generateRefreshTokenByUser(user);
+
+    await userFromServer.update({
+      refresh_token: newRefreshToken,
     });
-    const refresh_token_id = uuid();
-    const newRefreshToken = JWT.generateRefreshToken({
-      username,
-      email,
-      role,
-      refresh_token_id,
-    });
-    await User.update(
-      {
-        refresh_token: newRefreshToken
-      },
-      {
-        where: {
-          username
-        }
-      }
-    );
+
     return {
       success: true,
       access_token: newAccessToken,

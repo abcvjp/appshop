@@ -22,12 +22,12 @@ module.exports = {
     put: updateOrdersStatus,
   },
   "/order/{orderId}/confirm": {
-    get: confirmOrder,
+    put: confirmOrder,
   },
   "/order/{orderId}/complete": {
-    get: completeOrder,
+    put: completeOrder,
   },
   "/order/{orderId}/cancel": {
-    get: cancelOrder,
+    put: cancelOrder,
   },
 };
