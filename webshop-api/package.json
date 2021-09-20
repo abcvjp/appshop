@@ -5,8 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www --legacy-watch",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=5000 --watchAll",
-    "pre-test": "cross-env NODE_ENV=test sh -c 'npm run migrate:reset && npm run seed:reset'",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000 --watchAll --silent --runInBand",
+    "pretest": "cross-env NODE_ENV=test sh -c 'npm run migrate:reset && npm run seed:reset'",
     "migrate": "sequelize-cli db:migrate",
     "migrate:reset": "sequelize-cli db:migrate:undo:all && npm run migrate",
     "seed": "sequelize-cli db:seed:all",

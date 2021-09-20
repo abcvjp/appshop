@@ -38,7 +38,7 @@ module.exports = {
     }),
     body: Joi.object({
       name: Joi.string().trim().min(1).max(30).required(),
-      description: Joi.string().trim().min(20).max(100).required(),
+      description: Joi.string().trim().min(20).max(255).required(),
       published: Joi.boolean(),
       parent_id: Joi.string()
         .guid({ version: "uuidv4" })

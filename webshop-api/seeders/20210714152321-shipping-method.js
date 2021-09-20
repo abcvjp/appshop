@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -10,22 +10,11 @@ module.exports = {
      *   name: 'John Doe',
      *   isBetaMember: false
      * }], {});
-    */
-    return queryInterface.bulkInsert('ShippingMethods', [{
-      name: 'Nhận tại cửa hàng',
-      detail: 'Nhận sản phẩm tại cửa hàng',
-      fee: 0,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      name: 'Giao hàng tận nơi',
-      detail: 'Giao hàng đến tận nơi',
-      fee: 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
-    ]);
+     */
+    return queryInterface.bulkInsert(
+      "ShippingMethods",
+      require("../sample-data/shipping-method.sample")
+    );
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -35,7 +24,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    return queryInterface.bulkDelete('ShippingMethods', null, {});
-  }
+    return queryInterface.bulkDelete("ShippingMethods", null, {});
+  },
 };
-

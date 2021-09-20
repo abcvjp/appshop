@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -10,20 +10,11 @@ module.exports = {
      *   name: 'John Doe',
      *   isBetaMember: false
      * }], {});
-    */
-    return queryInterface.bulkInsert('PaymentMethods', [{
-      name: 'COD',
-      detail: 'Thanh toán bằng tiền mặt khi nhận hàng',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      name: 'Chuyển khoản ngân hàng',
-      detail: 'Chuyển khoản ngân hàng tới nơi nào có em',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
-    ]);
+     */
+    return queryInterface.bulkInsert(
+      "PaymentMethods",
+      require("../sample-data/payment-method.sample")
+    );
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -33,6 +24,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    return queryInterface.bulkDelete('PaymentMethods', null, {});
-  }
+    return queryInterface.bulkDelete("PaymentMethods", null, {});
+  },
 };
