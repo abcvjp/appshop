@@ -2,7 +2,10 @@ import API from './apiClient';
 import { cleanObj, convertObjToQuery } from '../functions';
 
 const categoryApi = {
-  getAll: (body) => API.get('/category/all', body),
+  getAll: (query) => {
+    const url = '/category/all';
+    return API.get(url + convertObjToQuery(cleanObj(query)));
+  },
   deleteCategory: (id) => API.delete(`/category/${id}`),
   deleteCategories: (categoryIds) => API.delete('/category', {
     data: { categoryIds }

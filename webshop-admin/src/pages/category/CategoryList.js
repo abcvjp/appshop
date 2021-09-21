@@ -57,6 +57,15 @@ function categoryListReducer(state, action) {
         ...state,
         sort: action.sort
       };
+    case 'CHANGE_PUBLISHED':
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          published: action.published
+        },
+        currentPage: 0
+      };
     case 'SET_CATEGORIES':
       return {
         ...state,
@@ -116,12 +125,11 @@ const CategoryList = () => {
 
   const fetchCategories = async () => {
     dispatch({ type: 'SET_LOADING' });
-    const { filters } = state;
     try {
       const response = await categoryApi.getAll({
         current_page: state.currentPage + 1,
         page_size: state.pageSize,
-        ...filters,
+        ...state.filters,
         sort: state.sort
       });
       dispatch({

@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { CategoryListContext } from 'src/utils/contexts';
 import { Link as RouterLink } from 'react-router-dom';
 import {
+  Grid,
   Box,
   Button,
   IconButton,
@@ -9,9 +10,17 @@ import {
   CardContent,
   TextField,
   InputAdornment,
+  InputLabel,
+  Select,
   SvgIcon
 } from '@material-ui/core';
 import { Search as SearchIcon, RefreshCcw as RefreshIcon, X } from 'react-feather';
+
+const publishedOptions = [
+  { name: 'All', value: '' },
+  { name: 'Published', value: true },
+  { name: 'Unpublished', value: false }
+];
 
 const CategoryListToolbar = (props) => {
   const { state, dispatch } = useContext(CategoryListContext); // eslint-disable-line
@@ -30,6 +39,13 @@ const CategoryListToolbar = (props) => {
   const handleClearSearch = () => {
     setSearchValue('');
     dispatch({ type: 'SET_SEARCH', searchValue: '' });
+  };
+
+  const handlePublishedChange = (event) => {
+    dispatch({
+      type: 'CHANGE_PUBLISHED',
+      published: event.target.value
+    });
   };
 
   return (
@@ -64,44 +80,60 @@ const CategoryListToolbar = (props) => {
       <Box sx={{ mt: 3 }}>
         <Card>
           <CardContent>
-            <Box sx={{ maxWidth: 500 }}>
-              <TextField
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon
-                        fontSize="small"
-                        color="action"
-                      >
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  ),
-                  endAdornment: searchValue.length > 4 ? (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleClearSearch}>
-                        <SvgIcon
-                          fontSize="small"
-                          color="action"
-                        >
-                          <X />
-                        </SvgIcon>
-                      </IconButton>
-                    </InputAdornment>
-                  ) : null
-                }}
-                placeholder="Search category"
-                variant="outlined"
-                value={searchValue}
-                onChange={handleSearchChange}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    handleSearchEnter();
-                  }
-                }}
-              />
-            </Box>
+            <Grid container spacing={2} justifyContent="flex-start" alignItems="flex-end">
+              <Grid item key="search">
+                <Box sx={{ maxWidth: 600 }}>
+                  <TextField
+                    fullWidth
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SvgIcon
+                            fontSize="small"
+                            color="action"
+                          >
+                            <SearchIcon />
+                          </SvgIcon>
+                        </InputAdornment>
+                      ),
+                      endAdornment: searchValue.length > 4 ? (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleClearSearch}>
+                            <SvgIcon
+                              fontSize="small"
+                              color="action"
+                            >
+                              <X />
+                            </SvgIcon>
+                          </IconButton>
+                        </InputAdornment>
+                      ) : null
+                    }}
+                    placeholder="Search category"
+                    variant="outlined"
+                    value={searchValue}
+                    onChange={handleSearchChange}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        handleSearchEnter();
+                      }
+                    }}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item key="published">
+                <InputLabel>Published</InputLabel>
+                <Select
+                  native
+                  value={state.filters.published}
+                  onChange={handlePublishedChange}
+                >
+                  {publishedOptions.map((element) => <option key={element.name} value={element.value}>{element.name}</option>)}
+                </Select>
+              </Grid>
+
+            </Grid>
           </CardContent>
         </Card>
       </Box>
