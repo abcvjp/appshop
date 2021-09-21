@@ -16,10 +16,28 @@ import {
 } from '@material-ui/core';
 import { Search as SearchIcon, RefreshCcw as RefreshIcon, X } from 'react-feather';
 
+import { CSVLink } from 'react-csv';
+
 const publishedOptions = [
   { name: 'All', value: '' },
   { name: 'Published', value: true },
   { name: 'Unpublished', value: false }
+];
+
+const createHeader = (label, key) => ({ label, key });
+const exportFileHeaders = [
+  createHeader('Id', 'id'),
+  createHeader('Name', 'name'),
+  createHeader('Parent id', 'parent_id'),
+  createHeader('Path', 'path'),
+  createHeader('Slug', 'slug'),
+  createHeader('Published', 'published'),
+  createHeader('Description', 'description'),
+  createHeader('Meta title', 'meta_title'),
+  createHeader('Meta description', 'meta_description'),
+  createHeader('Meta keywords', 'meta_keywords'),
+  createHeader('Created at', 'createdAt'),
+  createHeader('Last update', 'updatedAt')
 ];
 
 const CategoryListToolbar = (props) => {
@@ -56,9 +74,15 @@ const CategoryListToolbar = (props) => {
           justifyContent: 'flex-end'
         }}
       >
-        <Button sx={{ mx: 1 }}>
-          Export
-        </Button>
+        <CSVLink
+          headers={exportFileHeaders}
+          data={state.categories}
+          filename="products.csv"
+        >
+          <Button key="export" sx={{ mx: 1 }}>
+            Export
+          </Button>
+        </CSVLink>
         <Button
           key="refresh"
           color="primary"
