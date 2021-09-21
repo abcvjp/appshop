@@ -152,7 +152,12 @@ const ProductList = () => {
     const response = await productApi.searchProducts({
       q: state.searchValue,
       current_page: state.currentPage + 1,
-      page_size: state.pageSize
+      page_size: state.pageSize,
+      category_id: state.filters.categoryId,
+      enable: state.filters.enable,
+      in_stock: state.filters.inStock,
+      published: state.filters.published,
+      sort: state.sort
     });
     dispatch({
       type: 'SET_PRODUCTS',

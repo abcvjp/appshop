@@ -140,7 +140,9 @@ const CategoryList = () => {
     const response = await categoryApi.searchCategories({
       q: state.searchValue,
       current_page: state.currentPage + 1,
-      page_size: state.pageSize
+      page_size: state.pageSize,
+      ...state.filters,
+      sort: state.sort
     });
     dispatch({
       type: 'SET_CATEGORIES',
