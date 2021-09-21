@@ -1,4 +1,4 @@
-const Product = require("../models").Product;
+const { Category } = require("../models");
 const { Sequelize, sequelize } = require("../models");
 const createError = require("http-errors");
 const { calculateLimitAndOffset, paginate } = require("paginate-info");
@@ -98,6 +98,57 @@ exports.searchProducts = async ({
     return {
       success: true,
       data: result,
+      pagination,
+    };
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+};
+
+exports.searchCategories = async ({
+  keyword,
+  current_page,
+  page_size,
+  sort,
+  published,
+  exclude,
+}) => {
+  try {
+    let filters = {};
+    if (published !== undefined) {
+      filters.published = published;
+    }
+    const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
+    const { rows, count } = await Category.findAndCountAll({
+      where: [
+        filters,
+        Sequelize.literal(
+          `MATCH (name, path, meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)`
+        ),
+      ],
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(
+              `MATCH (name, path, meta_keywords) AGAINST('${keyword}' IN BOOLEAN MODE)`
+            ),
+            "relevance",
+          ],
+        ],
+        exclude,
+      },
+      limit,
+      offset,
+      order: [
+        sort ? [sort.split(".")] : ["createdAt", "DESC"],
+        [Sequelize.literal("relevance"), "DESC"],
+      ],
+    });
+    if (rows.length < 1) throw createError(404, "Can not find any category");
+    const pagination = paginate(current_page, count, rows, page_size);
+    return {
+      success: true,
+      data: rows,
       pagination,
     };
   } catch (error) {

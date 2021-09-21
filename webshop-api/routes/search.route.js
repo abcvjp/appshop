@@ -13,4 +13,11 @@ router.get(
   searchController.searchProducts
 );
 
+router.get(
+  "/category",
+  validate(searchValidation.searchCategories),
+  authenticate({ required: false }),
+  searchController.searchCategories
+);
+
 module.exports = router;
