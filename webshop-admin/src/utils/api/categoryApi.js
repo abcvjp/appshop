@@ -1,5 +1,5 @@
 import API from './apiClient';
-import { cleanObj } from '../functions';
+import { cleanObj, convertObjToQuery } from '../functions';
 
 const categoryApi = {
   getAll: (body) => API.get('/category/all', body),
@@ -16,6 +16,10 @@ const categoryApi = {
     const url = `/category/${id}`;
     return API.put(url, cleanObj(data));
   },
+  searchCategories: (query) => {
+    const url = '/search/category';
+    return API.get(url + convertObjToQuery(cleanObj(query)));
+  }
 };
 
 export default categoryApi;
