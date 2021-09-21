@@ -75,6 +75,14 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Category",
+      indexes: [
+        // add a FULLTEXT index
+        {
+          type: "FULLTEXT",
+          name: "name_path_keyword_idx",
+          fields: ["name", "path", "meta_keywords"],
+        },
+      ],
     }
   );
   return Category;
