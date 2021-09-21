@@ -7,7 +7,9 @@ const initialState = {
 export default function userReducer(state = initialState, action) {
   switch (action.type) {
     case SET_USER:
-      return action.payload.user;
+      const user = action.payload.user
+      sessionStorage.setItem('user', JSON.stringify(user));
+      return user;
     default:
       return state;
   }
