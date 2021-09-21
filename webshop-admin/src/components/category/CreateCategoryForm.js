@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogContent,
   DialogContentText,
+  DialogActions,
   FormControlLabel,
   Checkbox
 } from '@material-ui/core';
@@ -17,11 +18,13 @@ import {
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useCategories } from 'src/utils/customHooks';
+import { useNavigate } from 'react-router';
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
 import { categoryApi } from '../../utils/api';
 
 const CreateCategoryForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [categories] = useCategories();
   const [state, setState] = useState({
     isLoading: false,
@@ -35,6 +38,13 @@ const CreateCategoryForm = () => {
   const handleResultClose = () => {
     setState((prevState) => ({ ...prevState, isOpenResult: false }));
   };
+  const handleContinue = () => {
+    navigate(0, { replace: true });
+  };
+  const handleBackToList = () => {
+    navigate('/management/category');
+  };
+
   const onSubmit = async (values) => {
     dispatch(openFullScreenLoading());
     await categoryApi.createCategory(values).then((res) => res.data).then(() => {
@@ -129,7 +139,7 @@ const CreateCategoryForm = () => {
             >
               {categories.map((category) => (
                 <MenuItem key={category.id} value={category.id}>
-                  {category.name}
+                  {category.path}
                 </MenuItem>
               ))}
             </TextField>
@@ -220,6 +230,22 @@ const CreateCategoryForm = () => {
             Category is created successfully
           </DialogContentText>
         </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleContinue}
+          >
+            Continue add category
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={handleBackToList}
+          >
+            Back to category list
+          </Button>
+        </DialogActions>
       </Dialog>
     </Paper>
   );
