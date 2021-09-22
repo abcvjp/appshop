@@ -1,4 +1,4 @@
-import { cleanObj, convertEmptyStringToNull, convertObjToQuery } from '../functions';
+import { cleanObj, convertEmptyToNull, convertObjToQuery } from '../functions';
 import API from './apiClient';
 
 const productApi = {
@@ -16,11 +16,11 @@ const productApi = {
   }),
   createProduct: (data) => {
     const url = '/product';
-    return API.post(url, cleanObj(data));
+    return API.post(url, convertEmptyToNull(data));
   },
   editProduct: (id, data) => {
     const url = `/product/${id}`;
-    return API.put(url, convertEmptyStringToNull(data));
+    return API.put(url, convertEmptyToNull(data));
   },
   searchProducts: (query) => {
     const url = '/search';

@@ -47,7 +47,7 @@ const CreateCategoryForm = () => {
 
   const onSubmit = async (values) => {
     dispatch(openFullScreenLoading());
-    await categoryApi.createCategory(values).then((res) => res.data).then(() => {
+    await categoryApi.createCategory({ ...values }).then((res) => res.data).then(() => {
       handleResultOpen();
     }).catch((err) => {
       setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));

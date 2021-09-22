@@ -113,8 +113,10 @@ const AddProductForm = () => {
       description: Yup.string().min(20).required('Description is required'),
       meta_title: Yup.string().trim().min(1).max(100)
         .required('Meta title is required'),
-      meta_description: Yup.string().trim().min(20).max(200),
+      meta_description: Yup.string().trim().min(20).max(200)
+        .nullable(true),
       meta_keywords: Yup.string().trim().min(1).max(150)
+        .nullable(true)
     }),
     onSubmit: async (values) => {
       await onSubmit(values, images);

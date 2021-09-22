@@ -1,5 +1,5 @@
 import API from './apiClient';
-import { cleanObj, convertObjToQuery, convertEmptyStringToNull } from '../functions';
+import { cleanObj, convertObjToQuery, convertEmptyToNull } from '../functions';
 
 const categoryApi = {
   getAll: (query) => {
@@ -12,9 +12,9 @@ const categoryApi = {
   }),
   createCategory: (data) => {
     const url = '/category';
-    return API.post(url, cleanObj(data));
+    return API.post(url, convertEmptyToNull(data));
   },
-  editCategory: (id, data) => API.put(`/category/${id}`, convertEmptyStringToNull(data)),
+  editCategory: (id, data) => API.put(`/category/${id}`, convertEmptyToNull(data)),
   searchCategories: (query) => {
     const url = '/search/category';
     return API.get(url + convertObjToQuery(cleanObj(query)));
