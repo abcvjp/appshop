@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import {
   Tab, Tabs, Paper, makeStyles
 } from '@material-ui/core';
+import parse from 'html-react-parser';
 
 const useStyles = makeStyles(() => ({
   description: {
-    maxWidth: '100%',
-    img: {
+    '& img': {
       maxWidth: '100%'
     }
   }
@@ -24,7 +24,11 @@ const ProductDescription = ({ description }) => {
   const tabPanel = (index) => {
     switch (index) {
       case 1:
-        return <div className={classes.description} dangerouslySetInnerHTML={{ __html: description }} />; // eslint-disable-line
+        return (
+          <div className={classes.description}>
+            {parse(description)}
+          </div>
+        );
       case 2:
         return 'review';
       default:

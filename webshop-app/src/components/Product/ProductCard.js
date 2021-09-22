@@ -86,9 +86,9 @@ const ProductCard = ({ product }) => {
         <CardMedia
           className={classes.media}
           component="img"
-          image={product.images[0].url}
-          alt={product.images[0].alt}
-          title={product.images[0].title}
+          image={product.images ? product.images[0].url : null}
+          alt={product.images ? product.images[0].alt : null}
+          title={product.images ? product.images[0].title : null}
         />
       </RouterLink>
       <CardContent className={classes.content}>

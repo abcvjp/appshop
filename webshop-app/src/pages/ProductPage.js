@@ -154,7 +154,7 @@ const ProductPage = () => {
               xs={12}
               md={5}
             >
-              <ProductImages images={product.images} productName={product.name} />
+              {product.images && <ProductImages images={product.images} productName={product.name} />}
             </Grid>
 
             <Grid
