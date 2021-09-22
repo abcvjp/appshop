@@ -23,22 +23,26 @@ export const generateBreadCrumbs = (string, map_name_slug) => {
 
 export const convertObjToQuery = (query) => {
   let url = '';
-  Object.keys(query).forEach((key, index) => {
-    if (index === 0) {
-      url = url.concat(`?${key}=${query[key]}`);
-    } else {
-      url = url.concat(`&${key}=${query[key]}`);
-    }
-  });
+  if (typeof query === 'object') {
+    Object.keys(query).forEach((key, index) => {
+      if (index === 0) {
+        url = url.concat(`?${key}=${query[key]}`);
+      } else {
+        url = url.concat(`&${key}=${query[key]}`);
+      }
+    });
+  }
   return url;
 };
 
 export const cleanObj = (obj) => {
-  Object.keys(obj).forEach((k) => {
-    const objProp = obj[k];
+  if (typeof obj === 'object') {
+    Object.keys(obj).forEach((k) => {
+      const objProp = obj[k];
     if (objProp === null || objProp === undefined || objProp === '' || objProp === {} || objProp === []) delete obj[k]; // eslint-disable-line
-    else if (typeof objProp === 'object' && Object.keys(objProp).length > 0) cleanObj(obj[k]);
-  });
+      else if (typeof objProp === 'object' && Object.keys(objProp).length > 0) cleanObj(obj[k]);
+    });
+  }
   return obj;
 };
 
