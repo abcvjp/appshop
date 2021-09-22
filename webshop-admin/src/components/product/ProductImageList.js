@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { v1 as uuid } from 'uuid';
 import {
@@ -16,6 +17,7 @@ import {
 } from '@material-ui/core';
 
 import { Delete } from '@material-ui/icons';
+import { openConfirmDialog } from 'src/actions/confirmDialog';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -37,10 +39,11 @@ const useStyles = makeStyles(() => ({
 
 const ProductImageList = ({ imageList, handleUpdateImages }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [images, setImages] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  console.log(images);
+
   const handleLimitChange = (event) => {
     setLimit(parseInt(event.target.value, 8));
   };
@@ -49,16 +52,21 @@ const ProductImageList = ({ imageList, handleUpdateImages }) => {
   };
 
   const handleDeleteImage = (i) => {
-    handleUpdateImages((prevImages) => {
-      const temp = [...prevImages];
-      temp.splice(i, 1);
-      return temp;
-    });
+    dispatch(openConfirmDialog({
+      message: 'Are you sure want to delete this image?',
+      onConfirm: () => {
+        const temp = [...images];
+        temp.splice(i, 1);
+        handleUpdateImages(temp);
+      }
+    }));
   };
 
   const handleChangeOrderImage = (index, order) => {
     images[index].order = order;
   };
+
+  const handleUpdateOrder = () => handleUpdateImages(images.sort((a, b) => a.order - b.order));
 
   useEffect(() => {
     setImages(imageList.map((image, index) => ({ order: index, ...image })));
@@ -113,7 +121,7 @@ const ProductImageList = ({ imageList, handleUpdateImages }) => {
           <Button
             variant="contained"
             component="label"
-            onClick={() => handleUpdateImages(images.sort((a, b) => a.order - b.order))}
+            onClick={handleUpdateOrder}
           >
             Update order
           </Button>

@@ -42,17 +42,16 @@ const EditProductForm = ({ productId }) => {
   });
   const { product } = state;
 
-  const handleAddImages = async (imagesToUp) => {
+  const handleUpdateImages = async (newImages) => {
+    console.log(newImages);
     dispatch(openFullScreenLoading());
     try {
-      const imageURLs = await uploadProductImages(imagesToUp);
-      const newImages = [...state.images].concat(imagesToUp.map((image, i) => ({
-        url: imageURLs[i],
-        alt: image.alt,
-        title: image.title
-      })));
-      await productApi.updateProduct(productId, {
-        images: newImages
+      await productApi.editProduct(productId, {
+        images: newImages.map((image) => ({
+          url: image.url,
+          alt: image.alt,
+          title: image.title
+        }))
       });
       setState((prev) => ({
         ...prev,
@@ -64,20 +63,16 @@ const EditProductForm = ({ productId }) => {
     dispatch(closeFullScreenLoading());
   };
 
-  const handleUpdateImages = async (newImages) => {
+  const handleAddImages = async (imagesToUp) => {
     dispatch(openFullScreenLoading());
     try {
-      await productApi.updateProduct(productId, {
-        images: newImages.map((image) => ({
-          url: image.url,
-          alt: image.alt,
-          title: image.title
-        }))
-      });
-      setState((prev) => ({
-        ...prev,
-        images: newImages
-      }));
+      const imageURLs = await uploadProductImages(imagesToUp);
+      const newImages = [...state.images].concat(imagesToUp.map((image, i) => ({
+        url: imageURLs[i],
+        alt: image.alt === '' ? null : image.alt,
+        title: image.title === '' ? null : image.title
+      })));
+      await handleUpdateImages(newImages);
     } catch (err) {
       console.log(err);
     }

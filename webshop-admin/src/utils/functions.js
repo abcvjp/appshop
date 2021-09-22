@@ -47,10 +47,10 @@ export const cleanObj = (obj) => {
 };
 
 export const convertEmptyToNull = (obj) => {
-  if (typeof obj === 'object') {
+  if (typeof obj === 'object' && !Array.isArray(obj)) {
     Object.keys(obj).forEach((k) => {
       const objProp = obj[k];
-      if (objProp === '' || isArrayEmpty(objProp)) obj[k] = null; // eslint-disable-line
+      if (objProp === '' || objProp === undefined || isArrayEmpty(objProp)) obj[k] = null; // eslint-disable-line
       else if (typeof objProp === 'object' && Object.keys(objProp).length > 0) convertEmptyToNull(obj[k]);
     });
   }
