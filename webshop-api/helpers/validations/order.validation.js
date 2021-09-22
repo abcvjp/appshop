@@ -28,7 +28,7 @@ module.exports = {
 			address: Joi.string().trim().min(10).max(200).required(),
 			email: Joi.string().trim().email().required(),
 			phone_number: Joi.string().length(10).pattern(/^[0-9]+$/).required(),
-			shipping_note: Joi.string().max(255),
+			shipping_note: Joi.string().max(255).allow(null),
 			payment_method_id: Joi.number().integer().min(1).required(),
 			shipping_method_id: Joi.number().integer().min(1).required(),
 			order_items: Joi.array().min(1).items(Joi.object({
@@ -55,7 +55,7 @@ module.exports = {
 			address: Joi.string().trim().min(10).max(200).required(),
 			email: Joi.string().trim().email().required(),
 			phone_number: Joi.string().length(10).pattern(/^[0-9]+$/).required(),
-			shipping_note: Joi.string().max(255)
+			shipping_note: Joi.string().max(255).allow(null)
 		})
 	},
 	updateOrdersStatus: {

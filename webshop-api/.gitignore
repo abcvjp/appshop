@@ -5,7 +5,8 @@
 
 # /configs/production.json
 
-/logs
+logs
+*.log
 
 /logs/combined.log
 /logs/error.log

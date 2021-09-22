@@ -48,10 +48,10 @@ module.exports = {
           alt: Joi.string().trim().min(10),
           title: Joi.string().trim().min(10),
         })
-      ),
+      ).allow(null),
       meta_title: Joi.string().trim().min(1).max(100).required(),
-      meta_description: Joi.string().trim().min(20).max(200),
-      meta_keywords: Joi.string().trim().min(1).max(150),
+      meta_description: Joi.string().trim().min(20).max(200).allow(null),
+      meta_keywords: Joi.string().trim().min(1).max(150).allow(null),
     }),
   },
   updateProduct: {
@@ -72,13 +72,13 @@ module.exports = {
       images: Joi.array().items(
         Joi.object({
           url: Joi.string().trim().required().min(10),
-          alt: Joi.string().trim().min(10),
-          title: Joi.string().trim().min(10),
+          alt: Joi.string().trim().min(10).allow(null),
+          title: Joi.string().trim().min(10).allow(null),
         })
-      ),
+      ).allow(null),
       meta_title: Joi.string().trim().min(1).max(100),
-      meta_description: Joi.string().trim().min(20).max(200),
-      meta_keywords: Joi.string().trim().min(1).max(150),
+      meta_description: Joi.string().trim().min(20).max(200).allow(null),
+      meta_keywords: Joi.string().trim().min(1).max(150).allow(null),
     }),
   },
   updateProducts: {
@@ -100,13 +100,13 @@ module.exports = {
             images: Joi.array().items(
               Joi.object({
                 url: Joi.string().trim().required().min(10),
-                alt: Joi.string().trim().min(10),
-                title: Joi.string().trim().min(10),
+                alt: Joi.string().trim().min(10).allow(null),
+                title: Joi.string().trim().min(10).allow(null),
               })
-            ),
+            ).allow(null),
             meta_title: Joi.string().trim().min(1).max(100),
-            meta_description: Joi.string().trim().min(20).max(200),
-            meta_keywords: Joi.string().trim().min(1).max(150),
+            meta_description: Joi.string().trim().min(20).max(200).allow(null),
+            meta_keywords: Joi.string().trim().min(1).max(150).allow(null),
           })
         )
         .min(1)

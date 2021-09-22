@@ -25,11 +25,11 @@ module.exports = {
     body: Joi.object({
       name: Joi.string().trim().min(1).max(30).required(),
       description: Joi.string().trim().min(20).max(100).required(),
-      parent_id: Joi.string().guid({ version: "uuidv4" }),
+      parent_id: Joi.string().guid({ version: "uuidv4" }).allow(null),
       published: Joi.boolean(),
       meta_title: Joi.string().trim().min(1).max(100).required(),
-      meta_description: Joi.string().trim().min(20).max(200),
-      meta_keywords: Joi.string().trim().min(1).max(150),
+      meta_description: Joi.string().trim().min(20).max(200).allow(null),
+      meta_keywords: Joi.string().trim().min(1).max(150).allow(null),
     }),
   },
   updateCategory: {
@@ -42,11 +42,10 @@ module.exports = {
       published: Joi.boolean(),
       parent_id: Joi.string()
         .guid({ version: "uuidv4" })
-        .required()
         .allow(null),
       meta_title: Joi.string().trim().min(1).max(100).required(),
-      meta_description: Joi.string().trim().min(20).max(200),
-      meta_keywords: Joi.string().trim().min(1).max(150),
+      meta_description: Joi.string().trim().min(20).max(200).allow(null),
+      meta_keywords: Joi.string().trim().min(1).max(150).allow(null),
     }),
   },
   deleteCategory: {

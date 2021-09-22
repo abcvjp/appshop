@@ -1,5 +1,5 @@
 export const objMap = (obj, func) => Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, func(v)]));
-export const isArrayEmpty = (arr) => (!((typeof arr !== 'undefined') && arr.length > 0));
+export const isArrayEmpty = (arr) => (Array.isArray(arr) && arr.length === 0);
 
 export const isObjectEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -23,22 +23,37 @@ export const generateBreadCrumbs = (string, map_name_slug) => {
 
 export const convertObjToQuery = (query) => {
   let url = '';
-  Object.keys(query).forEach((key, index) => {
-    if (index === 0) {
-      url = url.concat(`?${key}=${query[key]}`);
-    } else {
-      url = url.concat(`&${key}=${query[key]}`);
-    }
-  });
+  if (typeof query === 'object') {
+    Object.keys(query).forEach((key, index) => {
+      if (index === 0) {
+        url = url.concat(`?${key}=${query[key]}`);
+      } else {
+        url = url.concat(`&${key}=${query[key]}`);
+      }
+    });
+  }
   return url;
 };
 
 export const cleanObj = (obj) => {
-  Object.keys(obj).forEach((k) => {
-    const objProp = obj[k];
-    if (objProp === null || objProp === undefined || objProp === '' || objProp === {} || objProp === []) delete obj[k]; // eslint-disable-line
-    else if (typeof objProp === 'object' && Object.keys(objProp).length > 0) cleanObj(obj[k]);
-  });
+  if (typeof obj === 'object') {
+    Object.keys(obj).forEach((k) => {
+      const objProp = obj[k];
+    if (objProp === null || objProp === undefined || objProp === '' || objProp === {} || (Array.isArray(objProp) && objProp.length === 0)) delete obj[k]; // eslint-disable-line
+      else if (typeof objProp === 'object' && Object.keys(objProp).length > 0) cleanObj(obj[k]);
+    });
+  }
+  return obj;
+};
+
+export const convertEmptyToNull = (obj) => {
+  if (typeof obj === 'object' && !Array.isArray(obj)) {
+    Object.keys(obj).forEach((k) => {
+      const objProp = obj[k];
+      if (objProp === '' || objProp === undefined || isArrayEmpty(objProp)) obj[k] = null; // eslint-disable-line
+      else if (typeof objProp === 'object' && Object.keys(objProp).length > 0) convertEmptyToNull(obj[k]);
+    });
+  }
   return obj;
 };
 

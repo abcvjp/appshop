@@ -1,21 +1,24 @@
 import API from './apiClient';
-import { cleanObj } from '../functions';
+import { cleanObj, convertObjToQuery, convertEmptyToNull } from '../functions';
 
 const categoryApi = {
-  getAll: (body) => API.get('/category/all', body),
+  getAll: (query) => {
+    const url = '/category/all';
+    return API.get(url + convertObjToQuery(cleanObj(query)));
+  },
   deleteCategory: (id) => API.delete(`/category/${id}`),
   deleteCategories: (categoryIds) => API.delete('/category', {
     data: { categoryIds }
   }),
   createCategory: (data) => {
     const url = '/category';
-    return API.post(url, cleanObj(data));
+    return API.post(url, convertEmptyToNull(data));
   },
-  editCategory: (id, body) => API.put(`/category/${id}`, body),
-  updateCategory: (id, data) => {
-    const url = `/category/${id}`;
-    return API.put(url, cleanObj(data));
-  },
+  editCategory: (id, data) => API.put(`/category/${id}`, convertEmptyToNull(data)),
+  searchCategories: (query) => {
+    const url = '/search/category';
+    return API.get(url + convertObjToQuery(cleanObj(query)));
+  }
 };
 
 export default categoryApi;

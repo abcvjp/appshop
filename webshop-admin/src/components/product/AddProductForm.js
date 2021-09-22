@@ -14,11 +14,13 @@ import {
   Dialog,
   DialogContent,
   DialogContentText,
+  DialogActions,
   FormControlLabel,
   Checkbox,
 } from '@material-ui/core';
 
 import { useCategories } from 'src/utils/customHooks';
+import { useNavigate } from 'react-router';
 import { productApi } from 'src/utils/api';
 import { uploadProductImages } from 'src/firebase';
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
@@ -28,6 +30,7 @@ import RichEditor from '../RichEditor';
 
 const AddProductForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [categories] = useCategories();
   const [images, setImages] = useState([]);
   const [state, setState] = useState({
@@ -49,6 +52,12 @@ const AddProductForm = () => {
   };
   const handleResultClose = () => {
     setState((prevState) => ({ ...prevState, isOpenResult: false }));
+  };
+  const handleContinue = () => {
+    navigate(0, { replace: true });
+  };
+  const handleBackToList = () => {
+    navigate('/management/product');
   };
 
   const onSubmit = useCallback(async (values, images) => { // eslint-disable-line
@@ -104,8 +113,10 @@ const AddProductForm = () => {
       description: Yup.string().min(20).required('Description is required'),
       meta_title: Yup.string().trim().min(1).max(100)
         .required('Meta title is required'),
-      meta_description: Yup.string().trim().min(20).max(200),
+      meta_description: Yup.string().trim().min(20).max(200)
+        .nullable(true),
       meta_keywords: Yup.string().trim().min(1).max(150)
+        .nullable(true)
     }),
     onSubmit: async (values) => {
       await onSubmit(values, images);
@@ -188,7 +199,7 @@ const AddProductForm = () => {
           >
             {categories.map((category) => (
               <MenuItem key={category.id} value={category.id}>
-                {category.name}
+                {category.path}
               </MenuItem>
             ))}
           </TextField>
@@ -367,6 +378,22 @@ const AddProductForm = () => {
             Product is created successfully
           </DialogContentText>
         </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleContinue}
+          >
+            Continue add product
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={handleBackToList}
+          >
+            Back to product list
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   );

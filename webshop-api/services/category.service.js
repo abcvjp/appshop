@@ -15,7 +15,7 @@ exports.getCategories = async ({
 }) => {
   try {
     let filters = {};
-    if (published === true) {
+    if (published !== undefined) {
       filters.published = published;
     }
     const { limit, offset } = calculateLimitAndOffset(current_page, page_size);

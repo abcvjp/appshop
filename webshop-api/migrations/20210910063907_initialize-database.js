@@ -593,6 +593,19 @@ const migrationCommands = (transaction) => [
       },
     ],
   },
+  {
+    fn: "addIndex",
+    params: [
+      "Categories",
+      ["name", "path", "meta_keywords"],
+      {
+        indexName: "name_path_keyword_idx",
+        name: "name_path_keyword_idx",
+        type: "FULLTEXT",
+        transaction,
+      },
+    ],
+  },
 ];
 
 const rollbackCommands = (transaction) => [

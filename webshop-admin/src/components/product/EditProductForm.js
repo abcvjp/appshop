@@ -26,6 +26,7 @@ import { productApi } from 'src/utils/api';
 import { uploadProductImages } from 'src/firebase';
 
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
+import { isArrayEmpty } from 'src/utils/functions';
 import ProductUploadImage from './ProductUploadImage';
 import ProductImageList from './ProductImageList';
 import RichEditor from '../RichEditor';
@@ -41,17 +42,16 @@ const EditProductForm = ({ productId }) => {
   });
   const { product } = state;
 
-  const handleAddImages = async (imagesToUp) => {
+  const handleUpdateImages = async (newImages) => {
+    console.log(newImages);
     dispatch(openFullScreenLoading());
     try {
-      const imageURLs = await uploadProductImages(imagesToUp);
-      const newImages = [...state.images].concat(imagesToUp.map((image, i) => ({
-        url: imageURLs[i],
-        alt: image.alt,
-        title: image.title
-      })));
-      await productApi.updateProduct(productId, {
-        images: newImages
+      await productApi.editProduct(productId, {
+        images: newImages.map((image) => ({
+          url: image.url,
+          alt: image.alt,
+          title: image.title
+        }))
       });
       setState((prev) => ({
         ...prev,
@@ -63,20 +63,16 @@ const EditProductForm = ({ productId }) => {
     dispatch(closeFullScreenLoading());
   };
 
-  const handleUpdateImages = async (newImages) => {
+  const handleAddImages = async (imagesToUp) => {
     dispatch(openFullScreenLoading());
     try {
-      await productApi.updateProduct(productId, {
-        images: newImages.map((image) => ({
-          url: image.url,
-          alt: image.alt,
-          title: image.title
-        }))
-      });
-      setState((prev) => ({
-        ...prev,
-        images: newImages
-      }));
+      const imageURLs = await uploadProductImages(imagesToUp);
+      const newImages = [...state.images].concat(imagesToUp.map((image, i) => ({
+        url: imageURLs[i],
+        alt: image.alt === '' ? null : image.alt,
+        title: image.title === '' ? null : image.title
+      })));
+      await handleUpdateImages(newImages);
     } catch (err) {
       console.log(err);
     }
@@ -106,7 +102,7 @@ const EditProductForm = ({ productId }) => {
   const onSubmit = useCallback(async (values) => { // eslint-disable-line
     dispatch(openFullScreenLoading());
     try {
-      await productApi.updateProduct(productId, values);
+      await productApi.editProduct(productId, { ...values });
       handleResultOpen();
     } catch (err) {
       console.log(err);
@@ -129,7 +125,7 @@ const EditProductForm = ({ productId }) => {
             root_price: product.root_price,
             quantity: product.quantity,
             short_description: product.short_description,
-            description: EditorState.createWithContent(stateFromHTML(product.description)),
+            description: product.description,
             meta_title: product.title,
             meta_description: product.meta_description || '',
             meta_keywords: product.meta_keywords || ''
@@ -151,8 +147,10 @@ const EditProductForm = ({ productId }) => {
             description: Yup.string().min(20).required('Description is required'),
             meta_title: Yup.string().trim().min(1).max(100)
               .required('Meta title is required'),
-            meta_description: Yup.string().trim().min(20).max(200),
+            meta_description: Yup.string().trim().min(20).max(200)
+              .nullable(),
             meta_keywords: Yup.string().trim().min(1).max(150)
+              .nullable()
           })}
           onSubmit={onSubmit}
         >
@@ -302,7 +300,7 @@ const EditProductForm = ({ productId }) => {
                     error={errors.description}
                     touched={touched.description}
                     label="Description*"
-                    initialState={values.description}
+                    initialState={EditorState.createWithContent(stateFromHTML(values.description))}
                     fieldName="description"
                     setFieldValue={setFieldValue}
                   />
@@ -355,7 +353,7 @@ const EditProductForm = ({ productId }) => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="meta_description"
-                  value={values.meta_description}
+                  value={values.meta_description || ''}
                   variant="outlined"
                 />
                 <TextField
@@ -368,7 +366,7 @@ const EditProductForm = ({ productId }) => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="meta_keyword"
-                  value={values.meta_keywords}
+                  value={values.meta_keywords || ''}
                   variant="outlined"
                 />
                 <Box mt={2}>
@@ -394,7 +392,7 @@ const EditProductForm = ({ productId }) => {
                 </Box>
                 <Box mb={2}>
                   <ProductUploadImage handleAddImages={handleAddImages} />
-                  {state.images.length > 0
+                  {state.images && !isArrayEmpty(state.images)
                     && (
                       <ProductImageList
                         imageList={state.images}

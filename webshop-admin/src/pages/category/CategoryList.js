@@ -12,6 +12,7 @@ const initialState = {
   pageSize: 10,
   currentPage: 0,
   count: 10,
+  searchValue: '',
   triggerFetch: Date.now(),
   filters: {
     published: '',
@@ -33,6 +34,17 @@ function categoryListReducer(state, action) {
         ...state,
         currentPage: action.currentPage
       };
+    case 'CHANGE_SEARCH_VALUE':
+      return {
+        ...state,
+        searchValue: action.searchValue
+      };
+    case 'SET_SEARCH':
+      return {
+        ...state,
+        searchValue: action.searchValue,
+        triggerFetch: Date.now()
+      };
     case 'SET_FILTERS':
       return {
         ...state,
@@ -44,6 +56,15 @@ function categoryListReducer(state, action) {
       return {
         ...state,
         sort: action.sort
+      };
+    case 'CHANGE_PUBLISHED':
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          published: action.published
+        },
+        currentPage: 0
       };
     case 'SET_CATEGORIES':
       return {
@@ -102,28 +123,45 @@ function categoryListReducer(state, action) {
 const CategoryList = () => {
   const [state, dispatch] = useReducer(categoryListReducer, initialState);
 
+  const fetchCategories = async () => {
+    dispatch({ type: 'SET_LOADING' });
+    try {
+      const response = await categoryApi.getAll({
+        current_page: state.currentPage + 1,
+        page_size: state.pageSize,
+        ...state.filters,
+        sort: state.sort
+      });
+      dispatch({
+        type: 'SET_CATEGORIES',
+        categories: response.data.data,
+        count: response.data.pagination.count
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    dispatch({ type: 'SET_UNLOADING' });
+  };
+
+  const searchCategories = async () => {
+    dispatch({ type: 'SET_LOADING' });
+    const response = await categoryApi.searchCategories({
+      q: state.searchValue,
+      current_page: state.currentPage + 1,
+      page_size: state.pageSize,
+      ...state.filters,
+      sort: state.sort
+    });
+    dispatch({
+      type: 'SET_CATEGORIES',
+      categories: response.data.data,
+      count: response.data.pagination.count
+    });
+    dispatch({ type: 'SET_UNLOADING' });
+  };
+
   useEffect(() => {
-    const fetchCategories = async () => {
-      dispatch({ type: 'SET_LOADING' });
-      const { filters } = state;
-      try {
-        const response = await categoryApi.getAll({
-          current_page: state.currentPage + 1,
-          page_size: state.pageSize,
-          ...filters,
-          sort: state.sort
-        });
-        dispatch({
-          type: 'SET_CATEGORIES',
-          categories: response.data.data,
-          count: response.data.pagination.count
-        });
-      } catch (err) {
-        console.log(err);
-      }
-      dispatch({ type: 'SET_UNLOADING' });
-    };
-    fetchCategories();
+    if (state.searchValue.length > 4) { searchCategories(); } else { fetchCategories(); }
   }, [state.pageSize, state.currentPage, state.filters, state.sort, state.triggerFetch]);
 
   return (

@@ -57,7 +57,6 @@ const Login = () => {
                 const { user } = response.data;
                 if (user && user.role === Role.Admin) {
                   dispatch(setUser(user));
-                  sessionStorage.setItem('user', JSON.stringify(user));
                   navigate('/management/dashboard', { replace: true });
                 } else {
                   setError('Your account does not have permission to access');

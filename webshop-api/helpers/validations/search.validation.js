@@ -14,4 +14,13 @@ module.exports = {
       price: Joi.string().trim(),
     }),
   },
+  searchCategories: {
+    query: Joi.object({
+      q: Joi.string().min(4).max(100).required(),
+      current_page: Joi.number().integer().min(1),
+      page_size: Joi.number().integer().min(1),
+      sort: Joi.string().min(1),
+      published: Joi.bool(),
+    }),
+  },
 };
