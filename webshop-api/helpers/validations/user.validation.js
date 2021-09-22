@@ -27,7 +27,7 @@ module.exports = {
 			full_name: Joi.string().trim().min(1).max(50),
 			email: Joi.string().trim().email(),
 			phone_number: Joi.string().length(10).pattern(/^[0-9]+$/),
-			avatar: Joi.string(),
+			avatar: Joi.string().allow(null),
 		}),
 		params: Joi.object({
 			userId: Joi.string().guid({ version: 'uuidv4' }).required()
