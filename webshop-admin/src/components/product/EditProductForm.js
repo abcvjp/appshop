@@ -26,6 +26,7 @@ import { productApi } from 'src/utils/api';
 import { uploadProductImages } from 'src/firebase';
 
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
+import { isArrayEmpty } from 'src/utils/functions';
 import ProductUploadImage from './ProductUploadImage';
 import ProductImageList from './ProductImageList';
 import RichEditor from '../RichEditor';
@@ -394,7 +395,7 @@ const EditProductForm = ({ productId }) => {
                 </Box>
                 <Box mb={2}>
                   <ProductUploadImage handleAddImages={handleAddImages} />
-                  {state.images.length > 0
+                  {state.images && !isArrayEmpty(state.images)
                     && (
                       <ProductImageList
                         imageList={state.images}
