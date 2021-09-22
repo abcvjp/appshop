@@ -57,7 +57,7 @@ const AddProductForm = () => {
     navigate(0, { replace: true });
   };
   const handleBackToList = () => {
-    navigate('/management/category');
+    navigate('/management/product');
   };
 
   const onSubmit = useCallback(async (values, images) => { // eslint-disable-line
