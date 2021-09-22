@@ -72,8 +72,8 @@ module.exports = {
       images: Joi.array().items(
         Joi.object({
           url: Joi.string().trim().required().min(10),
-          alt: Joi.string().trim().min(10),
-          title: Joi.string().trim().min(10),
+          alt: Joi.string().trim().min(10).allow(null),
+          title: Joi.string().trim().min(10).allow(null),
         })
       ).allow(null),
       meta_title: Joi.string().trim().min(1).max(100),
@@ -100,8 +100,8 @@ module.exports = {
             images: Joi.array().items(
               Joi.object({
                 url: Joi.string().trim().required().min(10),
-                alt: Joi.string().trim().min(10),
-                title: Joi.string().trim().min(10),
+                alt: Joi.string().trim().min(10).allow(null),
+                title: Joi.string().trim().min(10).allow(null),
               })
             ).allow(null),
             meta_title: Joi.string().trim().min(1).max(100),
