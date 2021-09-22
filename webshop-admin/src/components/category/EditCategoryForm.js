@@ -49,6 +49,7 @@ const EditCategoryForm = ({ categoryId }) => {
   const { category } = state;
 
   const onSubmit = async (values) => {
+    console.log(values);
     dispatch(openFullScreenLoading());
     await categoryApi.updateCategory(categoryId, values).then((res) => res.data).then(() => {
       handleResultOpen();
@@ -88,8 +89,8 @@ const EditCategoryForm = ({ categoryId }) => {
               description: category.description,
               published: true,
               meta_title: category.meta_title,
-              meta_description: category.meta_description,
-              meta_keywords: category.meta_keywords
+              meta_description: category.meta_description || '',
+              meta_keywords: category.meta_keywords || ''
             }}
             validationSchema={Yup.object().shape({
               name: Yup.string().trim().min(1).max(30)
@@ -100,10 +101,14 @@ const EditCategoryForm = ({ categoryId }) => {
               published: Yup.boolean().required(),
               meta_title: Yup.string().trim().min(1).max(100)
                 .required('Meta title is required'),
-              meta_description: Yup.string().trim().min(20).max(200)
-                .nullable(),
-              meta_keywords: Yup.string().trim().min(1).max(150)
-                .nullable()
+              meta_description: Yup.string().transform((v) => (v === '' ? null : v))
+                .nullable(true).trim()
+                .min(20)
+                .max(200),
+              meta_keywords: Yup.string().transform((v) => (v === '' ? null : v))
+                .nullable(true).trim()
+                .min(1)
+                .max(150)
                 .lowercase()
             })}
             onSubmit={onSubmit}
@@ -203,7 +208,7 @@ const EditCategoryForm = ({ categoryId }) => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="meta_description"
-                  value={values.meta_description}
+                  value={values.meta_description || ''}
                   variant="outlined"
                 />
                 <TextField
@@ -216,7 +221,7 @@ const EditCategoryForm = ({ categoryId }) => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="meta_keyword"
-                  value={values.meta_keywords}
+                  value={values.meta_keywords || ''}
                   variant="outlined"
                 />
                 <Box sx={{ py: 2 }}>

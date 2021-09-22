@@ -130,10 +130,10 @@ const EditProductForm = ({ productId }) => {
             root_price: product.root_price,
             quantity: product.quantity,
             short_description: product.short_description,
-            description: EditorState.createWithContent(stateFromHTML(product.description)),
+            description: product.description,
             meta_title: product.title,
             meta_description: product.meta_description || '',
-            meta_keywords: product.meta_keywords || ''
+            meta_keywords: product.meta_description || ''
           }}
           validationSchema={Yup.object().shape({
             enable: Yup.boolean(),
@@ -152,8 +152,10 @@ const EditProductForm = ({ productId }) => {
             description: Yup.string().min(20).required('Description is required'),
             meta_title: Yup.string().trim().min(1).max(100)
               .required('Meta title is required'),
-            meta_description: Yup.string().trim().min(20).max(200),
+            meta_description: Yup.string().trim().min(20).max(200)
+              .nullable(),
             meta_keywords: Yup.string().trim().min(1).max(150)
+              .nullable()
           })}
           onSubmit={onSubmit}
         >
@@ -303,7 +305,7 @@ const EditProductForm = ({ productId }) => {
                     error={errors.description}
                     touched={touched.description}
                     label="Description*"
-                    initialState={values.description}
+                    initialState={EditorState.createWithContent(stateFromHTML(values.description))}
                     fieldName="description"
                     setFieldValue={setFieldValue}
                   />
@@ -356,7 +358,7 @@ const EditProductForm = ({ productId }) => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="meta_description"
-                  value={values.meta_description}
+                  value={values.meta_description || ''}
                   variant="outlined"
                 />
                 <TextField
@@ -369,7 +371,7 @@ const EditProductForm = ({ productId }) => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="meta_keyword"
-                  value={values.meta_keywords}
+                  value={values.meta_keywords || ''}
                   variant="outlined"
                 />
                 <Box mt={2}>
