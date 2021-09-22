@@ -39,7 +39,7 @@ export const cleanObj = (obj) => {
   if (typeof obj === 'object') {
     Object.keys(obj).forEach((k) => {
       const objProp = obj[k];
-    if (objProp === null || objProp === undefined || objProp === '' || objProp === {} || objProp === []) delete obj[k]; // eslint-disable-line
+    if (objProp === null || objProp === undefined || objProp === '' || objProp === {} || (Array.isArray(objProp) && objProp.length === 0)) delete obj[k]; // eslint-disable-line
       else if (typeof objProp === 'object' && Object.keys(objProp).length > 0) cleanObj(obj[k]);
     });
   }
