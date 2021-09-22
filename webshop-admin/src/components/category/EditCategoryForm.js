@@ -49,9 +49,8 @@ const EditCategoryForm = ({ categoryId }) => {
   const { category } = state;
 
   const onSubmit = async (values) => {
-    console.log(values);
     dispatch(openFullScreenLoading());
-    await categoryApi.updateCategory(categoryId, values).then((res) => res.data).then(() => {
+    await categoryApi.editCategory(categoryId, { ...values }).then((res) => res.data).then(() => {
       handleResultOpen();
     }).catch((err) => {
       setState((prevState) => ({ ...prevState, error: err.response ? err.response.data.error.message : err.message }));
@@ -85,7 +84,7 @@ const EditCategoryForm = ({ categoryId }) => {
           <Formik
             initialValues={{
               name: category.name,
-              parent_id: category.parent_id,
+              parent_id: category.parent_id || '',
               description: category.description,
               published: true,
               meta_title: category.meta_title,
@@ -101,11 +100,11 @@ const EditCategoryForm = ({ categoryId }) => {
               published: Yup.boolean().required(),
               meta_title: Yup.string().trim().min(1).max(100)
                 .required('Meta title is required'),
-              meta_description: Yup.string().transform((v) => (v === '' ? null : v))
+              meta_description: Yup.string()
                 .nullable(true).trim()
                 .min(20)
                 .max(200),
-              meta_keywords: Yup.string().transform((v) => (v === '' ? null : v))
+              meta_keywords: Yup.string()
                 .nullable(true).trim()
                 .min(1)
                 .max(150)

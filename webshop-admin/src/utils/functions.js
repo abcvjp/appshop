@@ -46,6 +46,17 @@ export const cleanObj = (obj) => {
   return obj;
 };
 
+export const convertEmptyStringToNull = (obj) => {
+  if (typeof obj === 'object') {
+    Object.keys(obj).forEach((k) => {
+      const objProp = obj[k];
+      if (objProp === '') obj[k] = null; // eslint-disable-line
+      else if (typeof objProp === 'object' && Object.keys(objProp).length > 0) convertEmptyStringToNull(obj[k]);
+    });
+  }
+  return obj;
+};
+
 export const formatBytes = (bytes, decimals = 2) => {
   if (bytes === 0) return '0 Bytes';
 

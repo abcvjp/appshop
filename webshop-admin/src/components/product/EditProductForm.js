@@ -107,7 +107,7 @@ const EditProductForm = ({ productId }) => {
   const onSubmit = useCallback(async (values) => { // eslint-disable-line
     dispatch(openFullScreenLoading());
     try {
-      await productApi.updateProduct(productId, values);
+      await productApi.editProduct(productId, { ...values });
       handleResultOpen();
     } catch (err) {
       console.log(err);
