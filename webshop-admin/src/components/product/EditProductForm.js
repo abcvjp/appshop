@@ -133,7 +133,7 @@ const EditProductForm = ({ productId }) => {
             description: product.description,
             meta_title: product.title,
             meta_description: product.meta_description || '',
-            meta_keywords: product.meta_description || ''
+            meta_keywords: product.meta_keywords || ''
           }}
           validationSchema={Yup.object().shape({
             enable: Yup.boolean(),
