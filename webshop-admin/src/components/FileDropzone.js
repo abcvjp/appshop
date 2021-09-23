@@ -6,14 +6,14 @@ import {
   Link,
   Typography,
   colors,
-  makeStyles
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {},
   dropZone: {
-    border: `1px dashed ${theme.palette.divider}`,
-    padding: theme.spacing(3),
+    border: '1px dashed grey',
+    padding: 24,
     outline: 'none',
     display: 'flex',
     justifyContent: 'center',
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     width: 130
   },
   info: {
-    marginTop: theme.spacing(1)
+    marginTop: 8
   }
 }));
 
