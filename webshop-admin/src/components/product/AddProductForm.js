@@ -68,8 +68,8 @@ const AddProductForm = () => {
         ...values,
         images: imageURLs.map((url, i) => ({
           url,
-          alt: images[i].alt,
-          title: images[i].title
+          alt: images[i].alt === '' ? null : images[i].alt,
+          title: images[i].title === '' ? null : images[i].title,
         }))
       });
       handleResultOpen();
