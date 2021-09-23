@@ -1,5 +1,5 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class ShippingMethod extends Model {
     /**
@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       ShippingMethod.hasMany(models.Order, {
-        foreignKey: { name: "shipping_method_id", allowNull: false },
-        onDelete: "RESTRICT",
+        foreignKey: { name: 'shipping_method_id', allowNull: false },
+        onDelete: 'RESTRICT'
       });
     }
   }
@@ -20,29 +20,29 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: true
       },
       enable: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: true
       },
       fee: {
         type: DataTypes.DOUBLE,
         allowNull: false,
         defaultValue: 0,
         validate: {
-          min: 0,
-        },
+          min: 0
+        }
       },
       detail: {
         type: DataTypes.STRING,
-        allowNull: true,
-      },
+        allowNull: true
+      }
     },
     {
       sequelize,
-      modelName: "ShippingMethod",
+      modelName: 'ShippingMethod'
     }
   );
   return ShippingMethod;

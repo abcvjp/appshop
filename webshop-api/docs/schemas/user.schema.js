@@ -1,48 +1,48 @@
 module.exports = {
   User: {
-    type: "object",
+    type: 'object',
     properties: {
       id: {
-        type: "string",
-        format: "uuidv4",
+        type: 'string',
+        format: 'uuidv4',
         readOnly: true,
-        nullable: false,
+        nullable: false
       },
       username: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       role: {
-        type: "string",
-        enum: ["user", "admin"],
+        type: 'string',
+        enum: ['user', 'admin']
       },
       full_name: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       email: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       phone_number: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       avatar: {
-        type: "string",
-        format: "uri",
-        nullable: true,
+        type: 'string',
+        format: 'uri',
+        nullable: true
       },
       hash: {
-        type: "string",
+        type: 'string',
         nullable: false,
-        readOnly: true,
+        readOnly: true
       },
       refresh_token: {
-        type: "string",
+        type: 'string',
         nullable: false,
-        readOnly: true,
-      },
-    },
-  },
+        readOnly: true
+      }
+    }
+  }
 };

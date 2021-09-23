@@ -1,7 +1,7 @@
-const getOrderReports = require("./operations/getOrderReports");
+const getOrderReports = require('./operations/getOrderReports');
 
 module.exports = {
-  "/report/order": {
-    get: getOrderReports,
-  },
+  '/report/order': {
+    get: getOrderReports
+  }
 };

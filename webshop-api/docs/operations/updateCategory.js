@@ -1,82 +1,82 @@
 module.exports = {
-  tags: ["category"],
-  summary: "Edit a category",
-  description: "Edit a category and return that category if it would success",
-  operationId: "updateCategory",
+  tags: ['category'],
+  summary: 'Edit a category',
+  description: 'Edit a category and return that category if it would success',
+  operationId: 'updateCategory',
   security: [
     {
-      access_token: [],
-    },
+      access_token: []
+    }
   ],
   parameters: [
     {
-      name: "categoryId",
-      in: "path",
-      description: "category id",
+      name: 'categoryId',
+      in: 'path',
+      description: 'category id',
       schema: {
-        type: "string",
-        format: "uuidv4",
+        type: 'string',
+        format: 'uuidv4'
       },
-      required: true,
-    },
+      required: true
+    }
   ],
   requestBody: {
     required: true,
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          $ref: "#/components/schemas/Category",
-        },
-      },
-    },
+          $ref: '#/components/schemas/Category'
+        }
+      }
+    }
   },
   responses: {
     200: {
-      description: "successfull operation",
+      description: 'successfull operation',
       content: {
-        "application/json": {
+        'application/json': {
           schema: {
-            type: "object",
+            type: 'object',
             properties: {
               success: {
-                description: "Indicate request success or not",
-                type: "boolean",
-                enum: ["true"],
-                example: true,
+                description: 'Indicate request success or not',
+                type: 'boolean',
+                enum: ['true'],
+                example: true
               },
               result: {
-                $ref: "#/components/schemas/Category",
-              },
-            },
+                $ref: '#/components/schemas/Category'
+              }
+            }
           },
           example: {
             success: true,
             result: {
-              id: "d08e5a2d-fba2-4d5b-90cd-8cc1cd90e989",
-              name: "Thời trang nam",
+              id: 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989',
+              name: 'Thời trang nam',
               published: true,
-              description: "Thời trang dành riêng cho nam giới",
-              path: "Thời trang nam",
-              slug: "thoi-trang-nam",
-              meta_title: "Thời trang nam",
+              description: 'Thời trang dành riêng cho nam giới',
+              path: 'Thời trang nam',
+              slug: 'thoi-trang-nam',
+              meta_title: 'Thời trang nam',
               meta_description: null,
               meta_keywords: null,
-              createdAt: "2021-08-31T00:54:47.000Z",
-              updatedAt: "2021-08-31T00:54:47.000Z",
-              parent_id: null,
-            },
-          },
-        },
-      },
+              createdAt: '2021-08-31T00:54:47.000Z',
+              updatedAt: '2021-08-31T00:54:47.000Z',
+              parent_id: null
+            }
+          }
+        }
+      }
     },
     400: {
-      $ref: "#/components/responses/ValidationFailed",
+      $ref: '#/components/responses/ValidationFailed'
     },
     401: {
-      $ref: "#/components/responses/Unauthorized",
+      $ref: '#/components/responses/Unauthorized'
     },
     403: {
-      $ref: "#/components/responses/Forbidden",
-    },
-  },
+      $ref: '#/components/responses/Forbidden'
+    }
+  }
 };

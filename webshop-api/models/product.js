@@ -1,5 +1,5 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Product extends Model {
     /**
@@ -9,13 +9,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Product.belongsTo(models.Category, {
-        foreignKey: { name: "category_id", allowNull: false },
-        as: "category",
+        foreignKey: { name: 'category_id', allowNull: false },
+        as: 'category'
       });
       Product.hasMany(models.OrderItem, {
-        foreignKey: { name: "product_id", allowNull: false },
-        onDelete: "SET NULL",
-        onUpdate: "CASCADE",
+        foreignKey: { name: 'product_id', allowNull: false },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
       });
     }
   }
@@ -26,100 +26,100 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4
       },
       enable: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: true
       },
       published: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: true
       },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: true
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       price: {
         type: DataTypes.DOUBLE,
         allowNull: false,
         validate: {
-          min: 0,
-        },
+          min: 0
+        }
       },
       quantity: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-          min: 0,
-        },
+          min: 0
+        }
       },
       sold: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
         validate: {
-          min: 0,
-        },
+          min: 0
+        }
       },
       root_price: {
         type: DataTypes.DOUBLE,
         allowNull: false,
         validate: {
-          min: 0,
-        },
+          min: 0
+        }
       },
       short_description: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       description: {
-        type: DataTypes.TEXT("long"),
-        allowNull: false,
+        type: DataTypes.TEXT('long'),
+        allowNull: false
       },
       images: {
         type: DataTypes.JSON,
-        allowNull: true,
+        allowNull: true
       },
       slug: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         validate: {
-          isLowercase: true,
-        },
+          isLowercase: true
+        }
       },
       meta_title: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       meta_description: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: true
       },
       meta_keywords: {
         type: DataTypes.STRING,
-        allowNull: true,
-      },
+        allowNull: true
+      }
     },
     {
       sequelize,
-      modelName: "Product",
+      modelName: 'Product',
       indexes: [
         // add a FULLTEXT index
         {
-          type: "FULLTEXT",
-          name: "name_title_keyword_idx",
-          fields: ["name", "title", "meta_keywords"],
-        },
-      ],
+          type: 'FULLTEXT',
+          name: 'name_title_keyword_idx',
+          fields: ['name', 'title', 'meta_keywords']
+        }
+      ]
     }
   );
   return Product;

@@ -1,29 +1,29 @@
-const createProduct = require("./operations/createProduct");
-const deleteProduct = require("./operations/deleteProduct");
-const deleteProducts = require("./operations/deleteProducts");
-const getProduct = require("./operations/getProduct");
-const getProductById = require("./operations/getProductById");
-const getProducts = require("./operations/getProducts");
-const searchProducts = require("./operations/searchProducts");
-const updateProduct = require("./operations/updateProduct");
-const updateProducts = require("./operations/updateProducts");
+const createProduct = require('./operations/createProduct');
+const deleteProduct = require('./operations/deleteProduct');
+const deleteProducts = require('./operations/deleteProducts');
+const getProduct = require('./operations/getProduct');
+const getProductById = require('./operations/getProductById');
+const getProducts = require('./operations/getProducts');
+const searchProducts = require('./operations/searchProducts');
+const updateProduct = require('./operations/updateProduct');
+const updateProducts = require('./operations/updateProducts');
 
 module.exports = {
-  "/product/{productId}": {
+  '/product/{productId}': {
     get: getProductById,
     put: updateProduct,
-    delete: deleteProduct,
+    delete: deleteProduct
   },
-  "/product/all": {
-    get: getProducts,
+  '/product/all': {
+    get: getProducts
   },
-  "/product": {
+  '/product': {
     get: getProduct,
     post: createProduct,
     put: updateProducts,
-    delete: deleteProducts,
+    delete: deleteProducts
   },
-  "/search": {
-    get: searchProducts,
-  },
+  '/search': {
+    get: searchProducts
+  }
 };

@@ -1,7 +1,7 @@
-const checkItemsValid = require("./operations/checkItemsValid");
+const checkItemsValid = require('./operations/checkItemsValid');
 
 module.exports = {
-  "/cart/check_valid": {
-    post: checkItemsValid,
-  },
+  '/cart/check_valid': {
+    post: checkItemsValid
+  }
 };

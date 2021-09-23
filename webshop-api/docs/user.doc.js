@@ -1,19 +1,19 @@
-const getUserById = require("./operations/getUserById");
-const login = require("./operations/login");
-const logout = require("./operations/logout");
-const refreshToken = require("./operations/refreshToken");
+const getUserById = require('./operations/getUserById');
+const login = require('./operations/login');
+const logout = require('./operations/logout');
+const refreshToken = require('./operations/refreshToken');
 
 module.exports = {
-  "/user/{userId}": {
-    get: getUserById,
+  '/user/{userId}': {
+    get: getUserById
   },
-  "/user/login": {
-    post: login,
+  '/user/login': {
+    post: login
   },
-  "/user/logout": {
-    get: logout,
+  '/user/logout': {
+    get: logout
   },
-  "/user/refresh-token": {
+  '/user/refresh-token': {
     get: refreshToken
   }
 };

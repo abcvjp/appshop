@@ -1,31 +1,31 @@
 module.exports = {
   Forbidden: {
-    description: "Forbidden/authorize error",
+    description: 'Forbidden/authorize error',
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          type: "object",
+          type: 'object',
           properties: {
             success: {
-              description: "Indicate request success or not",
-              type: "boolean",
+              description: 'Indicate request success or not',
+              type: 'boolean',
               const: false,
-              enum: [false],
+              enum: [false]
               // default: false,
             },
             error: {
-              type: "object",
-              description: "Summary the error",
+              type: 'object',
+              description: 'Summary the error',
               properties: {
                 message: {
-                  type: "string",
-                  example: "You don't have permission to access this",
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
+                  type: 'string',
+                  example: "You don't have permission to access this"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 };

@@ -14,15 +14,15 @@
     "dialect": "mysql"
   },
   "production": {
-		"username": "abcvjp",
+    "username": "abcvjp",
     "password": "hoai_vip2K",
     "database": "webshop",
     "host": "webshopdb.mysql.database.azure.com",
     "dialect": "mysql",
     "dialectOptions": {
-			"ssl": {
-				"require": true
-			}
-		}
-	}
+      "ssl": {
+        "require": true
+      }
+    }
+  }
 }

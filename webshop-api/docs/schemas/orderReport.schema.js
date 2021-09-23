@@ -1,56 +1,56 @@
 module.exports = {
   OrderReport: {
-    type: "object",
+    type: 'object',
     properties: {
       id: {
-        type: "string",
-        format: "uuidv4",
+        type: 'string',
+        format: 'uuidv4',
         readOnly: true,
-        nullable: false,
+        nullable: false
       },
       day: {
-        type: "string",
+        type: 'string',
         minimum: 0,
-        readOnly: true,
+        readOnly: true
       },
       orders_number: {
-        type: "integer",
+        type: 'integer',
         minimum: 0,
-        readOnly: true,
+        readOnly: true
       },
       conpleted_orders_number: {
-        type: "interger",
+        type: 'interger',
         minimum: 0,
-        readOnly: true,
+        readOnly: true
       },
       item_total: {
-        type: "integer",
+        type: 'integer',
         minimum: 0,
-        readOnly: true,
+        readOnly: true
       },
       items_number: {
-        type: "integer",
+        type: 'integer',
         minimum: 0,
-        readOnly: true,
+        readOnly: true
       },
       shipping_fee: {
-        type: "number",
-        format: "double",
+        type: 'number',
+        format: 'double',
         minimum: 0,
-        readOnly: true,
+        readOnly: true
       },
       order_total: {
-        type: "number",
-        format: "double",
+        type: 'number',
+        format: 'double',
         minimum: 0,
-        readOnly: true,
+        readOnly: true
       },
       expected_profit: {
-        type: "number",
-        format: "double",
+        type: 'number',
+        format: 'double',
         minimum: 0,
-        readOnly: true,
-      },
-    },
-  },
+        readOnly: true
+      }
+    }
+  }
 };

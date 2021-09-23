@@ -1,65 +1,65 @@
 module.exports = {
-  tags: ["order"],
-  summary: "Update status for multiple orders",
-  description: "Update status for multiple orders",
-  operationId: "updateOrdersStatus",
+  tags: ['order'],
+  summary: 'Update status for multiple orders',
+  description: 'Update status for multiple orders',
+  operationId: 'updateOrdersStatus',
   security: [
     {
-      access_token: [],
-    },
+      access_token: []
+    }
   ],
   requestBody: {
     required: true,
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          type: "object",
+          type: 'object',
           properties: {
             orders: {
-              type: "array",
+              type: 'array',
               items: {
-                type: "object",
+                type: 'object',
                 properties: {
                   id: {
-                    type: "string",
-                    format: "uuid",
-                    description: "order id",
+                    type: 'string',
+                    format: 'uuid',
+                    description: 'order id'
                   },
                   status: {
-                    type: "string",
-                    description: "Order status",
-                    enum: ["Pending", "Handling", "Completed", "Canceled"],
-                  },
+                    type: 'string',
+                    description: 'Order status',
+                    enum: ['Pending', 'Handling', 'Completed', 'Canceled']
+                  }
                 },
-                required: ["id", "status"],
-              },
-            },
+                required: ['id', 'status']
+              }
+            }
           },
-          required: ["orders"],
+          required: ['orders']
         },
         example: {
           orders: [
-            { id: "84ced9f5-34d8-4c0c-a1c0-6ba6bd559cfc", status: "Handling" },
-          ],
-        },
-      },
-    },
+            { id: '84ced9f5-34d8-4c0c-a1c0-6ba6bd559cfc', status: 'Handling' }
+          ]
+        }
+      }
+    }
   },
   responses: {
     200: {
-      $ref: "#/components/responses/OperationSuccess",
+      $ref: '#/components/responses/OperationSuccess'
     },
     400: {
-      $ref: "#/components/responses/ValidationFailed",
+      $ref: '#/components/responses/ValidationFailed'
     },
     401: {
-      $ref: "#/components/responses/Unauthorized",
+      $ref: '#/components/responses/Unauthorized'
     },
     403: {
-      $ref: "#/components/responses/Forbidden",
+      $ref: '#/components/responses/Forbidden'
     },
     409: {
-      $ref: "#/components/responses/Conflict",
-    },
-  },
+      $ref: '#/components/responses/Conflict'
+    }
+  }
 };

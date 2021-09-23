@@ -1,22 +1,22 @@
 module.exports = {
   PaymentMethod: {
-    type: "object",
+    type: 'object',
     properties: {
       id: {
-        type: "number",
-        format: "integer",
+        type: 'number',
+        format: 'integer',
         readOnly: true,
-        nullable: false,
+        nullable: false
       },
       enable: {
-        type: "boolean",
+        type: 'boolean',
         nullable: false,
-        default: true,
+        default: true
       },
       detail: {
-        type: "string",
-        nullable: true,
-      },
-    },
-  },
+        type: 'string',
+        nullable: true
+      }
+    }
+  }
 };

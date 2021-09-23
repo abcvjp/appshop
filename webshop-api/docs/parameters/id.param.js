@@ -1,11 +1,11 @@
 module.exports = {
   IdParam: {
-    name: "id",
-    in: "query",
+    name: 'id',
+    in: 'query',
     schema: {
-      type: "string",
-      format: "uuidv4",
+      type: 'string',
+      format: 'uuidv4'
     },
-    description: "id of resource (uuidv4)",
-  },
+    description: 'id of resource (uuidv4)'
+  }
 };

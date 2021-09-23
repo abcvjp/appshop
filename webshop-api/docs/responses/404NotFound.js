@@ -1,31 +1,31 @@
 module.exports = {
   NotFound: {
-    description: "No result/resource found",
+    description: 'No result/resource found',
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          type: "object",
+          type: 'object',
           properties: {
             success: {
-              description: "Indicate request success or not",
-              type: "boolean",
+              description: 'Indicate request success or not',
+              type: 'boolean',
               const: false,
-              enum: [false],
+              enum: [false]
               // default: false,
             },
             error: {
-              type: "object",
-              description: "Summary the error",
+              type: 'object',
+              description: 'Summary the error',
               properties: {
                 message: {
-                  type: "string",
-                  example: "Can't find any result",
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
+                  type: 'string',
+                  example: "Can't find any result"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 };

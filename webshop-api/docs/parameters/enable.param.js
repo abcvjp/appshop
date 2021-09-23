@@ -1,11 +1,11 @@
 module.exports = {
   EnableParam: {
-    name: "enable",
-    in: "query",
+    name: 'enable',
+    in: 'query',
     schema: {
-      type: "boolean",
-      enum: [true, false],
+      type: 'boolean',
+      enum: [true, false]
     },
-    description: "enable or disable",
-  },
+    description: 'enable or disable'
+  }
 };

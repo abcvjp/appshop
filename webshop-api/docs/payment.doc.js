@@ -1,7 +1,7 @@
-const getPaymentMethods = require("./operations/getPaymentMethods");
+const getPaymentMethods = require('./operations/getPaymentMethods');
 
 module.exports = {
-  "/payment/payment_method": {
-    get: getPaymentMethods,
-  },
+  '/payment/payment_method': {
+    get: getPaymentMethods
+  }
 };

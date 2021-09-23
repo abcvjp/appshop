@@ -1,47 +1,45 @@
 {
-	"env": "production",
-	"ip": "127.0.0.1",
-	"port": "8080",
-	"db": {
-		"username": "abcvjp",
-		"password": "hoai_vip2K",
-		"name": "webshop_db",
-		"host": "webshopdb.mysql.database.azure.com",
-		"pool": {
-			"max": 10,
-			"min": 0,
-			"acquire": 30000,
-			"idle": 10000
-		}
-	},
-	"sequelize": {
-		"username": "abcvjp",
-		"password": "hoai_vip2K",
-		"database": "webshop_db",
-		"host": "webshopdb.mysql.database.azure.com",
-		"dialect": "mysql",
-		"ssl": true,
-		"dialectOptions": {
-			"ssl": {
-				"require": true
-			},
-			"decimalNumbers": true
-		}
-	},
-	"cors": {
-		"whiteList": [
-			"https://webshop--api.herokuapp.com"
-		],
-		"credentials": true
-	},
-	"jwt": {
-		"secret": "Ysg$fG&DG",
-		"secret_options": {
-			"expiresIn": "1d"
-		},
-		"refresh_secret": "123asdfasd",
-		"refresh_secret_options": {
-			"expiresIn": "7d"
-		}
-	}
+  "env": "production",
+  "ip": "127.0.0.1",
+  "port": "8080",
+  "db": {
+    "username": "abcvjp",
+    "password": "hoai_vip2K",
+    "name": "webshop_db",
+    "host": "webshopdb.mysql.database.azure.com",
+    "pool": {
+      "max": 10,
+      "min": 0,
+      "acquire": 30000,
+      "idle": 10000
+    }
+  },
+  "sequelize": {
+    "username": "abcvjp",
+    "password": "hoai_vip2K",
+    "database": "webshop_db",
+    "host": "webshopdb.mysql.database.azure.com",
+    "dialect": "mysql",
+    "ssl": true,
+    "dialectOptions": {
+      "ssl": {
+        "require": true
+      },
+      "decimalNumbers": true
+    }
+  },
+  "cors": {
+    "whiteList": ["https://webshop--api.herokuapp.com"],
+    "credentials": true
+  },
+  "jwt": {
+    "secret": "Ysg$fG&DG",
+    "secret_options": {
+      "expiresIn": "1d"
+    },
+    "refresh_secret": "123asdfasd",
+    "refresh_secret_options": {
+      "expiresIn": "7d"
+    }
+  }
 }

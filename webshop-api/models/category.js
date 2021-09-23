@@ -1,5 +1,5 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Category extends Model {
     /**
@@ -9,17 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Category.hasMany(models.Product, {
-        foreignKey: { name: "category_id", allowNull: false },
-        as: "products",
+        foreignKey: { name: 'category_id', allowNull: false },
+        as: 'products'
       });
       Category.hasMany(Category, {
         foreignKey: {
-          name: "parent_id",
-          allowNull: true,
+          name: 'parent_id',
+          allowNull: true
         },
-        as: "childs",
-        onDelete: "cascade",
-        onUpdate: "cascade",
+        as: 'childs',
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
       });
     }
   }
@@ -30,59 +30,59 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4
       },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: true
       },
       published: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: true
       },
       description: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       path: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: true
       },
       slug: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         validate: {
-          isLowercase: true,
-        },
+          isLowercase: true
+        }
       },
       meta_title: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       meta_description: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: true
       },
       meta_keywords: {
         type: DataTypes.STRING,
-        allowNull: true,
-      },
+        allowNull: true
+      }
     },
     {
       sequelize,
-      modelName: "Category",
+      modelName: 'Category',
       indexes: [
         // add a FULLTEXT index
         {
-          type: "FULLTEXT",
-          name: "name_path_keyword_idx",
-          fields: ["name", "path", "meta_keywords"],
-        },
-      ],
+          type: 'FULLTEXT',
+          name: 'name_path_keyword_idx',
+          fields: ['name', 'path', 'meta_keywords']
+        }
+      ]
     }
   );
   return Category;

@@ -1,33 +1,33 @@
 module.exports = {
-  tags: ["category"],
-  summary: "Get all category",
-  operationId: "getAllCategory",
+  tags: ['category'],
+  summary: 'Get all category',
+  operationId: 'getAllCategory',
   responses: {
     200: {
-      description: "successfull operation",
+      description: 'successfull operation',
       content: {
-        "application/json": {
+        'application/json': {
           schema: {
-            type: "object",
+            type: 'object',
             properties: {
               success: {
-                description: "Indicate request success or not",
-                type: "boolean",
-                example: true,
+                description: 'Indicate request success or not',
+                type: 'boolean',
+                example: true
               },
               data: {
-                type: "array",
+                type: 'array',
                 items: {
-                  $ref: "#/components/schemas/Category",
-                },
-              },
-            },
-          },
-        },
-      },
+                  $ref: '#/components/schemas/Category'
+                }
+              }
+            }
+          }
+        }
+      }
     },
     404: {
-      $ref: "#/components/responses/NotFound",
-    },
-  },
+      $ref: '#/components/responses/NotFound'
+    }
+  }
 };

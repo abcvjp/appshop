@@ -1,17 +1,17 @@
-const Category = require("../models").Category;
-const createError = require("http-errors");
-const slug = require("slug");
-const { sequelize, Sequelize } = require("../models");
-const { isEmptyArray } = require("../helpers/js.helper");
-const { uuid } = require("uuidv4");
-const { calculateLimitAndOffset, paginate } = require("paginate-info");
+const Category = require('../models').Category;
+const createError = require('http-errors');
+const slug = require('slug');
+const { sequelize, Sequelize } = require('../models');
+const { isEmptyArray } = require('../helpers/js.helper');
+const { uuid } = require('uuidv4');
+const { calculateLimitAndOffset, paginate } = require('paginate-info');
 
 exports.getCategories = async ({
   current_page,
   page_size,
   sort,
   published,
-  exclude,
+  exclude
 }) => {
   try {
     let filters = {};
@@ -22,18 +22,18 @@ exports.getCategories = async ({
     const { rows, count } = await Category.findAndCountAll({
       where: filters,
       attributes: {
-        exclude,
+        exclude
       },
       limit,
       offset,
-      order: sort ? [sort.split(".")] : [["createdAt", "DESC"]],
+      order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
     });
-    if (rows.length < 1) throw createError(404, "Can not find any category");
+    if (rows.length < 1) throw createError(404, 'Can not find any category');
     const pagination = paginate(current_page, count, rows, page_size);
     return {
       success: true,
       data: rows,
-      pagination,
+      pagination
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -44,18 +44,18 @@ exports.getCategoryById = async ({ id, include_products, include_childs }) => {
   try {
     const temp = [];
     if (include_products) {
-      temp.push({ association: "products" });
+      temp.push({ association: 'products' });
     }
     if (include_childs) {
-      temp.push({ association: "childs" });
+      temp.push({ association: 'childs' });
     }
     const category = await Category.findByPk(id, {
-      include: temp,
+      include: temp
     });
-    if (!category) throw createError(404, "Category does not exist");
+    if (!category) throw createError(404, 'Category does not exist');
     return {
       success: true,
-      data: category,
+      data: category
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -65,26 +65,26 @@ exports.getCategoryById = async ({ id, include_products, include_childs }) => {
 exports.getCategoryBySlug = async ({
   slug,
   include_products,
-  include_childs,
+  include_childs
 }) => {
   try {
     const temp = [];
     if (include_products) {
-      temp.push({ association: "products" });
+      temp.push({ association: 'products' });
     }
     if (include_childs) {
-      temp.push({ association: "childs" });
+      temp.push({ association: 'childs' });
     }
     const category = await Category.findOne({
       where: {
-        slug,
+        slug
       },
-      include: temp,
+      include: temp
     });
-    if (!category) throw createError(404, "Category does not exist");
+    if (!category) throw createError(404, 'Category does not exist');
     return {
       success: true,
-      data: category,
+      data: category
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -98,13 +98,13 @@ exports.createCategory = async ({
   published,
   meta_title,
   meta_description,
-  meta_keywords,
+  meta_keywords
 }) => {
   try {
     const checkExist = await Category.findOne({
       where: {
-        name,
-      },
+        name
+      }
     });
     if (checkExist) {
       throw createError(409, `Category ${name} is already exist`);
@@ -114,9 +114,9 @@ exports.createCategory = async ({
     let path = name;
     if (parent_id) {
       const parentCategory = await Category.findByPk(parent_id, {
-        attributes: ["path"],
+        attributes: ['path']
       });
-      path = parentCategory.path + " - " + path;
+      path = parentCategory.path + ' - ' + path;
     }
     const newCategory = {
       id,
@@ -128,12 +128,12 @@ exports.createCategory = async ({
       path,
       meta_title,
       meta_description,
-      meta_keywords,
+      meta_keywords
     };
     await Category.create(newCategory);
     return {
       success: true,
-      result: newCategory,
+      result: newCategory
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -147,7 +147,7 @@ exports.updateCategory = async ({
   published,
   meta_title,
   meta_description,
-  meta_keywords,
+  meta_keywords
 }) => {
   try {
     // find category to be updated
@@ -156,7 +156,7 @@ exports.updateCategory = async ({
       throw createError(409, "Category doesn't exist");
     }
     if (categoryToUpdate.parent_id !== parent_id) {
-      throw createError(409, "Parent id is not allowed to change");
+      throw createError(409, 'Parent id is not allowed to change');
     }
 
     let relateCategories;
@@ -171,21 +171,21 @@ exports.updateCategory = async ({
           [Sequelize.Op.or]: [
             {
               path: {
-                [Sequelize.Op.like]: "% - " + oldName + " - %",
-              },
+                [Sequelize.Op.like]: '% - ' + oldName + ' - %'
+              }
             },
             {
               path: {
-                [Sequelize.Op.like]: "%" + oldName + " - %",
-              },
+                [Sequelize.Op.like]: '%' + oldName + ' - %'
+              }
             },
             {
               path: {
-                [Sequelize.Op.like]: "% - " + oldName + "%",
-              },
-            },
-          ],
-        },
+                [Sequelize.Op.like]: '% - ' + oldName + '%'
+              }
+            }
+          ]
+        }
       });
     }
 
@@ -198,7 +198,7 @@ exports.updateCategory = async ({
         path: newPath,
         meta_title,
         meta_description,
-        meta_keywords,
+        meta_keywords
       });
     } else {
       await sequelize.transaction(async (t) => {
@@ -210,14 +210,14 @@ exports.updateCategory = async ({
           path: newPath,
           meta_title,
           meta_description,
-          meta_keywords,
+          meta_keywords
         });
 
         // update path or relate categories
         await Promise.all(
           relateCategories.map((category) => {
             return category.update({
-              path: category.path.replace(oldName, name),
+              path: category.path.replace(oldName, name)
             });
           })
         );
@@ -225,7 +225,7 @@ exports.updateCategory = async ({
     }
     return {
       success: true,
-      result: categoryToUpdate,
+      result: categoryToUpdate
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -234,10 +234,10 @@ exports.updateCategory = async ({
 exports.deleteCategory = async ({ id }) => {
   try {
     const categoryToDelete = await Category.findByPk(id);
-    if (!categoryToDelete) throw createError(404, "Category does not exist");
+    if (!categoryToDelete) throw createError(404, 'Category does not exist');
     await categoryToDelete.destroy();
     return {
-      success: true,
+      success: true
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -249,12 +249,12 @@ exports.deleteCategories = async ({ categoryIds }) => {
     const categoriesToDelete = await Category.findAll({
       where: {
         id: {
-          [Sequelize.Op.in]: categoryIds,
-        },
-      },
+          [Sequelize.Op.in]: categoryIds
+        }
+      }
     });
     if (categoriesToDelete.length !== categoryIds.length)
-      throw createError(404, "One or more category does not exist");
+      throw createError(404, 'One or more category does not exist');
     await sequelize.transaction(async (t) => {
       await Promise.all(
         categoriesToDelete.map((category) => {
@@ -263,7 +263,7 @@ exports.deleteCategories = async ({ categoryIds }) => {
       );
     });
     return {
-      success: true,
+      success: true
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);

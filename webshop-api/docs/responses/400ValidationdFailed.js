@@ -1,44 +1,44 @@
 module.exports = {
   ValidationFailed: {
-    description: "Validation Failed",
+    description: 'Validation Failed',
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          type: "object",
+          type: 'object',
           properties: {
             success: {
-              description: "Indicate request success or not",
-              type: "boolean",
+              description: 'Indicate request success or not',
+              type: 'boolean',
               const: false,
-              enum: [false],
+              enum: [false]
               // default: false,
             },
             error: {
-              type: "object",
-              description: "Summary the error",
+              type: 'object',
+              description: 'Summary the error',
               properties: {
                 message: {
-                  type: "string",
+                  type: 'string'
                 },
                 details: {
-                  type: "array",
+                  type: 'array',
                   items: {
-                    type: "object",
+                    type: 'object',
                     properties: {
                       field: {
-                        type: "string",
+                        type: 'string'
                       },
                       errorDetail: {
-                        type: "string",
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
+                        type: 'string'
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 };

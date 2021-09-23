@@ -1,52 +1,52 @@
 module.exports = {
   Category: {
-    type: "object",
+    type: 'object',
     properties: {
       id: {
-        type: "string",
-        format: "uuidv4",
+        type: 'string',
+        format: 'uuidv4',
         readOnly: true,
-        nullable: false,
+        nullable: false
       },
       name: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       published: {
-        type: "boolean",
+        type: 'boolean',
         nullable: false,
-        default: true,
+        default: true
       },
       description: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       path: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       slug: {
-        type: "string",
+        type: 'string',
         nullable: false,
-        readOnly: true,
+        readOnly: true
       },
       meta_title: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       meta_description: {
-        type: "string",
-        nullable: true,
+        type: 'string',
+        nullable: true
       },
       meta_keyword: {
-        type: "string",
-        nullable: true,
+        type: 'string',
+        nullable: true
       },
       parent_id: {
-        type: "string",
-        format: "uuidv4",
-        nullable: true,
-      },
-    },
-  },
+        type: 'string',
+        format: 'uuidv4',
+        nullable: true
+      }
+    }
+  }
 };

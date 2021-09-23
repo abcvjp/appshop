@@ -1,7 +1,7 @@
-const productService = require("../services/product.service");
-const asyncHandler = require("express-async-handler");
+const productService = require('../services/product.service');
+const asyncHandler = require('express-async-handler');
 
-const Role = require("../helpers/roles.helper");
+const Role = require('../helpers/roles.helper');
 
 exports.createProduct = asyncHandler(async (req, res, next) => {
   const result = await productService.createProduct(req.body);
@@ -24,7 +24,7 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
     meta_title,
     meta_description,
     meta_keywords,
-    category_id,
+    category_id
   } = req.body;
   const result = await productService.updateProduct({
     id: productId,
@@ -41,7 +41,7 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
     meta_title,
     meta_description,
     meta_keywords,
-    category_id,
+    category_id
   });
   res.status(200).json(result);
 });
@@ -74,7 +74,7 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
     enable,
     published,
     in_stock,
-    price,
+    price
   } = req.query;
   const user = req.user;
   let result;
@@ -88,7 +88,7 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
       enable,
       published,
       in_stock,
-      price,
+      price
     });
   } else {
     result = await productService.getProducts({
@@ -100,7 +100,7 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
       enable: true,
       published: true,
       in_stock: true,
-      price,
+      price
     });
   }
   res.status(200).json(result);

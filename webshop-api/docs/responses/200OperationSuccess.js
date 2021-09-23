@@ -1,23 +1,23 @@
 module.exports = {
   OperationSuccess: {
-    description: "successfull operation",
+    description: 'successfull operation',
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          type: "object",
+          type: 'object',
           properties: {
             success: {
-              description: "Indicate request success or not",
-              type: "boolean",
-              enum: ["true"],
-              example: true,
-            },
-          },
+              description: 'Indicate request success or not',
+              type: 'boolean',
+              enum: ['true'],
+              example: true
+            }
+          }
         },
         example: {
-          success: true,
-        },
-      },
-    },
-  },
+          success: true
+        }
+      }
+    }
+  }
 };

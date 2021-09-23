@@ -1,16 +1,16 @@
 module.exports = {
   ShippingStatusParam: {
-    name: "shipping_status",
-    in: "query",
+    name: 'shipping_status',
+    in: 'query',
     schema: {
-      type: "string",
+      type: 'string',
       enum: [
-        "Undelivered",
-        "Delivering",
-        "Successfully delivered",
-        "Delivery failed",
-      ],
+        'Undelivered',
+        'Delivering',
+        'Successfully delivered',
+        'Delivery failed'
+      ]
     },
-    description: "shipping status of order",
-  },
+    description: 'shipping status of order'
+  }
 };

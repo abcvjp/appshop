@@ -1,21 +1,21 @@
-const jwt = require("jsonwebtoken");
-const { uuid } = require("uuidv4");
-const config = require("../config");
-const createError = require("http-errors");
+const jwt = require('jsonwebtoken');
+const { uuid } = require('uuidv4');
+const config = require('../config');
+const createError = require('http-errors');
 
 const generateAccessToken = (data) => {
   return jwt.sign(
     data,
-    config.get("jwt.secret"),
-    config.get("jwt.secret_options")
+    config.get('jwt.secret'),
+    config.get('jwt.secret_options')
   );
 };
 
 const generateRefreshToken = (data) => {
   return jwt.sign(
     data,
-    config.get("jwt.refresh_secret"),
-    config.get("jwt.refresh_secret_options")
+    config.get('jwt.refresh_secret'),
+    config.get('jwt.refresh_secret_options')
   );
 };
 
@@ -26,7 +26,7 @@ const generateAccessTokenByUser = (user) => {
     id,
     username,
     role,
-    access_token_id,
+    access_token_id
   });
 };
 
@@ -37,23 +37,23 @@ const generateRefreshTokenByUser = (user) => {
     id,
     username,
     role,
-    refresh_token_id,
+    refresh_token_id
   });
 };
 
 const verifyAccessToken = (token) => {
   try {
-    return jwt.verify(token, config.get("jwt.secret"));
+    return jwt.verify(token, config.get('jwt.secret'));
   } catch (err) {
-    throw createError(400, "Invalid access token");
+    throw createError(400, 'Invalid access token');
   }
 };
 
 const verifyRefreshToken = (token) => {
   try {
-    return jwt.verify(token, config.get("jwt.refresh_secret"));
+    return jwt.verify(token, config.get('jwt.refresh_secret'));
   } catch (err) {
-    throw createError(400, "Invalid refresh token");
+    throw createError(400, 'Invalid refresh token');
   }
 };
 
@@ -63,5 +63,5 @@ module.exports = {
   verifyAccessToken,
   generateRefreshToken,
   generateRefreshTokenByUser,
-  verifyRefreshToken,
+  verifyRefreshToken
 };

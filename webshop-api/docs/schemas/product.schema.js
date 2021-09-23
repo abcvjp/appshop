@@ -1,105 +1,105 @@
 module.exports = {
   Product: {
-    type: "object",
+    type: 'object',
     properties: {
       id: {
-        type: "string",
-        format: "uuidv4",
+        type: 'string',
+        format: 'uuidv4',
         readOnly: true,
-        nullable: false,
+        nullable: false
       },
       enable: {
-        type: "boolean",
+        type: 'boolean',
         nullable: false,
-        default: true,
+        default: true
       },
       published: {
-        type: "boolean",
+        type: 'boolean',
         nullable: false,
-        default: true,
+        default: true
       },
       name: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       title: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       price: {
-        type: "number",
-        format: "double",
+        type: 'number',
+        format: 'double',
         minimum: 0,
-        nullable: false,
+        nullable: false
       },
       quantity: {
-        type: "integer",
+        type: 'integer',
         minimum: 0,
-        nullable: false,
+        nullable: false
       },
       sold: {
-        type: "integer",
+        type: 'integer',
         minimum: 0,
         nullable: false,
-        readOnly: true,
+        readOnly: true
       },
       root_price: {
-        type: "number",
-        format: "double",
+        type: 'number',
+        format: 'double',
         minimum: 0,
-        nullable: false,
+        nullable: false
       },
       short_description: {
-        type: "string",
+        type: 'string',
         nullable: false,
         minLength: 20,
-        maxLength: 255,
+        maxLength: 255
       },
       description: {
-        type: "string",
+        type: 'string',
         nullable: false,
         minLength: 20,
-        maxLength: 30000,
+        maxLength: 30000
       },
       images: {
-        type: "array",
+        type: 'array',
         items: {
-          type: "object",
+          type: 'object',
           properties: {
             url: {
-              type: "string",
-              format: "uri",
-              nullable: false,
+              type: 'string',
+              format: 'uri',
+              nullable: false
             },
             alt: {
-              type: "string",
-              nullable: true,
+              type: 'string',
+              nullable: true
             },
             title: {
-              type: "string",
-              nullable: true,
-            },
-          },
+              type: 'string',
+              nullable: true
+            }
+          }
         },
-        nullable: true,
+        nullable: true
       },
       slug: {
-        type: "string",
+        type: 'string',
         nullable: false,
-        readOnly: true,
+        readOnly: true
       },
       meta_title: {
-        type: "string",
-        nullable: false,
+        type: 'string',
+        nullable: false
       },
       meta_description: {
-        type: "string",
-        nullable: true,
+        type: 'string',
+        nullable: true
       },
       meta_keyword: {
-        type: "string",
-        nullable: true,
-      },
-    },
-  },
+        type: 'string',
+        nullable: true
+      }
+    }
+  }
 };

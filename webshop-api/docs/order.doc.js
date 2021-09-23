@@ -1,33 +1,33 @@
-const cancelOrder = require("./operations/cancelOrder");
-const completeOrder = require("./operations/completeOrder");
-const confirmOrder = require("./operations/confirmOrder");
-const createOrder = require("./operations/createOrder");
-const deleteOrder = require("./operations/deleteOrder");
-const getOrderById = require("./operations/getOrderById");
-const getOrders = require("./operations/getOrders");
-const updateOrder = require("./operations/updateOrder");
-const updateOrdersStatus = require("./operations/updateOrdersStatus");
+const cancelOrder = require('./operations/cancelOrder');
+const completeOrder = require('./operations/completeOrder');
+const confirmOrder = require('./operations/confirmOrder');
+const createOrder = require('./operations/createOrder');
+const deleteOrder = require('./operations/deleteOrder');
+const getOrderById = require('./operations/getOrderById');
+const getOrders = require('./operations/getOrders');
+const updateOrder = require('./operations/updateOrder');
+const updateOrdersStatus = require('./operations/updateOrdersStatus');
 
 module.exports = {
-  "/order/{orderId}": {
+  '/order/{orderId}': {
     get: getOrderById,
     put: updateOrder,
-    delete: deleteOrder,
+    delete: deleteOrder
   },
-  "/order/all": {
-    get: getOrders,
+  '/order/all': {
+    get: getOrders
   },
   order: {
     post: createOrder,
-    put: updateOrdersStatus,
+    put: updateOrdersStatus
   },
-  "/order/{orderId}/confirm": {
-    put: confirmOrder,
+  '/order/{orderId}/confirm': {
+    put: confirmOrder
   },
-  "/order/{orderId}/complete": {
-    put: completeOrder,
+  '/order/{orderId}/complete': {
+    put: completeOrder
   },
-  "/order/{orderId}/cancel": {
-    put: cancelOrder,
-  },
+  '/order/{orderId}/cancel': {
+    put: cancelOrder
+  }
 };

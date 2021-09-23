@@ -1,11 +1,11 @@
-const Product = require("../models").Product;
-const { sequelize, Sequelize } = require("../models");
-const createError = require("http-errors");
-const slug = require("slug");
-const { uuid } = require("uuidv4");
-const { calculateLimitAndOffset, paginate } = require("paginate-info");
-const { roundPrice } = require("../helpers/logicFunc.helper");
-const { deleteObjProps } = require("../helpers/js.helper");
+const Product = require('../models').Product;
+const { sequelize, Sequelize } = require('../models');
+const createError = require('http-errors');
+const slug = require('slug');
+const { uuid } = require('uuidv4');
+const { calculateLimitAndOffset, paginate } = require('paginate-info');
+const { roundPrice } = require('../helpers/logicFunc.helper');
+const { deleteObjProps } = require('../helpers/js.helper');
 
 exports.getProducts = async ({
   current_page,
@@ -18,7 +18,7 @@ exports.getProducts = async ({
   in_stock,
   price,
   include,
-  exclude,
+  exclude
 }) => {
   try {
     const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
@@ -37,21 +37,21 @@ exports.getProducts = async ({
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
 				WHERE
-					${published !== undefined ? `p.published = ${published ? 1 : 0}` : "1=1"}
-					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : "1=1"}
+					${published !== undefined ? `p.published = ${published ? 1 : 0}` : '1=1'}
+					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${
             in_stock !== undefined
-              ? `p.quantity ${in_stock ? `${"> 0"}` : `${" = 0"}`}`
-              : "1=1"
+              ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}`
+              : '1=1'
           }
 					AND ${
             price !== undefined
-              ? `p.price BETWEEN ${price.split(",")[0]} AND ${
-                  price.split(",")[1]
+              ? `p.price BETWEEN ${price.split(',')[0]} AND ${
+                  price.split(',')[1]
                 }`
-              : "1=1"
+              : '1=1'
           }
-				ORDER BY ${sort !== undefined ? sort.replace(".", " ") : "createdAt DESC"};
+				ORDER BY ${sort !== undefined ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`,
         { nest: true }
       );
@@ -78,21 +78,21 @@ exports.getProducts = async ({
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
 				WHERE
-					${published !== undefined ? `p.published = ${published ? 1 : 0}` : "1=1"}
-					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : "1=1"}
+					${published !== undefined ? `p.published = ${published ? 1 : 0}` : '1=1'}
+					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${
             in_stock !== undefined
-              ? `p.quantity ${in_stock ? `${"> 0"}` : `${" = 0"}`}`
-              : "1=1"
+              ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}`
+              : '1=1'
           }
 					AND ${
             price !== undefined
-              ? `p.price BETWEEN ${price.split(",")[0]} AND ${
-                  price.split(",")[1]
+              ? `p.price BETWEEN ${price.split(',')[0]} AND ${
+                  price.split(',')[1]
                 }`
-              : "1=1"
+              : '1=1'
           }
-				ORDER BY ${sort !== undefined ? sort.replace(".", " ") : "createdAt DESC"};
+				ORDER BY ${sort !== undefined ? sort.replace('.', ' ') : 'createdAt DESC'};
 			`,
         { nest: true }
       );
@@ -116,31 +116,31 @@ exports.getProducts = async ({
       }
       if (price !== undefined) {
         filter.price = {
-          [Sequelize.Op.between]: price.split(","),
+          [Sequelize.Op.between]: price.split(',')
         };
       }
       if (sort !== undefined) {
-        sort = sort.split(".");
-        if (sort[0] === "discount") {
-          sort[0] = Sequelize.literal("discount");
+        sort = sort.split('.');
+        if (sort[0] === 'discount') {
+          sort[0] = Sequelize.literal('discount');
         }
       } else {
-        sort = ["createdAt", "DESC"];
+        sort = ['createdAt', 'DESC'];
       }
       var { rows, count } = await Product.findAndCountAll({
         include: {
-          association: "category",
+          association: 'category',
           required: true,
-          attributes: ["id", "name", "slug"],
+          attributes: ['id', 'name', 'slug']
         },
         where: filter,
         attributes: {
-          include: [[Sequelize.literal("1-price/root_price"), "discount"]],
-          exclude: ["category_id"].concat(exclude),
+          include: [[Sequelize.literal('1-price/root_price'), 'discount']],
+          exclude: ['category_id'].concat(exclude)
         },
         limit,
         offset,
-        order: [sort],
+        order: [sort]
       });
       var result = rows;
     }
@@ -150,7 +150,7 @@ exports.getProducts = async ({
     return {
       success: true,
       data: result,
-      pagination,
+      pagination
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -162,18 +162,18 @@ exports.getProductBySlug = async ({ slug }) => {
     const productBySlug = await Product.findOne({
       where: { slug },
       include: {
-        association: "category",
+        association: 'category',
         required: true,
-        attributes: ["id", "name", "path", "slug"],
+        attributes: ['id', 'name', 'path', 'slug']
       },
       attributes: {
-        exclude: ["category_id"],
-      },
+        exclude: ['category_id']
+      }
     });
-    if (!productBySlug) throw createError(404, "Product does not exist");
+    if (!productBySlug) throw createError(404, 'Product does not exist');
     return {
       success: true,
-      data: productBySlug,
+      data: productBySlug
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -184,18 +184,18 @@ exports.getProductById = async ({ id }) => {
   try {
     const productById = await Product.findByPk(id, {
       include: {
-        association: "category",
+        association: 'category',
         required: true,
-        attributes: ["id", "name", "path", "slug"],
+        attributes: ['id', 'name', 'path', 'slug']
       },
       attributes: {
-        exclude: ["category_id"],
-      },
+        exclude: ['category_id']
+      }
     });
-    if (!productById) throw createError(404, "Product does not exist");
+    if (!productById) throw createError(404, 'Product does not exist');
     return {
       success: true,
-      data: productById,
+      data: productById
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -205,18 +205,18 @@ exports.getProductById = async ({ id }) => {
 exports.getRelatedProducts = async ({ productId }) => {
   try {
     const productById = await Product.findByPk(productId, {
-      attributes: ["category_id"],
+      attributes: ['category_id']
     });
-    if (!productById) throw createError(404, "Product does not exist");
+    if (!productById) throw createError(404, 'Product does not exist');
     const relatedProducts = await Product.findAll({
       where: {
-        category_id: productById.category_id,
+        category_id: productById.category_id
       },
-      limit: 10,
+      limit: 10
     });
     return {
       success: true,
-      data: relatedProducts,
+      data: relatedProducts
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -237,7 +237,7 @@ exports.createProduct = async ({
   meta_title,
   meta_description,
   meta_keywords,
-  category_id,
+  category_id
 }) => {
   try {
     const id = uuid();
@@ -262,7 +262,7 @@ exports.createProduct = async ({
       meta_title,
       meta_description,
       meta_keywords,
-      category_id,
+      category_id
     });
     return { success: true, result: newProduct };
   } catch (error) {
@@ -285,11 +285,11 @@ exports.updateProduct = async ({
   meta_title,
   meta_description,
   meta_keywords,
-  category_id,
+  category_id
 }) => {
   try {
     const productToUpdate = await Product.findByPk(id);
-    if (!productToUpdate) throw createError(404, "Product does not exist");
+    if (!productToUpdate) throw createError(404, 'Product does not exist');
     if (name && productToUpdate.name !== name) {
       var slugName = slug(name);
     }
@@ -314,7 +314,7 @@ exports.updateProduct = async ({
       meta_title,
       meta_description,
       meta_keywords,
-      category_id,
+      category_id
     });
     return { success: true, result: productToUpdate };
   } catch (error) {
@@ -330,16 +330,16 @@ exports.updateProducts = async ({ products }) => {
     const productsToUpdate = await Product.findAll({
       where: {
         id: {
-          [Sequelize.Op.in]: products.map((i) => i.id),
-        },
+          [Sequelize.Op.in]: products.map((i) => i.id)
+        }
       },
-      order: ["id"],
+      order: ['id']
     });
     if (productsToUpdate.length < products.length)
-      throw createError(404, "Any product does not exist");
+      throw createError(404, 'Any product does not exist');
     const promises = products.map((product, i) => {
       if (productsToUpdate[i].id !== product.id)
-        throw createError(500, "Error when updating");
+        throw createError(500, 'Error when updating');
       if (product.name && productsToUpdate[i].name !== product.name) {
         product.slug = slug(product.name);
       }
@@ -363,7 +363,7 @@ exports.updateProducts = async ({ products }) => {
 exports.deleteProduct = async ({ id }) => {
   try {
     const productToDelete = await Product.findByPk(id);
-    if (!productToDelete) throw createError(404, "Product does not exist");
+    if (!productToDelete) throw createError(404, 'Product does not exist');
     await productToDelete.destroy();
     return { success: true };
   } catch (error) {
@@ -376,12 +376,12 @@ exports.deleteProducts = async ({ productIds }) => {
     const productsToDelete = await Product.findAll({
       where: {
         id: {
-          [Sequelize.Op.in]: productIds,
-        },
-      },
+          [Sequelize.Op.in]: productIds
+        }
+      }
     });
     if (productsToDelete.length < productIds.length)
-      throw createError(404, "One or more product does not exist");
+      throw createError(404, 'One or more product does not exist');
     let promises = productsToDelete.map((product) => {
       return product.destroy();
     });
@@ -389,7 +389,7 @@ exports.deleteProducts = async ({ productIds }) => {
       await Promise.all(promises);
     });
     return {
-      success: true,
+      success: true
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);

@@ -1,6 +1,6 @@
-const Product = require("../models").Product;
-const { Op, transaction } = require("../models").sequelize;
-const createError = require("http-errors");
+const Product = require('../models').Product;
+const { Op, transaction } = require('../models').sequelize;
+const createError = require('http-errors');
 
 exports.caculateSubTotal = async ({ cart_items }) => {
   try {
@@ -9,20 +9,20 @@ exports.caculateSubTotal = async ({ cart_items }) => {
     });
     const productsToBuy = await Product.findAll({
       where: {
-        id: cart_items.map((item) => item.product_id),
+        id: cart_items.map((item) => item.product_id)
       },
-      attributes: ["id", "price"],
-      order: ["id"],
+      attributes: ['id', 'price'],
+      order: ['id']
     });
     if (productsToBuy.length !== cart_items.length)
-      throw createError(404, "Any or some product ordered no longer exist");
+      throw createError(404, 'Any or some product ordered no longer exist');
     let subTotal = 0;
     cart_items.forEach((cartItem, i) => {
       subTotal += serverProducts[cartItem.product_id].price * cartItem.quantity;
     });
     return {
       success: true,
-      result: Math.round(subTotal * 100) / 100,
+      result: Math.round(subTotal * 100) / 100
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -34,18 +34,18 @@ exports.checkCartValid = async ({ cart_items }) => {
     const serverProducts = {};
     const fetchedProducts = await Product.findAll({
       where: {
-        id: cart_items.map((item) => item.product_id),
+        id: cart_items.map((item) => item.product_id)
       },
       attributes: [
-        "id",
-        "enable",
-        "name",
-        "slug",
-        "images",
-        "price",
-        "quantity",
+        'id',
+        'enable',
+        'name',
+        'slug',
+        'images',
+        'price',
+        'quantity'
       ],
-      order: ["id"],
+      order: ['id']
     });
     fetchedProducts.forEach((product) => {
       serverProducts[product.id] = product;
@@ -58,15 +58,15 @@ exports.checkCartValid = async ({ cart_items }) => {
       const serverProduct = serverProducts[cartItem.product_id];
       let buy_able = true;
       if (!serverProduct) {
-        temp.push("Product is no longer exist");
+        temp.push('Product is no longer exist');
         buy_able = false;
       } else {
         if (!serverProduct.enable) {
-          temp.push("Product is disabled");
+          temp.push('Product is disabled');
           buy_able = false;
         }
         if (serverProduct.quantity === 0) {
-          temp.push("Product is sold out");
+          temp.push('Product is sold out');
           buy_able = false;
         } else if (serverProduct.quantity < cartItem.quantity) {
           temp.push(
@@ -100,7 +100,7 @@ exports.checkCartValid = async ({ cart_items }) => {
       return {
         success: false,
         errors,
-        valid_items: valid_items,
+        valid_items: valid_items
       };
     }
 
@@ -110,7 +110,7 @@ exports.checkCartValid = async ({ cart_items }) => {
     );
     return {
       success: true,
-      subTotal: Math.round(subTotal * 100) / 100,
+      subTotal: Math.round(subTotal * 100) / 100
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);

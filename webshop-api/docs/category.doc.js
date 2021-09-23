@@ -1,21 +1,21 @@
-const createCategory = require("./operations/createCategory");
-const deleteCategories = require("./operations/deleteCategories");
-const deleteCategory = require("./operations/deleteCategory");
-const getAllCategory = require("./operations/getAllCategory");
-const getCategory = require("./operations/getCategory");
-const updateCategory = require("./operations/updateCategory");
+const createCategory = require('./operations/createCategory');
+const deleteCategories = require('./operations/deleteCategories');
+const deleteCategory = require('./operations/deleteCategory');
+const getAllCategory = require('./operations/getAllCategory');
+const getCategory = require('./operations/getCategory');
+const updateCategory = require('./operations/updateCategory');
 
 module.exports = {
-  "/category/all": {
-    get: getAllCategory,
+  '/category/all': {
+    get: getAllCategory
   },
-  "/category": {
+  '/category': {
     get: getCategory,
     post: createCategory,
-    delete: deleteCategories,
+    delete: deleteCategories
   },
-  "/category/{categoryId}": {
+  '/category/{categoryId}': {
     delete: deleteCategory,
-    put: updateCategory,
-  },
+    put: updateCategory
+  }
 };

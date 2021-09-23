@@ -1,6 +1,6 @@
-const searchService = require("../services/search.service");
-const asyncHandler = require("express-async-handler");
-const Role = require("../helpers/roles.helper");
+const searchService = require('../services/search.service');
+const asyncHandler = require('express-async-handler');
+const Role = require('../helpers/roles.helper');
 
 exports.searchProducts = asyncHandler(async (req, res, next) => {
   const {
@@ -12,7 +12,7 @@ exports.searchProducts = asyncHandler(async (req, res, next) => {
     enable,
     published,
     in_stock,
-    price,
+    price
   } = req.query;
   const user = req.user;
   let result;
@@ -26,7 +26,7 @@ exports.searchProducts = asyncHandler(async (req, res, next) => {
       enable,
       published,
       in_stock,
-      price,
+      price
     });
   } else {
     result = await searchService.searchProducts({
@@ -39,7 +39,7 @@ exports.searchProducts = asyncHandler(async (req, res, next) => {
       published: true,
       in_stock: true,
       price,
-      exclude: ["enable", "published"],
+      exclude: ['enable', 'published']
     });
   }
   res.status(200).json(result);
@@ -55,7 +55,7 @@ exports.searchCategories = asyncHandler(async (req, res, next) => {
       current_page,
       page_size,
       sort,
-      published,
+      published
     });
   } else {
     result = await searchService.searchCategories({
@@ -64,7 +64,7 @@ exports.searchCategories = asyncHandler(async (req, res, next) => {
       page_size,
       sort,
       published: true,
-      exclude: ["published"],
+      exclude: ['published']
     });
   }
   res.status(200).json(result);

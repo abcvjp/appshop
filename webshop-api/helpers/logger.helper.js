@@ -2,15 +2,12 @@ const { createLogger, format, transports, config } = require('winston');
 
 const options = {
   combinedFile: {
-    format: format.combine(
-      format.timestamp(),
-      format.json()
-    ),
+    format: format.combine(format.timestamp(), format.json()),
     filename: './logs/combined.log',
     handleExceptions: true,
     maxsize: 5242880, // 5MB
     maxFiles: 5,
-    colorize: false,
+    colorize: false
   },
   errorFile: {
     level: 'error',
@@ -37,23 +34,23 @@ const options = {
     ),
     handleExceptions: true,
     json: false,
-    colorize: true,
+    colorize: true
   }
-}
+};
 
 const logTransports = [
   new transports.File(options.combinedFile),
   new transports.File(options.errorFile)
-]
+];
 
 if (process.env.NODE_ENV !== 'production') {
-  logTransports.push(new transports.Console(options.console))
+  logTransports.push(new transports.Console(options.console));
 }
 
 const logger = createLogger({
   levels: config.npm.levels,
   transports: logTransports,
   exitOnError: false
-})
+});
 
-module.exports = logger
+module.exports = logger;

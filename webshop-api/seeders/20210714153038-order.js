@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -12,8 +12,8 @@ module.exports = {
      * }], {});
      */
     return queryInterface.bulkInsert(
-      "Orders",
-      require("../sample-data/order.sample")
+      'Orders',
+      require('../sample-data/order.sample')
     );
   },
 
@@ -24,6 +24,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    return queryInterface.bulkDelete("Orders", null, {});
-  },
+    return queryInterface.bulkDelete('Orders', null, {});
+  }
 };

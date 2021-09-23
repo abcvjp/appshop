@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 
 /**
  * Actions summary:
@@ -17,630 +17,630 @@ const Sequelize = require("sequelize");
 
 const info = {
   revision: 1,
-  name: "initialize-database",
-  created: "2021-09-10T06:39:07.822Z",
-  comment: "",
+  name: 'initialize-database',
+  created: '2021-09-10T06:39:07.822Z',
+  comment: ''
 };
 
 const migrationCommands = (transaction) => [
   {
-    fn: "createTable",
+    fn: 'createTable',
     params: [
-      "OrderReports",
+      'OrderReports',
       {
         id: {
           type: Sequelize.UUID,
-          field: "id",
+          field: 'id',
           defaultValue: Sequelize.UUIDV4,
           allowNull: false,
-          primaryKey: true,
+          primaryKey: true
         },
-        day: { type: Sequelize.STRING, field: "day", allowNull: false },
+        day: { type: Sequelize.STRING, field: 'day', allowNull: false },
         orders_number: {
           type: Sequelize.INTEGER,
-          field: "orders_number",
+          field: 'orders_number',
           defaultValue: 0,
-          allowNull: false,
+          allowNull: false
         },
         completed_orders_number: {
           type: Sequelize.INTEGER,
-          field: "completed_orders_number",
+          field: 'completed_orders_number',
           defaultValue: 0,
-          allowNull: false,
+          allowNull: false
         },
         item_total: {
           type: Sequelize.DOUBLE,
-          field: "item_total",
+          field: 'item_total',
           defaultValue: 0,
-          allowNull: false,
+          allowNull: false
         },
         items_number: {
           type: Sequelize.INTEGER,
-          field: "items_number",
+          field: 'items_number',
           defaultValue: 0,
-          allowNull: false,
+          allowNull: false
         },
         shipping_fee: {
           type: Sequelize.DOUBLE,
-          field: "shipping_fee",
+          field: 'shipping_fee',
           defaultValue: 0,
-          allowNull: false,
+          allowNull: false
         },
         order_total: {
           type: Sequelize.DOUBLE,
-          field: "order_total",
+          field: 'order_total',
           defaultValue: 0,
-          allowNull: false,
+          allowNull: false
         },
         expected_profit: {
           type: Sequelize.DOUBLE,
-          field: "expected_profit",
+          field: 'expected_profit',
           defaultValue: 0,
-          allowNull: false,
+          allowNull: false
         },
         createdAt: {
           type: Sequelize.DATE,
-          field: "createdAt",
-          allowNull: false,
+          field: 'createdAt',
+          allowNull: false
         },
         updatedAt: {
           type: Sequelize.DATE,
-          field: "updatedAt",
-          allowNull: false,
-        },
+          field: 'updatedAt',
+          allowNull: false
+        }
       },
-      { transaction },
-    ],
+      { transaction }
+    ]
   },
   {
-    fn: "createTable",
+    fn: 'createTable',
     params: [
-      "PaymentMethods",
+      'PaymentMethods',
       {
         id: {
           type: Sequelize.INTEGER,
-          field: "id",
+          field: 'id',
           autoIncrement: true,
           primaryKey: true,
-          allowNull: false,
+          allowNull: false
         },
         name: {
           type: Sequelize.STRING,
-          field: "name",
+          field: 'name',
           unique: true,
-          allowNull: false,
+          allowNull: false
         },
         enable: {
           type: Sequelize.BOOLEAN,
-          field: "enable",
+          field: 'enable',
           defaultValue: true,
-          allowNull: false,
+          allowNull: false
         },
-        detail: { type: Sequelize.STRING, field: "detail", allowNull: true },
+        detail: { type: Sequelize.STRING, field: 'detail', allowNull: true },
         createdAt: {
           type: Sequelize.DATE,
-          field: "createdAt",
-          allowNull: false,
+          field: 'createdAt',
+          allowNull: false
         },
         updatedAt: {
           type: Sequelize.DATE,
-          field: "updatedAt",
-          allowNull: false,
-        },
+          field: 'updatedAt',
+          allowNull: false
+        }
       },
-      { transaction },
-    ],
+      { transaction }
+    ]
   },
   {
-    fn: "createTable",
+    fn: 'createTable',
     params: [
-      "ShippingMethods",
+      'ShippingMethods',
       {
         id: {
           type: Sequelize.INTEGER,
-          field: "id",
+          field: 'id',
           autoIncrement: true,
           primaryKey: true,
-          allowNull: false,
+          allowNull: false
         },
         name: {
           type: Sequelize.STRING,
-          field: "name",
+          field: 'name',
           unique: true,
-          allowNull: false,
+          allowNull: false
         },
         enable: {
           type: Sequelize.BOOLEAN,
-          field: "enable",
+          field: 'enable',
           defaultValue: true,
-          allowNull: false,
+          allowNull: false
         },
         fee: {
           type: Sequelize.DOUBLE,
-          field: "fee",
+          field: 'fee',
           defaultValue: 0,
-          allowNull: false,
+          allowNull: false
         },
-        detail: { type: Sequelize.STRING, field: "detail", allowNull: true },
+        detail: { type: Sequelize.STRING, field: 'detail', allowNull: true },
         createdAt: {
           type: Sequelize.DATE,
-          field: "createdAt",
-          allowNull: false,
+          field: 'createdAt',
+          allowNull: false
         },
         updatedAt: {
           type: Sequelize.DATE,
-          field: "updatedAt",
-          allowNull: false,
-        },
+          field: 'updatedAt',
+          allowNull: false
+        }
       },
-      { transaction },
-    ],
+      { transaction }
+    ]
   },
   {
-    fn: "createTable",
+    fn: 'createTable',
     params: [
-      "Users",
+      'Users',
       {
         id: {
           type: Sequelize.UUID,
-          field: "id",
+          field: 'id',
           defaultValue: Sequelize.UUIDV4,
           allowNull: false,
-          primaryKey: true,
+          primaryKey: true
         },
         username: {
           type: Sequelize.STRING,
           unique: true,
           allowNull: false,
-          field: "username",
+          field: 'username'
         },
         role: {
           type: Sequelize.STRING,
           allowNull: false,
-          defaultValue: "user",
-          field: "role",
+          defaultValue: 'user',
+          field: 'role'
         },
         full_name: {
           type: Sequelize.STRING,
           allowNull: false,
-          field: "full_name",
+          field: 'full_name'
         },
         email: {
           type: Sequelize.STRING,
           unique: true,
           allowNull: false,
-          field: "email",
+          field: 'email'
         },
         phone_number: {
           type: Sequelize.STRING,
           unique: true,
           allowNull: false,
-          field: "phone_number",
+          field: 'phone_number'
         },
-        hash: { type: Sequelize.STRING, allowNull: false, field: "hash" },
-        avatar: { type: Sequelize.STRING, allowNull: true, field: "avatar" },
+        hash: { type: Sequelize.STRING, allowNull: false, field: 'hash' },
+        avatar: { type: Sequelize.STRING, allowNull: true, field: 'avatar' },
         refresh_token: {
           type: Sequelize.TEXT,
           allowNull: true,
-          field: "refresh_token",
+          field: 'refresh_token'
         },
         createdAt: {
           type: Sequelize.DATE,
-          field: "createdAt",
-          allowNull: false,
+          field: 'createdAt',
+          allowNull: false
         },
         updatedAt: {
           type: Sequelize.DATE,
-          field: "updatedAt",
-          allowNull: false,
-        },
+          field: 'updatedAt',
+          allowNull: false
+        }
       },
-      { transaction },
-    ],
+      { transaction }
+    ]
   },
   {
-    fn: "createTable",
+    fn: 'createTable',
     params: [
-      "Categories",
+      'Categories',
       {
         id: {
           type: Sequelize.UUID,
-          field: "id",
+          field: 'id',
           defaultValue: Sequelize.UUIDV4,
           allowNull: false,
-          primaryKey: true,
+          primaryKey: true
         },
         name: {
           type: Sequelize.STRING,
-          field: "name",
+          field: 'name',
           unique: true,
-          allowNull: false,
+          allowNull: false
         },
         published: {
           type: Sequelize.BOOLEAN,
-          field: "published",
+          field: 'published',
           defaultValue: true,
-          allowNull: false,
+          allowNull: false
         },
         description: {
           type: Sequelize.STRING,
-          field: "description",
-          allowNull: false,
+          field: 'description',
+          allowNull: false
         },
         path: {
           type: Sequelize.STRING,
-          field: "path",
+          field: 'path',
           unique: true,
-          allowNull: false,
+          allowNull: false
         },
         slug: {
           type: Sequelize.STRING,
-          field: "slug",
+          field: 'slug',
           unique: true,
-          allowNull: false,
+          allowNull: false
         },
         meta_title: {
           type: Sequelize.STRING,
-          field: "meta_title",
-          allowNull: false,
+          field: 'meta_title',
+          allowNull: false
         },
         meta_description: {
           type: Sequelize.STRING,
-          field: "meta_description",
-          allowNull: true,
+          field: 'meta_description',
+          allowNull: true
         },
         meta_keywords: {
           type: Sequelize.STRING,
-          field: "meta_keywords",
-          allowNull: true,
+          field: 'meta_keywords',
+          allowNull: true
         },
         createdAt: {
           type: Sequelize.DATE,
-          field: "createdAt",
-          allowNull: false,
+          field: 'createdAt',
+          allowNull: false
         },
         updatedAt: {
           type: Sequelize.DATE,
-          field: "updatedAt",
-          allowNull: false,
+          field: 'updatedAt',
+          allowNull: false
         },
         parent_id: {
           type: Sequelize.UUID,
-          field: "parent_id",
-          onUpdate: "cascade",
-          onDelete: "cascade",
-          references: { model: "Categories", key: "id" },
-          name: "parent_id",
-          allowNull: true,
-        },
+          field: 'parent_id',
+          onUpdate: 'cascade',
+          onDelete: 'cascade',
+          references: { model: 'Categories', key: 'id' },
+          name: 'parent_id',
+          allowNull: true
+        }
       },
-      { transaction },
-    ],
+      { transaction }
+    ]
   },
   {
-    fn: "createTable",
+    fn: 'createTable',
     params: [
-      "Orders",
+      'Orders',
       {
         id: {
           type: Sequelize.UUID,
-          field: "id",
+          field: 'id',
           defaultValue: Sequelize.UUIDV4,
           allowNull: false,
-          primaryKey: true,
+          primaryKey: true
         },
         status: {
-          type: Sequelize.ENUM("Pending", "Handling", "Completed", "Canceled"),
-          field: "status",
-          defaultValue: "Pending",
-          allowNull: false,
+          type: Sequelize.ENUM('Pending', 'Handling', 'Completed', 'Canceled'),
+          field: 'status',
+          defaultValue: 'Pending',
+          allowNull: false
         },
         order_total: {
           type: Sequelize.DOUBLE,
-          field: "order_total",
-          allowNull: false,
+          field: 'order_total',
+          allowNull: false
         },
         item_total: {
           type: Sequelize.DOUBLE,
-          field: "item_total",
-          allowNull: false,
+          field: 'item_total',
+          allowNull: false
         },
         shipping_fee: {
           type: Sequelize.DOUBLE,
-          field: "shipping_fee",
-          allowNull: false,
+          field: 'shipping_fee',
+          allowNull: false
         },
         payment_status: {
-          type: Sequelize.ENUM("Unpaid", "Paid"),
-          field: "payment_status",
-          defaultValue: "Unpaid",
-          allowNull: false,
+          type: Sequelize.ENUM('Unpaid', 'Paid'),
+          field: 'payment_status',
+          defaultValue: 'Unpaid',
+          allowNull: false
         },
         shipping_status: {
           type: Sequelize.ENUM(
-            "Undelivered",
-            "Delivering",
-            "Successfully delivered",
-            "Delivery failed"
+            'Undelivered',
+            'Delivering',
+            'Successfully delivered',
+            'Delivery failed'
           ),
-          field: "shipping_status",
-          defaultValue: "Undelivered",
-          allowNull: false,
+          field: 'shipping_status',
+          defaultValue: 'Undelivered',
+          allowNull: false
         },
         customer_name: {
           type: Sequelize.STRING,
-          field: "customer_name",
-          allowNull: false,
+          field: 'customer_name',
+          allowNull: false
         },
-        address: { type: Sequelize.STRING, field: "address", allowNull: false },
-        email: { type: Sequelize.STRING, field: "email", allowNull: true },
+        address: { type: Sequelize.STRING, field: 'address', allowNull: false },
+        email: { type: Sequelize.STRING, field: 'email', allowNull: true },
         phone_number: {
           type: Sequelize.STRING,
-          field: "phone_number",
-          allowNull: false,
+          field: 'phone_number',
+          allowNull: false
         },
         shipping_note: {
           type: Sequelize.STRING,
-          field: "shipping_note",
-          allowNull: true,
+          field: 'shipping_note',
+          allowNull: true
         },
         createdAt: {
           type: Sequelize.DATE,
-          field: "createdAt",
-          allowNull: false,
+          field: 'createdAt',
+          allowNull: false
         },
         updatedAt: {
           type: Sequelize.DATE,
-          field: "updatedAt",
-          allowNull: false,
+          field: 'updatedAt',
+          allowNull: false
         },
         payment_method_id: {
           type: Sequelize.INTEGER,
-          field: "payment_method_id",
-          onUpdate: "CASCADE",
-          onDelete: "NO ACTION",
-          references: { model: "PaymentMethods", key: "id" },
-          name: "payment_method_id",
-          allowNull: false,
+          field: 'payment_method_id',
+          onUpdate: 'CASCADE',
+          onDelete: 'NO ACTION',
+          references: { model: 'PaymentMethods', key: 'id' },
+          name: 'payment_method_id',
+          allowNull: false
         },
         shipping_method_id: {
           type: Sequelize.INTEGER,
-          field: "shipping_method_id",
-          onUpdate: "CASCADE",
-          onDelete: "NO ACTION",
-          references: { model: "ShippingMethods", key: "id" },
-          name: "shipping_method_id",
-          allowNull: false,
-        },
+          field: 'shipping_method_id',
+          onUpdate: 'CASCADE',
+          onDelete: 'NO ACTION',
+          references: { model: 'ShippingMethods', key: 'id' },
+          name: 'shipping_method_id',
+          allowNull: false
+        }
       },
-      { transaction },
-    ],
+      { transaction }
+    ]
   },
   {
-    fn: "createTable",
+    fn: 'createTable',
     params: [
-      "Products",
+      'Products',
       {
         id: {
           type: Sequelize.UUID,
-          field: "id",
+          field: 'id',
           defaultValue: Sequelize.UUIDV4,
           allowNull: false,
-          primaryKey: true,
+          primaryKey: true
         },
         enable: {
           type: Sequelize.BOOLEAN,
-          field: "enable",
+          field: 'enable',
           defaultValue: true,
-          allowNull: false,
+          allowNull: false
         },
         published: {
           type: Sequelize.BOOLEAN,
-          field: "published",
+          field: 'published',
           defaultValue: true,
-          allowNull: false,
+          allowNull: false
         },
         name: {
           type: Sequelize.STRING,
-          field: "name",
+          field: 'name',
           unique: true,
-          allowNull: false,
+          allowNull: false
         },
-        title: { type: Sequelize.STRING, field: "title", allowNull: false },
-        price: { type: Sequelize.DOUBLE, field: "price", allowNull: false },
+        title: { type: Sequelize.STRING, field: 'title', allowNull: false },
+        price: { type: Sequelize.DOUBLE, field: 'price', allowNull: false },
         quantity: {
           type: Sequelize.INTEGER,
-          field: "quantity",
-          allowNull: false,
+          field: 'quantity',
+          allowNull: false
         },
         sold: {
           type: Sequelize.INTEGER,
-          field: "sold",
+          field: 'sold',
           defaultValue: 0,
-          allowNull: false,
+          allowNull: false
         },
         root_price: {
           type: Sequelize.DOUBLE,
-          field: "root_price",
-          allowNull: false,
+          field: 'root_price',
+          allowNull: false
         },
         short_description: {
           type: Sequelize.STRING,
-          field: "short_description",
-          allowNull: false,
+          field: 'short_description',
+          allowNull: false
         },
         description: {
-          type: Sequelize.TEXT("long"),
-          field: "description",
-          allowNull: false,
+          type: Sequelize.TEXT('long'),
+          field: 'description',
+          allowNull: false
         },
-        images: { type: Sequelize.JSON, field: "images", allowNull: true },
+        images: { type: Sequelize.JSON, field: 'images', allowNull: true },
         slug: {
           type: Sequelize.STRING,
-          field: "slug",
+          field: 'slug',
           unique: true,
-          allowNull: false,
+          allowNull: false
         },
         meta_title: {
           type: Sequelize.STRING,
-          field: "meta_title",
-          allowNull: false,
+          field: 'meta_title',
+          allowNull: false
         },
         meta_description: {
           type: Sequelize.STRING,
-          field: "meta_description",
-          allowNull: true,
+          field: 'meta_description',
+          allowNull: true
         },
         meta_keywords: {
           type: Sequelize.STRING,
-          field: "meta_keywords",
-          allowNull: true,
+          field: 'meta_keywords',
+          allowNull: true
         },
         createdAt: {
           type: Sequelize.DATE,
-          field: "createdAt",
-          allowNull: false,
+          field: 'createdAt',
+          allowNull: false
         },
         updatedAt: {
           type: Sequelize.DATE,
-          field: "updatedAt",
-          allowNull: false,
+          field: 'updatedAt',
+          allowNull: false
         },
         category_id: {
           type: Sequelize.UUID,
-          field: "category_id",
-          onUpdate: "CASCADE",
-          onDelete: "CASCADE",
-          references: { model: "Categories", key: "id" },
-          name: "category_id",
-          allowNull: false,
-        },
+          field: 'category_id',
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+          references: { model: 'Categories', key: 'id' },
+          name: 'category_id',
+          allowNull: false
+        }
       },
-      { transaction },
-    ],
+      { transaction }
+    ]
   },
   {
-    fn: "createTable",
+    fn: 'createTable',
     params: [
-      "OrderItems",
+      'OrderItems',
       {
         id: {
           type: Sequelize.INTEGER,
-          field: "id",
+          field: 'id',
           autoIncrement: true,
           primaryKey: true,
-          allowNull: false,
+          allowNull: false
         },
-        price: { type: Sequelize.DOUBLE, field: "price", allowNull: false },
+        price: { type: Sequelize.DOUBLE, field: 'price', allowNull: false },
         quantity: {
           type: Sequelize.INTEGER,
-          field: "quantity",
+          field: 'quantity',
           defaultValue: 1,
-          allowNull: false,
+          allowNull: false
         },
         product_name: {
           type: Sequelize.STRING,
-          field: "product_name",
-          allowNull: false,
+          field: 'product_name',
+          allowNull: false
         },
         product_thumbnail: {
           type: Sequelize.STRING,
-          field: "product_thumbnail",
-          allowNull: true,
+          field: 'product_thumbnail',
+          allowNull: true
         },
         createdAt: {
           type: Sequelize.DATE,
-          field: "createdAt",
-          allowNull: false,
+          field: 'createdAt',
+          allowNull: false
         },
         updatedAt: {
           type: Sequelize.DATE,
-          field: "updatedAt",
-          allowNull: false,
+          field: 'updatedAt',
+          allowNull: false
         },
         order_id: {
           type: Sequelize.UUID,
-          field: "order_id",
-          onUpdate: "CASCADE",
-          onDelete: "CASCADE",
-          references: { model: "Orders", key: "id" },
-          name: "order_id",
-          allowNull: false,
+          field: 'order_id',
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+          references: { model: 'Orders', key: 'id' },
+          name: 'order_id',
+          allowNull: false
         },
         product_id: {
           type: Sequelize.UUID,
-          field: "product_id",
-          onUpdate: "CASCADE",
-          onDelete: "SET NULL",
-          references: { model: "Products", key: "id" },
-          name: "product_id",
-          allowNull: true,
-        },
+          field: 'product_id',
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL',
+          references: { model: 'Products', key: 'id' },
+          name: 'product_id',
+          allowNull: true
+        }
       },
-      { transaction },
-    ],
+      { transaction }
+    ]
   },
   {
-    fn: "addIndex",
+    fn: 'addIndex',
     params: [
-      "Products",
-      ["name", "title", "meta_keywords"],
+      'Products',
+      ['name', 'title', 'meta_keywords'],
       {
-        indexName: "name_title_keyword_idx",
-        name: "name_title_keyword_idx",
-        type: "FULLTEXT",
-        transaction,
-      },
-    ],
+        indexName: 'name_title_keyword_idx',
+        name: 'name_title_keyword_idx',
+        type: 'FULLTEXT',
+        transaction
+      }
+    ]
   },
   {
-    fn: "addIndex",
+    fn: 'addIndex',
     params: [
-      "Categories",
-      ["name", "path", "meta_keywords"],
+      'Categories',
+      ['name', 'path', 'meta_keywords'],
       {
-        indexName: "name_path_keyword_idx",
-        name: "name_path_keyword_idx",
-        type: "FULLTEXT",
-        transaction,
-      },
-    ],
-  },
+        indexName: 'name_path_keyword_idx',
+        name: 'name_path_keyword_idx',
+        type: 'FULLTEXT',
+        transaction
+      }
+    ]
+  }
 ];
 
 const rollbackCommands = (transaction) => [
   {
-    fn: "dropTable",
-    params: ["OrderItems", { transaction }],
+    fn: 'dropTable',
+    params: ['OrderItems', { transaction }]
   },
   {
-    fn: "dropTable",
-    params: ["Products", { transaction }],
+    fn: 'dropTable',
+    params: ['Products', { transaction }]
   },
   {
-    fn: "dropTable",
-    params: ["Categories", { transaction }],
+    fn: 'dropTable',
+    params: ['Categories', { transaction }]
   },
   {
-    fn: "dropTable",
-    params: ["Orders", { transaction }],
+    fn: 'dropTable',
+    params: ['Orders', { transaction }]
   },
   {
-    fn: "dropTable",
-    params: ["OrderReports", { transaction }],
+    fn: 'dropTable',
+    params: ['OrderReports', { transaction }]
   },
   {
-    fn: "dropTable",
-    params: ["PaymentMethods", { transaction }],
+    fn: 'dropTable',
+    params: ['PaymentMethods', { transaction }]
   },
   {
-    fn: "dropTable",
-    params: ["ShippingMethods", { transaction }],
+    fn: 'dropTable',
+    params: ['ShippingMethods', { transaction }]
   },
   {
-    fn: "dropTable",
-    params: ["Users", { transaction }],
-  },
+    fn: 'dropTable',
+    params: ['Users', { transaction }]
+  }
 ];
 
 const pos = 0;
@@ -673,5 +673,5 @@ module.exports = {
     execute(queryInterface, sequelize, migrationCommands),
   down: (queryInterface, sequelize) =>
     execute(queryInterface, sequelize, rollbackCommands),
-  info,
+  info
 };

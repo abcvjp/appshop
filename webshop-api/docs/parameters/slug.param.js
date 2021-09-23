@@ -1,11 +1,11 @@
 module.exports = {
   SlugParam: {
-    name: "slug",
-    in: "query",
+    name: 'slug',
+    in: 'query',
     schema: {
-      type: "string",
-      format: "slug",
+      type: 'string',
+      format: 'slug'
     },
-    description: "slug of resource's name",
-  },
+    description: "slug of resource's name"
+  }
 };

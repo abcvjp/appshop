@@ -1,120 +1,120 @@
 module.exports = {
-  tags: ["report"],
-  summary: "Get order reports with time filters",
-  operationId: "getOrderReports",
+  tags: ['report'],
+  summary: 'Get order reports with time filters',
+  operationId: 'getOrderReports',
   description:
-    "Get order reports with time filters. This operation is available for admin user",
+    'Get order reports with time filters. This operation is available for admin user',
   security: [
     {
-      access_token: [],
-    },
+      access_token: []
+    }
   ],
   parameters: [
     {
-      $ref: "#/parameters/CurrentPageParam",
+      $ref: '#/parameters/CurrentPageParam'
     },
     {
-      $ref: "#/parameters/PageSizeParam",
+      $ref: '#/parameters/PageSizeParam'
     },
     {
-      $ref: "#/parameters/SortParam",
+      $ref: '#/parameters/SortParam'
     },
     {
-      $ref: "#/parameters/StartDateParam",
+      $ref: '#/parameters/StartDateParam'
     },
     {
-      $ref: "#/parameters/EndDateParam",
+      $ref: '#/parameters/EndDateParam'
     },
     {
-      name: "group_by",
-      in: "query",
+      name: 'group_by',
+      in: 'query',
       schema: {
-        type: "string",
-        enum: ["day", "week", "month", "year"],
+        type: 'string',
+        enum: ['day', 'week', 'month', 'year']
       },
-      description: "time unit",
-      require: true,
-    },
+      description: 'time unit',
+      require: true
+    }
   ],
   responses: {
     200: {
-      description: "successfull operation",
+      description: 'successfull operation',
       content: {
-        "application/json": {
+        'application/json': {
           schema: {
-            type: "object",
+            type: 'object',
             properties: {
               success: {
-                description: "Indicate request success or not",
-                type: "boolean",
-                example: true,
+                description: 'Indicate request success or not',
+                type: 'boolean',
+                example: true
               },
               data: {
-                type: "array",
+                type: 'array',
                 items: {
-                  $ref: "#/components/schemas/OrderReport",
-                },
+                  $ref: '#/components/schemas/OrderReport'
+                }
               },
               pagination: {
-                type: "object",
+                type: 'object',
                 properties: {
                   currentPage: {
-                    type: "number",
-                    format: "integer",
+                    type: 'number',
+                    format: 'integer',
                     minimum: 1,
-                    description: "current page",
+                    description: 'current page'
                   },
                   pageCount: {
-                    type: "number",
-                    format: "integer",
+                    type: 'number',
+                    format: 'integer',
                     minimum: 1,
-                    description: "total number of pages",
+                    description: 'total number of pages'
                   },
                   pageSize: {
-                    type: "number",
-                    format: "integer",
+                    type: 'number',
+                    format: 'integer',
                     minimum: 1,
-                    description: "items number of per page",
+                    description: 'items number of per page'
                   },
                   count: {
-                    type: "number",
-                    format: "integer",
+                    type: 'number',
+                    format: 'integer',
                     minimum: 0,
-                    description: "total number of items",
-                  },
-                },
-              },
-            },
+                    description: 'total number of items'
+                  }
+                }
+              }
+            }
           },
           example: {
             success: true,
             data: [
               {
-                time: "2021-09-08",
+                time: '2021-09-08',
                 orders_number: 1,
                 completed_orders_number: 0,
                 item_total: 7.91,
                 items_number: 1,
                 shipping_fee: 1,
                 order_total: 8.91,
-                expected_profit: 0.09,
-              },
+                expected_profit: 0.09
+              }
             ],
             pagination: {
               currentPage: 1,
               pageCount: 1,
               pageSize: 1,
-              count: 1,
-            },
-          },
-        },
-      },
+              count: 1
+            }
+          }
+        }
+      }
     },
     404: {
-      $ref: "#/components/responses/NotFound",
+      $ref: '#/components/responses/NotFound'
     },
     401: {
-      $ref: "#/components/responses/Unauthorized",
-    },
-  },
+      $ref: '#/components/responses/Unauthorized'
+    }
+  }
 };

@@ -2,7 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 
-const config = require('./config')
+const config = require('./config');
 
 const cors = require('cors');
 var cookieParser = require('cookie-parser');
@@ -21,10 +21,12 @@ const swaggerDoc = require('./docs');
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
-app.use(cors({
-  origin: config.get('cors.whiteList'),
-  credentials: config.get('cors.credentials')
-}))
+app.use(
+  cors({
+    origin: config.get('cors.whiteList'),
+    credentials: config.get('cors.credentials')
+  })
+);
 app.use(bodyParser.json());
 app.use(boolParser());
 

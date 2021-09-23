@@ -1,8 +1,8 @@
-const { Category } = require("../models");
-const { Sequelize, sequelize } = require("../models");
-const createError = require("http-errors");
-const { calculateLimitAndOffset, paginate } = require("paginate-info");
-const { deleteObjProps } = require("../helpers/js.helper");
+const { Category } = require('../models');
+const { Sequelize, sequelize } = require('../models');
+const createError = require('http-errors');
+const { calculateLimitAndOffset, paginate } = require('paginate-info');
+const { deleteObjProps } = require('../helpers/js.helper');
 
 exports.searchProducts = async ({
   keyword,
@@ -14,7 +14,7 @@ exports.searchProducts = async ({
   published,
   in_stock,
   price,
-  exclude,
+  exclude
 }) => {
   try {
     const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
@@ -34,22 +34,22 @@ exports.searchProducts = async ({
 					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE) as relevance
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
 				WHERE
-					${published !== undefined ? `p.published = ${published ? 1 : 0}` : "1=1"}
-					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : "1=1"}
+					${published !== undefined ? `p.published = ${published ? 1 : 0}` : '1=1'}
+					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${
             in_stock !== undefined
-              ? `p.quantity ${in_stock ? `${"> 0"}` : `${" = 0"}`}`
-              : "1=1"
+              ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}`
+              : '1=1'
           }
 					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)
 					AND ${
             price !== undefined
-              ? `p.price BETWEEN ${price.split(",")[0]} AND ${
-                  price.split(",")[1]
+              ? `p.price BETWEEN ${price.split(',')[0]} AND ${
+                  price.split(',')[1]
                 }`
-              : "1=1"
+              : '1=1'
           }
-				ORDER BY ${sort !== undefined ? sort.replace(".", " ") : "relevance DESC"};
+				ORDER BY ${sort !== undefined ? sort.replace('.', ' ') : 'relevance DESC'};
 			`,
         { nest: true }
       );
@@ -66,22 +66,22 @@ exports.searchProducts = async ({
 					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE) as relevance
 				FROM Products p INNER JOIN Categories c ON p.category_id = c.id
 				WHERE
-					${published !== undefined ? `p.published = ${published ? 1 : 0}` : "1=1"}
-					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : "1=1"}
+					${published !== undefined ? `p.published = ${published ? 1 : 0}` : '1=1'}
+					AND ${enable !== undefined ? `p.enable = ${enable ? 1 : 0}` : '1=1'}
 					AND ${
             in_stock !== undefined
-              ? `p.quantity ${in_stock ? `${"> 0"}` : `${" = 0"}`}`
-              : "1=1"
+              ? `p.quantity ${in_stock ? `${'> 0'}` : `${' = 0'}`}`
+              : '1=1'
           }
 					AND MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)
 					AND ${
             price !== undefined
-              ? `p.price BETWEEN ${price.split(",")[0]} AND ${
-                  price.split(",")[1]
+              ? `p.price BETWEEN ${price.split(',')[0]} AND ${
+                  price.split(',')[1]
                 }`
-              : "1=1"
+              : '1=1'
           }
-				ORDER BY ${sort !== undefined ? sort.replace(".", " ") : "relevance DESC"};
+				ORDER BY ${sort !== undefined ? sort.replace('.', ' ') : 'relevance DESC'};
 			`,
         { nest: true }
       );
@@ -98,7 +98,7 @@ exports.searchProducts = async ({
     return {
       success: true,
       data: result,
-      pagination,
+      pagination
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -111,7 +111,7 @@ exports.searchCategories = async ({
   page_size,
   sort,
   published,
-  exclude,
+  exclude
 }) => {
   try {
     let filters = {};
@@ -124,7 +124,7 @@ exports.searchCategories = async ({
         filters,
         Sequelize.literal(
           `MATCH (name, path, meta_keywords) AGAINST ('${keyword}' IN BOOLEAN MODE)`
-        ),
+        )
       ],
       attributes: {
         include: [
@@ -132,24 +132,24 @@ exports.searchCategories = async ({
             Sequelize.literal(
               `MATCH (name, path, meta_keywords) AGAINST('${keyword}' IN BOOLEAN MODE)`
             ),
-            "relevance",
-          ],
+            'relevance'
+          ]
         ],
-        exclude,
+        exclude
       },
       limit,
       offset,
       order: [
-        sort ? [sort.split(".")] : ["createdAt", "DESC"],
-        [Sequelize.literal("relevance"), "DESC"],
-      ],
+        sort ? [sort.split('.')] : ['createdAt', 'DESC'],
+        [Sequelize.literal('relevance'), 'DESC']
+      ]
     });
-    if (rows.length < 1) throw createError(404, "Can not find any category");
+    if (rows.length < 1) throw createError(404, 'Can not find any category');
     const pagination = paginate(current_page, count, rows, page_size);
     return {
       success: true,
       data: rows,
-      pagination,
+      pagination
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);

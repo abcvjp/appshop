@@ -1,18 +1,18 @@
 module.exports = {
-  tags: ["user"],
-  summary: "Logout",
-  operationId: "Logout",
+  tags: ['user'],
+  summary: 'Logout',
+  operationId: 'Logout',
   security: [
     {
-      access_token: [],
-    },
+      access_token: []
+    }
   ],
   responses: {
     200: {
-      $ref: "#/components/responses/OperationSuccess",
+      $ref: '#/components/responses/OperationSuccess'
     },
     401: {
-      $ref: "#/components/responses/Unauthorized",
-    },
-  },
+      $ref: '#/components/responses/Unauthorized'
+    }
+  }
 };
