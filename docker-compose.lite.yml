@@ -1,59 +1,71 @@
 version: "3.3"
 services:
- backend:
-  depends_on:
-   - db
-  build: './webshop-api'
-  expose:
-   - 5000
-  volumes:
-   - ./webshop-api:/api
-   - /api/node_modules
-  networks:
-   - proxy_backend
-   - database_backend
-  env_file:
-   - ./webshop-api/.env
- frontend:
-  build: './webshop-app'
-  expose:
-   - 3000
-  volumes:
-   - ./webshop-app:/app
-   - /app/node_modules
-  networks:
-   - proxy_frontend
- proxy:
-  depends_on:
-   - frontend
-   - backend
-  build: './proxy'
-  ports:
-   - 80:80
-  networks:
-   - proxy_frontend
-   - proxy_backend
- db:
-  image: mysql:8.0.26
-  expose:
-   - 3306
-  volumes:
-   - db-data:/var/lib/mysql
-  networks:
-   - database_backend
-  environment:
-   - MYSQL_ROOT_PASSWORD=123456
-   - MYSQL_DATABASE=webshop_db
-   - MYSQL_USER=hoaideptrai
-   - MYSQL_PASSWORD=123456
-  cap_add:
-   - CAP_SYS_NICE
+  proxy:
+    depends_on:
+      - app
+      - admin
+      - api
+      - phpmyadmin
+    build: "./proxy"
+    ports:
+      - 80:80
+    networks:
+      - frontend
+      - backend
+  app:
+    build: "./app"
+    depends_on:
+      - api
+    expose:
+      - 3000
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    networks:
+      - frontend
+  admin:
+    build: "./admin"
+    depends_on:
+      - api
+    expose:
+      - 3000
+    volumes:
+      - ./admin:/admin
+      - /admin/node_modules
+    networks:
+      - frontend
+  api:
+    depends_on:
+      - db
+    build: "./api"
+    expose:
+      - 5000
+    volumes:
+      - ./api:/api
+      - /api/node_modules
+    networks:
+      - backend
+    env_file:
+      - ./api/.env
+  db:
+    image: mysql:8.0.26
+    expose:
+      - 3306
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=webshop_db
+      - MYSQL_USER=hoaideptrai
+      - MYSQL_PASSWORD=123456
+    cap_add:
+      - CAP_SYS_NICE
 volumes:
- db-data:
+  db-data:
 networks:
- proxy_backend:
-  driver: bridge
- proxy_frontend:
-  driver: bridge
- database_backend:
-  driver: bridge
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

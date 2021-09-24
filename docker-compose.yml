@@ -1,116 +1,96 @@
 version: "3.3"
 services:
- backend:
-  depends_on:
-   - db
-  build: './webshop-api'
-  expose:
-   - 5000
-  volumes:
-   - ./webshop-api:/api
-   - /api/node_modules
-  networks:
-   - proxy_backend
-   - database_backend
-   - dbtest_backend
-  env_file:
-   - ./webshop-api/.env
- frontend:
-  build: './webshop-app'
-  depends_on:
-   - backend
-  expose:
-    - 3000
-  volumes:
-   - ./webshop-app:/app
-   - /app/node_modules
-  networks:
-   - proxy_frontend
-   - frontend_backend
- admin:
-  build: './webshop-admin'
-  expose:
-   - 3000
-  volumes:
-   - ./webshop-admin:/app
-   - /app/node_modules
-  networks:
-   - proxy_admin
-   - admin_backend
- proxy:
-  depends_on:
-   - frontend
-   - backend
-   - admin
-   - phpmyadmin
-  build: './proxy'
-  ports:
-   - 80:80
-  networks:
-   - proxy_frontend
-   - proxy_backend
-   - proxy_admin
-   - proxy_phpmyadmin
- db:
-  image: mysql:8.0.26
-  expose:
-   - 3306
-  volumes:
-   - db-data:/var/lib/mysql
-  networks:
-   - database_backend
-   - database_phpmyadmin
-  environment:
-   - MYSQL_ROOT_PASSWORD=123456
-   - MYSQL_DATABASE=webshop_db
-   - MYSQL_USER=hoaideptrai
-   - MYSQL_PASSWORD=123456
-  cap_add:
-   - CAP_SYS_NICE
- db-test:
-  image: mysql:8.0.26
-  expose:
-   - 3306
-  networks:
-   - dbtest_backend
-  environment:
-   - MYSQL_ROOT_PASSWORD=123456
-   - MYSQL_DATABASE=webshop_db
-   - MYSQL_USER=hoaideptrai
-   - MYSQL_PASSWORD=123456
-  cap_add:
-   - CAP_SYS_NICE
- phpmyadmin:
-  depends_on:
-   - db
-  image: phpmyadmin/phpmyadmin
-  networks:
-   - database_phpmyadmin
-   - proxy_phpmyadmin
-  expose:
-   - 80
-  environment:
-   - PMA_HOST=db
-   - PMA_PORT=3306
-   - PMA_ARBITRARY=1
+  proxy:
+    depends_on:
+      - app
+      - admin
+      - api
+      - phpmyadmin
+    build: "./proxy"
+    ports:
+      - 80:80
+    networks:
+      - frontend
+      - backend
+  app:
+    build: "./app"
+    depends_on:
+      - api
+    expose:
+      - 3000
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    networks:
+      - frontend
+  admin:
+    build: "./admin"
+    depends_on:
+      - api
+    expose:
+      - 3000
+    volumes:
+      - ./admin:/admin
+      - /admin/node_modules
+    networks:
+      - frontend
+  api:
+    depends_on:
+      - db
+    build: "./api"
+    expose:
+      - 5000
+    volumes:
+      - ./api:/api
+      - /api/node_modules
+    networks:
+      - backend
+    env_file:
+      - ./api/.env
+  db:
+    image: mysql:8.0.26
+    expose:
+      - 3306
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=webshop_db
+      - MYSQL_USER=hoaideptrai
+      - MYSQL_PASSWORD=123456
+    cap_add:
+      - CAP_SYS_NICE
+  db-test:
+    image: mysql:8.0.26
+    expose:
+      - 3306
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=webshop_db
+      - MYSQL_USER=hoaideptrai
+      - MYSQL_PASSWORD=123456
+    cap_add:
+      - CAP_SYS_NICE
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    networks:
+      - backend
+    expose:
+      - 80
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - PMA_ARBITRARY=1
 volumes:
- db-data:
+  db-data:
 networks:
- proxy_backend:
-  driver: bridge
- proxy_frontend:
-  driver: bridge
- proxy_admin:
-  driver: bridge
- proxy_phpmyadmin:
-  driver: bridge
- database_backend:
-  driver: bridge
- database_phpmyadmin:
-  driver: bridge
- frontend_backend:
-  driver: bridge
- admin_backend:
-  driver: bridge
- dbtest_backend:
-  driver: bridge
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
