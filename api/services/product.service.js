@@ -299,7 +299,7 @@ exports.updateProduct = async ({
     if (root_price) {
       root_price = roundPrice(root_price);
     }
-    await productToUpdate.update({
+    const productAfterUpdate = await productToUpdate.update({
       enable,
       published,
       name,
@@ -316,7 +316,7 @@ exports.updateProduct = async ({
       meta_keywords,
       category_id
     });
-    return { success: true, result: productToUpdate };
+    return { success: true, result: productAfterUpdate };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
   }

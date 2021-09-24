@@ -189,8 +189,9 @@ exports.updateCategory = async ({
       });
     }
 
+    let categoryAfterUpdate;
     if (isEmptyArray(relateCategories)) {
-      result = await categoryToUpdate.update({
+      categoryAfterUpdate = await categoryToUpdate.update({
         name,
         description,
         published,
@@ -202,7 +203,7 @@ exports.updateCategory = async ({
       });
     } else {
       await sequelize.transaction(async (t) => {
-        await categoryToUpdate.update({
+        categoryAfterUpdate = await categoryToUpdate.update({
           name,
           description,
           published,
@@ -225,7 +226,7 @@ exports.updateCategory = async ({
     }
     return {
       success: true,
-      result: categoryToUpdate
+      result: categoryAfterUpdate
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);

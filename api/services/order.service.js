@@ -284,7 +284,7 @@ exports.updateOrderInfo = async ({
     const orderToUpdate = await Order.findByPk(id);
     if (!orderToUpdate) throw createError(404, 'Order does not exist');
 
-    await orderToUpdate.update({
+    const orderAfterUpdate = await orderToUpdate.update({
       customer_name,
       address,
       email,
@@ -293,7 +293,7 @@ exports.updateOrderInfo = async ({
     });
     return {
       success: true,
-      result: orderToUpdate
+      result: orderAfterUpdate
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);

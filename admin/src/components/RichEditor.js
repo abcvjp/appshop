@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Box, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { Editor } from 'react-draft-wysiwyg';
-import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 
@@ -23,21 +23,24 @@ const RichEditor = ({
   setFieldValue
 }) => {
   const classes = useStyles();
-  const [editorState, setEditorState] = useState(initialState || EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(
+    initialState || EditorState.createEmpty()
+  );
 
   const onEditorStateChange = (state) => {
     setEditorState(state);
   };
   const onBlur = () => {
-    setFieldValue(fieldName, draftToHtml(convertToRaw(editorState.getCurrentContent())));
+    setFieldValue(
+      fieldName,
+      draftToHtml(convertToRaw(editorState.getCurrentContent()))
+    );
   };
 
   return (
     <>
       <Box mb={1}>
-        <Typography color="#8c8c8c">
-          {label}
-        </Typography>
+        <Typography color="#8c8c8c">{label}</Typography>
       </Box>
       <Editor
         editorState={editorState}
@@ -48,12 +51,10 @@ const RichEditor = ({
           minHeight: '200px',
           overFlow: 'auto',
           border: '1px solid #bfbfbf',
-          padding: '5px',
+          padding: '5px'
         }}
       />
-      {touched && error ? (
-        <div className={classes.error}>{error}</div>
-      ) : null}
+      {touched && error ? <div className={classes.error}>{error}</div> : null}
     </>
   );
 };
