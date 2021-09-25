@@ -95,19 +95,25 @@ const ProductPage = () => {
   });
 
   const handleBuyNow = useCallback(() => {
-    navigate('/checkout', {
-      state: {
-        pathname: '/checkout',
-        orderItems: [{
-          product_id: product.id,
-          product_name: product.name,
-          product_slug: product.slug,
-          product_thumbnail: product.images[0],
-          price: product.price,
-          quantity: qty
-        }]
-      }
-    });
+    if (product.enable === false) {
+      dispatch(showAlertMessage({ type: 'error', content: 'This product is disabled' }));
+    } else if (product.quantity === 0) {
+      dispatch(showAlertMessage({ type: 'error', content: 'This product is sold out' }));
+    } else {
+      navigate('/checkout', {
+        state: {
+          pathname: '/checkout',
+          orderItems: [{
+            product_id: product.id,
+            product_name: product.name,
+            product_slug: product.slug,
+            product_thumbnail: product.images[0],
+            price: product.price,
+            quantity: qty
+          }]
+        }
+      });
+    }
   });
 
   useEffect(() => {
