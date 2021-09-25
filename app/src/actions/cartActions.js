@@ -79,7 +79,7 @@ export const checkAndAddToCart = ({
     productApi.getProduct({
       id: product_id
     }).then((response) => response.data.data).then((productFromServer) => {
-      if (productFromServer.disabled === true) {
+      if (productFromServer.enable === false) {
         dispatch(showAlertMessage({ type: 'error', content: 'This product has been disabled' }));
       } else if (productFromServer.quantity === 0) {
         dispatch(showAlertMessage({ type: 'error', content: 'This product has sold out' }));

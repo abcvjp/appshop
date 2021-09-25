@@ -59,31 +59,35 @@ export default function cartReducer(state = initialState, action) {
       if (itemToSelect.buy_able) {
         itemToSelect.isSelected = true;
       }
+      window.localStorage.setItem('cart', JSON.stringify(cart_items));
       return cart_items;
     }
 
     case UNSELECT_ITEM_CART: {
       const cart_items = [...state];
       cart_items[action.payload.itemIndex].isSelected = false;
+      window.localStorage.setItem('cart', JSON.stringify(cart_items));
       return cart_items;
     }
 
     case SELECT_ALL_CART: {
-      const cart_items = [...state];
-      return cart_items.map((item) => {
+      const cart_items = [...state].map((item) => {
         if (item.buy_able) {
           return { ...item, isSelected: true };
         } return item;
       });
+      window.localStorage.setItem('cart', JSON.stringify(cart_items));
+      return cart_items;
     }
 
     case UNSELECT_ALL_CART: {
-      const cart_items = [...state];
-      return cart_items.map((item) => {
+      const cart_items = [...state].map((item) => {
         if (item.buy_able) {
           return { ...item, isSelected: false };
         } return item;
       });
+      window.localStorage.setItem('cart', JSON.stringify(cart_items));
+      return cart_items;
     }
 
     case CHANGE_QUANTITY_ITEM_CART: {
@@ -103,6 +107,7 @@ export default function cartReducer(state = initialState, action) {
     }
 
     case DELETE_CART: {
+      window.localStorage.removeItem('cart');
       return [];
     }
 
