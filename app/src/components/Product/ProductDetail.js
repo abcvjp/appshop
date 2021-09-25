@@ -43,14 +43,13 @@ const ProductDetail = ({ product }) => {
   const classes = useStyles();
   return (
     <Box>
-
       <Typography variant="h6">{product.title}</Typography>
 
       <Grid
         container
         justifyContent="flex-start"
         alignItems="center"
-        spacing={2}
+        spacing={1}
         style={{ marginBlock: 8 }}
       >
         <Grid item>
@@ -62,6 +61,12 @@ const ProductDetail = ({ product }) => {
             Sold
             {' '}
             {product.sold}
+          </Typography>
+        </Grid>
+        <Divider flexItem orientation="vertical" variant="middle" />
+        <Grid item>
+          <Typography sx={{ fontSize: 24 }} className={classes.sold}>
+            {`${product.quantity} product left`}
           </Typography>
         </Grid>
       </Grid>
@@ -78,9 +83,7 @@ const ProductDetail = ({ product }) => {
       </Box>
 
       <Box className={`${classes.margin} ${classes.shortDes}`}>
-        <Typography variant="body2">
-          {product.short_description}
-        </Typography>
+        <Typography variant="body2">{product.short_description}</Typography>
       </Box>
     </Box>
   );
