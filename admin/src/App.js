@@ -1,16 +1,15 @@
-import { useRoutes } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core';
 import { Provider } from 'react-redux';
 import GlobalStyles from './components/GlobalStyles';
 import './mixins/chartjs';
 import theme from './theme';
 import store from './store';
-import routes from './routes';
 import GlobalComponents from './components/global';
 import { setUser } from './actions/user';
+import Routing from './components/Routing';
 
 const App = () => {
-  const routing = useRoutes(routes);
   const savedUser = sessionStorage.getItem('user');
   if (savedUser) {
     store.dispatch(setUser(JSON.parse(savedUser)));
@@ -19,7 +18,9 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Provider store={store}>
-        {routing}
+        <BrowserRouter>
+          <Routing />
+        </BrowserRouter>
         <GlobalComponents />
       </Provider>
     </ThemeProvider>
