@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -8,17 +8,12 @@ import {
   Box,
   Button,
   Container,
-  Grid,
-  Link,
   TextField,
   Typography
 } from '@material-ui/core';
 import { setUser } from 'src/actions/user';
 
 import Role from 'src/constants/Roles';
-
-import FacebookIcon from '../icons/Facebook';
-import GoogleIcon from '../icons/Google';
 
 import API from '../utils/api/apiClient';
 
@@ -48,7 +43,10 @@ const Login = () => {
               password: '123456'
             }}
             validationSchema={Yup.object().shape({
-              username: Yup.string().min(4).max(255).required('Username is required'),
+              username: Yup.string()
+                .min(4)
+                .max(255)
+                .required('Username is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={async (values) => {
@@ -77,61 +75,15 @@ const Login = () => {
               values
             }) => (
               <form onSubmit={handleSubmit}>
-                <Box sx={{ mb: 3 }}>
-                  <Typography
-                    color="textPrimary"
-                    variant="h2"
-                  >
+                <Box sx={{ mb: 2 }}>
+                  <Typography align="center" color="textPrimary" variant="h2">
                     Sign in
                   </Typography>
-                  <Typography
-                    color="textSecondary"
-                    gutterBottom
-                    variant="body2"
-                  >
-                    Sign in on the internal platform
-                  </Typography>
                 </Box>
-                <Grid
-                  container
-                  spacing={3}
-                >
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      color="primary"
-                      fullWidth
-                      startIcon={<FacebookIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Facebook
-                    </Button>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      fullWidth
-                      startIcon={<GoogleIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Google
-                    </Button>
-                  </Grid>
-                </Grid>
                 <Box
                   sx={{
                     pb: 1,
-                    pt: 3
+                    pt: 1
                   }}
                 >
                   <Typography
@@ -139,7 +91,7 @@ const Login = () => {
                     color="textSecondary"
                     variant="body1"
                   >
-                    or login with your account
+                    Enter your username and password
                   </Typography>
                 </Box>
                 {error && (
@@ -149,11 +101,7 @@ const Login = () => {
                       pt: 3
                     }}
                   >
-                    <Typography
-                      align="left"
-                      color="red"
-                      variant="body1"
-                    >
+                    <Typography align="left" color="red" variant="body1">
                       {error}
                     </Typography>
                   </Box>
@@ -196,20 +144,6 @@ const Login = () => {
                     Sign in now
                   </Button>
                 </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Don&apos;t have an account?
-                  {' '}
-                  <Link
-                    component={RouterLink}
-                    to="/register"
-                    variant="h6"
-                  >
-                    Sign up
-                  </Link>
-                </Typography>
               </form>
             )}
           </Formik>
