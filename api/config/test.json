@@ -1,9 +1,9 @@
 {
-  "env": "development",
+  "env": "test",
   "ip": "127.0.0.1",
   "port": "5000",
   "db": {
-    "host": "db",
+    "host": "db-test",
     "name": "webshop_db",
     "username": "hoaideptrai",
     "password": "123456",
