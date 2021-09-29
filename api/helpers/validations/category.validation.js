@@ -37,12 +37,12 @@ module.exports = {
       categoryId: Joi.string().guid({ version: 'uuidv4' }).required()
     }),
     body: Joi.object({
-      name: Joi.string().trim().min(1).max(30).required(),
+      name: Joi.string().trim().min(1).max(50).required(),
       description: Joi.string().trim().min(20).max(255).required(),
       published: Joi.boolean(),
       parent_id: Joi.string().guid({ version: 'uuidv4' }).allow(null),
-      meta_title: Joi.string().trim().min(1).max(100).required(),
-      meta_description: Joi.string().trim().min(20).max(200).allow(null),
+      meta_title: Joi.string().trim().min(1).max(150).required(),
+      meta_description: Joi.string().trim().min(20).max(255).allow(null),
       meta_keywords: Joi.string().trim().min(1).max(150).allow(null)
     })
   },
