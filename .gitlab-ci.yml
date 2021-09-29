@@ -1,0 +1,49 @@
+image: docker/compose:alpine-1.29.2
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+
+variables:
+  APP_IMAGE_NAME: "webshop_app"
+  ADMIN_IMAGE_NAME: "webshop_admin"
+  API_IMAGE_NAME: "webshop_api"
+
+before_script:
+  - docker version
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+build-api:
+  stage: build
+  script:
+    - docker pull $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest --tag $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest ./api
+    - docker push $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest
+
+build-admin:
+  stage: build
+  script:
+    - docker pull $CI_REGISTRY_IMAGE/$ADMIN_IMAGE_NAME:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/$ADMIN_IMAGE_NAME:latest --tag $CI_REGISTRY_IMAGE/$ADMIN_IMAGE_NAME:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE/$ADMIN_IMAGE_NAME:latest ./admin
+    - docker push $CI_REGISTRY_IMAGE/$ADMIN_IMAGE_NAME:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/$ADMIN_IMAGE_NAME:latest
+
+build-app:
+  stage: build
+  script:
+    - docker pull $CI_REGISTRY_IMAGE/$APP_IMAGE_NAME:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/$APP_IMAGE_NAME:latest --tag $CI_REGISTRY_IMAGE/$APP_IMAGE_NAME:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE/$APP_IMAGE_NAME:latest ./app
+    - docker push $CI_REGISTRY_IMAGE/$APP_IMAGE_NAME:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/$APP_IMAGE_NAME:latest
+
+test-api:
+  stage: test
+  script:
+    - docker pull $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest || true
+    - COMPOSE_HTTP_TIMEOUT=1000 docker-compose -f docker-compose.ci.test.yml up -d
+    - sleep 10
+    - docker-compose exec -T api npm run test

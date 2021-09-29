@@ -1,0 +1,31 @@
+version: "3.3"
+services:
+  api:
+    depends_on:
+      - db-test
+    image: harbor.zinza.com.vn/hoaihv/webshop/webshop_api:latest
+    expose:
+      - 5000
+    volumes:
+      - ./api:/api
+      - /api/node_modules
+    networks:
+      - backend
+    environment:
+      - NODE_ENV=test
+  db-test:
+    image: mysql:8.0.26
+    expose:
+      - 3306
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=webshop_db
+      - MYSQL_USER=hoaideptrai
+      - MYSQL_PASSWORD=123456
+    cap_add:
+      - CAP_SYS_NICE
+networks:
+  backend:
+    driver: bridge
