@@ -1,12 +1,12 @@
 const testClient = require('../../testClient');
-const sampleCategories = require('../../../sample-data/category.sample');
 const { queryInterface } = require('../../../models');
+const sampleCategories = require('../../../sample-data/category.sample');
 const { categoryMatcher } = require('../../matchers');
 
-beforeAll(async () => {
-  await queryInterface.bulkDelete('Categories', null, {});
-  await queryInterface.bulkInsert('Categories', sampleCategories);
-});
+// beforeAll(async () => {
+  // await queryInterface.bulkDelete('Categories', null, {});
+  // await queryInterface.bulkInsert('Categories', sampleCategories);
+// });
 
 test('GET /category/all', async () => {
   await testClient
