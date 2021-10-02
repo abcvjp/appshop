@@ -1,0 +1,92 @@
+version: "3.3"
+services:
+  proxy:
+    depends_on:
+      - app
+      - admin
+      - api
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile.deploy
+    restart: always
+    ports:
+      - 80:80
+    networks:
+      - frontend
+      - backend
+  app:
+    image: harbor.zinza.com.vn/hoaihv/webshop/webshop_app:latest
+    depends_on:
+      - api
+    restart: always
+    expose:
+      - 3000
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    networks:
+      - frontend
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_BASE=http://api.webshopbeta.cf
+  admin:
+    image: harbor.zinza.com.vn/hoaihv/webshop/webshop_admin:latest
+    depends_on:
+      - api
+    restart: always
+    expose:
+      - 3000
+    volumes:
+      - ./admin:/admin
+      - /admin/node_modules
+    networks:
+      - frontend
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_BASE=http://api.webshopbeta.cf
+      - REACT_APP_APP_BASE=http://webshopbeta.cf
+      - REACT_APP_FIREBASE_API_KEY=AIzaSyDqoLUYQhW7NlH57EfBO63D4KRqi3IgE78
+      - REACT_APP_FIREBASE_AUTH_DOMAIN=webshop-e2f76.firebaseapp.com
+      - REACT_APP_FIREBASE_PROJECT_ID=webshop-e2f76
+      - REACT_APP_FIREBASE_STORAGE_BUCKET=webshop-e2f76.appspot.com
+      - REACT_APP_FIREBASE_MESSAGING_SENDER_ID=1057783220542
+      - REACT_APP_FIREBASE_APP_ID=1:1057783220542:web:14904508fb92f27adcc46f
+      - REACT_APP_FIREBASE_MEASUREMENT_ID=G-BC1C3M52TZ
+  api:
+    image: harbor.zinza.com.vn/hoaihv/webshop/webshop_api:latest
+    depends_on:
+      - db
+    restart: always
+    expose:
+      - 5000
+    volumes:
+      - ./api:/api
+      - /api/node_modules
+    networks:
+      - backend
+    env_file:
+      - ./api/.env
+    environment:
+      - NODE_ENV=production
+  db:
+    image: mysql:8.0.26
+    expose:
+      - 3306
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=webshop_db
+      - MYSQL_USER=hoaideptrai
+      - MYSQL_PASSWORD=123456
+    cap_add:
+      - CAP_SYS_NICE
+volumes:
+  db-data:
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

@@ -6,6 +6,7 @@ services:
 stages:
   - build
   - test
+  - deploy
 
 variables:
   APP_IMAGE_NAME: "webshop_app"
@@ -42,8 +43,23 @@ build-app:
 
 test-api:
   stage: test
+  # when: manual
   script:
     - docker pull $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest || true
-    - COMPOSE_HTTP_TIMEOUT=1000 docker-compose -f docker-compose.ci.test.yml up -d
-    - sleep 10
-    - docker-compose exec -T api npm run test
+    - COMPOSE_HTTP_TIMEOUT=1000 docker-compose -f docker-compose.ci-test.yml up -d
+    - sleep 15
+    - docker-compose exec -T api npm run ci:test
+
+deploy:
+  stage: deploy
+  tags:
+    - beta-server
+  before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - echo "Start deploy"
+    - docker pull $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest || true
+    - docker pull $CI_REGISTRY_IMAGE/$ADMIN_IMAGE_NAME:latest || true
+    - docker pull $CI_REGISTRY_IMAGE/$APP_IMAGE_NAME:latest || true
+    - COMPOSE_HTTP_TIMEOUT=1000 docker-compose -f docker-compose.ci-deploy.yml up -d --build --force-recreate
+    # - docker-compose exec -T api npm run db:reset

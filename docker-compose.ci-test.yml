@@ -28,4 +28,3 @@ services:
       - CAP_SYS_NICE
 networks:
   backend:
-    driver: bridge
