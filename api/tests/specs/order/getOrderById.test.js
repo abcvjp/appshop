@@ -35,6 +35,7 @@ describe('GET /order/${orderId}', () => {
         expect(res.body).toHaveProperty('success', true);
         expect(res.body).toHaveProperty('data');
         expect(res.body.data).toEqual(orderMatcher);
+        expect(res.body.data).toHaveProperty('id', id);
       });
   });
 

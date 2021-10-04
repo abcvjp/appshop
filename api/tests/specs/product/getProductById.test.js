@@ -11,7 +11,8 @@ beforeAll(async () => {
 
 describe('GET /product/${productId}', () => {
   test('with exist product id', async () => {
-    const id = sampleProducts[0].id;
+    const id =
+      sampleProducts[Math.floor(Math.random() * sampleProducts.length)].id;
     await testClient
       .get(`/product/${id}`)
       .set('Accept', 'application/json')
@@ -21,6 +22,7 @@ describe('GET /product/${productId}', () => {
         expect(res.body).toHaveProperty('success', true);
         expect(res.body).toHaveProperty('data');
         expect(res.body.data).toEqual(productMatcher);
+        expect(res.body.data).toHaveProperty('id', id);
       });
   });
 

@@ -37,10 +37,13 @@ describe('GET /user/refresh-token', () => {
     expect(res.body).toHaveProperty('access_token');
     expect(res.body).toHaveProperty('refresh_token');
 
-    // check access_token in res cookies
+    // check token in cookies
     const cookies = extractCookies(res.headers);
     expect(cookies).toHaveProperty('access_token');
     expect(cookies).toHaveProperty('refresh_token');
+    expect(res.body.refresh_token).not.toEqual(refreshToken);
+    expect(res.body.refresh_token).toEqual(cookies.refresh_token.value);
+    // check token in cookies is valid
     expect(JWT.verifyAccessToken(cookies.access_token.value).username).toEqual(
       sampleUser.username
     );

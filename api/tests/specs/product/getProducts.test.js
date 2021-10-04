@@ -66,6 +66,22 @@ describe('GET /product/all', () => {
             expect(res.body.data).toEqual(
               expect.arrayContaining([productMatcher])
             );
+
+            // check if is sorted
+            if (sortElement.value.split('.')[1] === 'asc') {
+              expect(
+                !!res.body.data.reduce(
+                  (n, item) => n !== false && item >= n && item
+                )
+              ).toEqual(true);
+            } else {
+              expect(
+                !!res.body.data.reduce(
+                  (n, item) => n !== false && item <= n && item
+                )
+              ).toEqual(true);
+            }
+
             expect(res.body).toHaveProperty('pagination');
             expect(res.body.pagination).toEqual(paginationMatcher);
           });
@@ -73,7 +89,7 @@ describe('GET /product/all', () => {
     });
   });
 
-  test('with category id param', async () => {
+  test('with category_id param', async () => {
     const category_id = 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989';
     await testClient
       .get(`/product/all?category_id=${category_id}`)
@@ -85,12 +101,16 @@ describe('GET /product/all', () => {
         expect(res.body).toHaveProperty('data');
         expect(res.body.data.length).toBeGreaterThan(0);
         expect(res.body.data).toEqual(expect.arrayContaining([productMatcher]));
+        res.body.data.forEach((e) => {
+          expect(e).toHaveProperty('category');
+          expect(e.category).toHaveProperty('id', category_id);
+        });
         expect(res.body).toHaveProperty('pagination');
         expect(res.body.pagination).toEqual(paginationMatcher);
       });
   });
 
-  test('with category slug param', async () => {
+  test('with category_slug param', async () => {
     const category_slug = 'thoi-trang-nam';
     await testClient
       .get(`/product/all?category_slug=${category_slug}`)
@@ -102,6 +122,10 @@ describe('GET /product/all', () => {
         expect(res.body).toHaveProperty('data');
         expect(res.body.data.length).toBeGreaterThan(0);
         expect(res.body.data).toEqual(expect.arrayContaining([productMatcher]));
+        res.body.data.forEach((e) => {
+          expect(e).toHaveProperty('category');
+          expect(e.category).toHaveProperty('slug', category_slug);
+        });
         expect(res.body).toHaveProperty('pagination');
         expect(res.body.pagination).toEqual(paginationMatcher);
       });
@@ -130,7 +154,7 @@ describe('GET /product/all', () => {
           expect(res.body).toHaveProperty('pagination');
           expect(res.body.pagination).toEqual(paginationMatcher);
           expect(
-            res.body.data.every((product) => product.enable == true)
+            res.body.data.every((product) => product.enable === true)
           ).toEqual(true);
         });
     });
@@ -152,7 +176,7 @@ describe('GET /product/all', () => {
           expect(res.body).toHaveProperty('pagination');
           expect(res.body.pagination).toEqual(paginationMatcher);
           expect(
-            res.body.data.every((product) => product.enable == false)
+            res.body.data.every((product) => product.enable === false)
           ).toEqual(true);
         });
     });
@@ -174,7 +198,7 @@ describe('GET /product/all', () => {
           expect(res.body).toHaveProperty('pagination');
           expect(res.body.pagination).toEqual(paginationMatcher);
           expect(
-            res.body.data.every((product) => product.published == true)
+            res.body.data.every((product) => product.published === true)
           ).toEqual(true);
         });
     });
@@ -196,7 +220,7 @@ describe('GET /product/all', () => {
           expect(res.body).toHaveProperty('pagination');
           expect(res.body.pagination).toEqual(paginationMatcher);
           expect(
-            res.body.data.every((product) => product.published == false)
+            res.body.data.every((product) => product.published === false)
           ).toEqual(true);
         });
     });
@@ -257,6 +281,9 @@ describe('GET /product/all', () => {
         expect(res.body).toHaveProperty('data');
         expect(res.body.data.length).toBeGreaterThan(0);
         expect(res.body.data).toEqual(expect.arrayContaining([productMatcher]));
+        res.body.data.forEach((e) => {
+          expect(e).toHaveProperty('price');
+        });
         expect(res.body).toHaveProperty('pagination');
         expect(res.body.pagination).toEqual(paginationMatcher);
       });

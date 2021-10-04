@@ -23,6 +23,7 @@ describe('GET /product', () => {
           expect(res.body).toHaveProperty('success', true);
           expect(res.body).toHaveProperty('data');
           expect(res.body.data).toEqual(productMatcher);
+          expect(res.body.data).toHaveProperty('id', id);
         });
     });
 
@@ -57,6 +58,7 @@ describe('GET /product', () => {
           expect(res.body).toHaveProperty('success', true);
           expect(res.body).toHaveProperty('data');
           expect(res.body.data).toEqual(productMatcher);
+          expect(res.body.data).toHaveProperty('slug', slug);
         });
     });
 

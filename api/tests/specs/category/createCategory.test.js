@@ -50,7 +50,9 @@ describe('post /category', () => {
   });
 
   test('with duplicated name', async () => {
-    const duplicatedName = sampleCategories[0].name;
+    const duplicatedName =
+      sampleCategories[Math.floor(Math.random() * sampleCategories.length)]
+        .name;
     const res = await testClient
       .post('/category')
       .set('Cookie', [`access_token=${sampleAccessToken}`])

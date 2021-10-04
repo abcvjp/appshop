@@ -1,6 +1,7 @@
 const testClient = require('../../testClient');
 const { User } = require('../../../models');
 const sampleUsers = require('../../../sample-data/user.sample');
+const { userMatcher } = require('../../matchers');
 const { queryInterface } = require('../../../models');
 
 beforeAll(async () => {
@@ -37,12 +38,8 @@ describe('POST /user', () => {
       .expect('Content-Type', /json/);
     expect(res.body).toHaveProperty('success', true);
     expect(res.body).toHaveProperty('user');
-    expect(res.body.user).toMatchObject({
-      username,
-      email,
-      full_name,
-      phone_number
-    });
+    expect(res.body.user).toEqual(userMatcher);
+
     const userFromDb = await User.findOne({ where: { username } });
     expect(userFromDb).not.toEqual(null);
     expect(userFromDb).toMatchObject({

@@ -62,7 +62,7 @@ module.exports = [
   {
     id: 'd4bcb431-7389-40cd-869e-087cebac5595',
     name: 'Nhà Cửa - Đời Sống',
-    published: true,
+    published: false,
     description: 'Nhà Cửa - Đời Sốnggggggggg',
     path: 'Nhà Cửa - Đời Sống',
     slug: 'nha-cua-doi-song',

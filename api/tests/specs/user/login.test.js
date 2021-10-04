@@ -29,8 +29,9 @@ describe('POST /user/login', () => {
       .expect('Content-Type', /json/);
     expect(res.body).toHaveProperty('success', true);
     expect(res.body).toHaveProperty('user');
-    expect(res.body.user).toEqual(userMatcher);
     expect(res.body).toHaveProperty('access_token');
+    expect(res.body.user).toEqual(userMatcher);
+    expect(res.body.user).toHaveProperty('id', sampleUser.id);
 
     // check access_token in res cookies
     const cookies = extractCookies(res.headers);

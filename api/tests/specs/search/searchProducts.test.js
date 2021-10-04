@@ -34,6 +34,10 @@ describe('GET /search', () => {
         expect(res.body).toHaveProperty('success', true);
         expect(res.body).toHaveProperty('data');
         expect(res.body.data).toEqual(expect.arrayContaining([productMatcher]));
+        res.body.data.forEach((e) => {
+          expect(e).toHaveProperty('relevance');
+          expect(e.relevance).toBeGreaterThan(0);
+        });
         expect(res.body).toHaveProperty('pagination');
         expect(res.body.pagination).toEqual(paginationMatcher);
       });
@@ -50,6 +54,10 @@ describe('GET /search', () => {
         expect(res.body).toHaveProperty('data');
         expect(res.body.data.length).toBeGreaterThan(0);
         expect(res.body.data).toEqual(expect.arrayContaining([productMatcher]));
+        res.body.data.forEach((e) => {
+          expect(e).toHaveProperty('relevance');
+          expect(e.relevance).toBeGreaterThan(0);
+        });
         expect(res.body).toHaveProperty('pagination');
         expect(res.body.pagination).toEqual(paginationMatcher);
       });
@@ -79,6 +87,26 @@ describe('GET /search', () => {
             expect(res.body.data).toEqual(
               expect.arrayContaining([productMatcher])
             );
+            res.body.data.forEach((e, i) => {
+              expect(e).toHaveProperty('relevance');
+              expect(e.relevance).toBeGreaterThan(0);
+            });
+
+            // check if is sorted
+            if (sortElement.value.split('.')[1] === 'asc') {
+              expect(
+                !!res.body.data.reduce(
+                  (n, item) => n !== false && item >= n && item
+                )
+              ).toEqual(true);
+            } else {
+              expect(
+                !!res.body.data.reduce(
+                  (n, item) => n !== false && item <= n && item
+                )
+              ).toEqual(true);
+            }
+
             expect(res.body).toHaveProperty('pagination');
             expect(res.body.pagination).toEqual(paginationMatcher);
           });
@@ -98,11 +126,13 @@ describe('GET /search', () => {
         expect(res.body).toHaveProperty('data');
         expect(res.body.data.length).toBeGreaterThan(0);
         expect(res.body.data).toEqual(expect.arrayContaining([productMatcher]));
+        res.body.data.forEach((e) => {
+          expect(e).toHaveProperty('relevance');
+          expect(e.relevance).toBeGreaterThan(0);
+          expect(e.category).toHaveProperty('id', category_id);
+        });
         expect(res.body).toHaveProperty('pagination');
         expect(res.body.pagination).toEqual(paginationMatcher);
-        expect(
-          res.body.data.every((product) => product.category.id === category_id)
-        ).toEqual(true);
       });
   });
 
@@ -126,11 +156,13 @@ describe('GET /search', () => {
           expect(res.body.data).toEqual(
             expect.arrayContaining([productMatcher])
           );
+          res.body.data.forEach((e) => {
+            expect(e).toHaveProperty('relevance');
+            expect(e.relevance).toBeGreaterThan(0);
+            expect(e).toHaveProperty('enable', true);
+          });
           expect(res.body).toHaveProperty('pagination');
           expect(res.body.pagination).toEqual(paginationMatcher);
-          expect(
-            res.body.data.every((product) => product.enable == true)
-          ).toEqual(true);
         });
     });
 
@@ -148,10 +180,15 @@ describe('GET /search', () => {
           expect(res.body.data).toEqual(
             expect.arrayContaining([productMatcher])
           );
+          res.body.data.forEach((e) => {
+            expect(e).toHaveProperty('relevance');
+            expect(e.relevance).toBeGreaterThan(0);
+            expect(e).toHaveProperty('enable', false);
+          });
           expect(res.body).toHaveProperty('pagination');
           expect(res.body.pagination).toEqual(paginationMatcher);
           expect(
-            res.body.data.every((product) => product.enable == false)
+            res.body.data.every((product) => product.enable === false)
           ).toEqual(true);
         });
     });
@@ -170,10 +207,15 @@ describe('GET /search', () => {
           expect(res.body.data).toEqual(
             expect.arrayContaining([productMatcher])
           );
+          res.body.data.forEach((e) => {
+            expect(e).toHaveProperty('relevance');
+            expect(e.relevance).toBeGreaterThan(0);
+            expect(e).toHaveProperty('published', true);
+          });
           expect(res.body).toHaveProperty('pagination');
           expect(res.body.pagination).toEqual(paginationMatcher);
           expect(
-            res.body.data.every((product) => product.published == true)
+            res.body.data.every((product) => product.published === true)
           ).toEqual(true);
         });
     });
@@ -192,10 +234,15 @@ describe('GET /search', () => {
           expect(res.body.data).toEqual(
             expect.arrayContaining([productMatcher])
           );
+          res.body.data.forEach((e) => {
+            expect(e).toHaveProperty('relevance');
+            expect(e.relevance).toBeGreaterThan(0);
+            expect(e).toHaveProperty('published', false);
+          });
           expect(res.body).toHaveProperty('pagination');
           expect(res.body.pagination).toEqual(paginationMatcher);
           expect(
-            res.body.data.every((product) => product.published == false)
+            res.body.data.every((product) => product.published === false)
           ).toEqual(true);
         });
     });
@@ -214,11 +261,13 @@ describe('GET /search', () => {
           expect(res.body.data).toEqual(
             expect.arrayContaining([productMatcher])
           );
+          res.body.data.forEach((e) => {
+            expect(e).toHaveProperty('relevance');
+            expect(e.relevance).toBeGreaterThan(0);
+            expect(e.quantity).toBeGreaterThan(0);
+          });
           expect(res.body).toHaveProperty('pagination');
           expect(res.body.pagination).toEqual(paginationMatcher);
-          expect(
-            res.body.data.every((product) => product.quantity > 0)
-          ).toEqual(true);
         });
     });
 
@@ -236,11 +285,13 @@ describe('GET /search', () => {
           expect(res.body.data).toEqual(
             expect.arrayContaining([productMatcher])
           );
+          res.body.data.forEach((e) => {
+            expect(e).toHaveProperty('relevance');
+            expect(e.relevance).toBeGreaterThan(0);
+            expect(e.quantity).toEqual(0);
+          });
           expect(res.body).toHaveProperty('pagination');
           expect(res.body.pagination).toEqual(paginationMatcher);
-          expect(
-            res.body.data.every((product) => product.quantity === 0)
-          ).toEqual(true);
         });
     });
   });
@@ -256,6 +307,11 @@ describe('GET /search', () => {
         expect(res.body).toHaveProperty('data');
         expect(res.body.data.length).toBeGreaterThan(0);
         expect(res.body.data).toEqual(expect.arrayContaining([productMatcher]));
+        res.body.data.forEach((e) => {
+          expect(e).toHaveProperty('relevance');
+          expect(e.relevance).toBeGreaterThan(0);
+          expect(e).toHaveProperty('price');
+        });
         expect(res.body).toHaveProperty('pagination');
         expect(res.body.pagination).toEqual(paginationMatcher);
       });

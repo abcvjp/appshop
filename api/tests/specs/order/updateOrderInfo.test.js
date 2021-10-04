@@ -60,6 +60,7 @@ describe('put /order/{orderId}', () => {
     expect(res.body).toHaveProperty('success', true);
     expect(res.body).toHaveProperty('result');
     expect(res.body.result).toEqual(orderMatcher);
+    expect(res.body.result).toHaveProperty('id', sampleOrder.id);
     expect(res.body.result).not.toMatchObject(oldData);
 
     const orderFromDb = await Order.findByPk(sampleOrder.id);

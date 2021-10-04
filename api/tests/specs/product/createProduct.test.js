@@ -74,12 +74,6 @@ describe('post /product', () => {
     expect(res.body).toHaveProperty('success', true);
     expect(res.body).toHaveProperty('result');
     expect(res.body.result).toEqual(productMatcher);
-
-    // await Product.destroy({
-    // where: {
-    // id: res.body.result.id,
-    // },
-    // });
   });
 
   test('with duplicated name', async () => {

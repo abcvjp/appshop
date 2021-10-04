@@ -58,6 +58,7 @@ describe('put /category/{categoryId}', () => {
     expect(res.body).toHaveProperty('success', true);
     expect(res.body).toHaveProperty('result');
     expect(res.body.result).toEqual(categoryMatcher);
+    expect(res.body.result).toHaveProperty('id', sampleCategory.id);
 
     expect(res.body.result).not.toMatchObject({
       name,

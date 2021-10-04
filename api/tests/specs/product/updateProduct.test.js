@@ -24,7 +24,6 @@ describe('put /product/{productId}', () => {
   const sampleNormalUser = sampleUsers.find(
     (user) => user.role === rolesHelper.User
   );
-  const sampleAccessToken = generateAccessTokenByUser(sampleAdminUser);
   const sampleProduct =
     sampleProducts[Math.floor(Math.random() * sampleProducts.length)];
   let {
@@ -73,6 +72,7 @@ describe('put /product/{productId}', () => {
     expect(res.body).toHaveProperty('success', true);
     expect(res.body).toHaveProperty('result');
     expect(res.body.result).toEqual(productMatcher);
+    expect(res.body.result).toHaveProperty('id', sampleProduct.id);
 
     expect(res.body.result).not.toMatchObject({
       name,
