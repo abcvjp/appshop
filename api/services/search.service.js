@@ -51,7 +51,7 @@ exports.searchProducts = async ({
           }
 				ORDER BY ${sort !== undefined ? sort.replace('.', ' ') : 'relevance DESC'};
 			`,
-        { nest: true }
+        { nest: true, raw: true }
       );
       var count = rows.length;
       var result = rows.slice(offset, offset + limit);
@@ -83,18 +83,26 @@ exports.searchProducts = async ({
           }
 				ORDER BY ${sort !== undefined ? sort.replace('.', ' ') : 'relevance DESC'};
 			`,
-        { nest: true }
+        { nest: true, raw: true }
       );
       var count = rows.length;
       var result = rows.slice(offset, offset + limit);
     }
     if (result.length < 1) throw createError(404, `No result found`);
     const pagination = paginate(current_page, count, result, page_size);
+
     if (exclude) {
       result.forEach((i) => {
         deleteObjProps(i, exclude);
       });
     }
+
+    // convert 1-0 to true-false
+    result.forEach((x) => {
+      x['enable'] = x['enable'] === 1;
+      x['published'] = x['published'] === 1;
+    });
+
     return {
       success: true,
       data: result,
@@ -118,6 +126,14 @@ exports.searchCategories = async ({
     if (published !== undefined) {
       filters.published = published;
     }
+    let order_by;
+    if (sort !== undefined) {
+      order_by = sort.split('.');
+      if (order_by[0] === 'relevance') {
+        order_by[0] = Sequelize.literal('relevance');
+      }
+    }
+
     const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
     const { rows, count } = await Category.findAndCountAll({
       where: [
@@ -139,10 +155,7 @@ exports.searchCategories = async ({
       },
       limit,
       offset,
-      order: [
-        sort ? [sort.split('.')] : ['createdAt', 'DESC'],
-        [Sequelize.literal('relevance'), 'DESC']
-      ]
+      order: [order_by ? order_by : [Sequelize.literal('relevance'), 'DESC']]
     });
     if (rows.length < 1) throw createError(404, 'Can not find any category');
     const pagination = paginate(current_page, count, rows, page_size);

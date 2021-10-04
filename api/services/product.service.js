@@ -25,7 +25,7 @@ exports.getProducts = async ({
     if (category_id !== undefined) {
       const rows = await sequelize.query(
         `
-				WITH RECURSIVE cte (id, name, slug, parent_id) AS
+				WITH RECURSIVE cte (id, name, parent_id, slug) AS
 				(
 					SELECT id, name, parent_id, slug FROM Categories WHERE id = '${category_id}'
 					UNION
@@ -66,7 +66,7 @@ exports.getProducts = async ({
     } else if (category_slug !== undefined) {
       const rows = await sequelize.query(
         `
-				WITH RECURSIVE cte (id, name, slug, parent_id) AS
+				WITH RECURSIVE cte (id, name, parent_id, slug) AS
 				(
 					SELECT id, name, parent_id, slug FROM Categories WHERE slug = '${category_slug}'
 					UNION

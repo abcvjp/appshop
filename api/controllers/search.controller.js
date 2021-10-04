@@ -38,8 +38,7 @@ exports.searchProducts = asyncHandler(async (req, res, next) => {
       enable: true,
       published: true,
       in_stock: true,
-      price,
-      exclude: ['enable', 'published']
+      price
     });
   }
   res.status(200).json(result);

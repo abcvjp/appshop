@@ -76,6 +76,7 @@ exports.signup = async ({
     return {
       success: true,
       user: {
+        id,
         username,
         full_name,
         email,
