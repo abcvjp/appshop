@@ -52,6 +52,7 @@ test-api:
 
 deploy:
   stage: deploy
+  when: manual
   tags:
     - beta-server
   before_script:

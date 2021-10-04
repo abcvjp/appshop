@@ -32,17 +32,20 @@ var config = convict({
     host: {
       doc: 'Database host name/IP',
       format: '*',
-      default: 'server1.dev.test'
+      default: 'server1.dev.test',
+      env: 'DB_HOST'
     },
     name: {
       doc: 'Database name',
       format: String,
-      default: 'users'
+      default: 'users',
+      env: 'DB_NAME'
     },
     username: {
       doc: 'Database username',
       format: String,
-      default: 'admin'
+      default: 'admin',
+      env: 'DB_USERNAME'
     },
     password: {
       doc: 'Database password for user',
@@ -74,17 +77,20 @@ var config = convict({
     host: {
       doc: 'Database host name/IP',
       format: '*',
-      default: 'server1.dev.test'
+      default: 'db',
+      env: 'DB_HOST'
     },
     database: {
       doc: 'Database name',
       format: String,
-      default: 'users'
+      default: 'users',
+      env: 'DB_NAME'
     },
     username: {
       doc: 'Database username',
       format: String,
-      default: 'admin'
+      default: 'admin',
+      env: 'DB_USERNAME'
     },
     password: {
       doc: 'Database password for user',
@@ -119,17 +125,18 @@ var config = convict({
   cors: {
     whiteList: {
       format: 'array',
-      default: []
+      default: [process.env.APP_BASE, process.env.ADMIN_BASE]
     },
     credentials: {
       format: Boolean,
-      default: false
+      default: true
     }
   },
   jwt: {
     secret: {
       format: String,
-      default: 'Ysg$fG&DG'
+      default: 'Ysg$fG&DG',
+      env: 'JWT_ACCESS_TOKEN_SECRET'
     },
     secret_options: {
       expiresIn: {
@@ -139,7 +146,8 @@ var config = convict({
     },
     refresh_secret: {
       format: String,
-      default: 'Ysg$fG&DG'
+      default: 'Ysg$fG&DG',
+      env: 'JWT_REFRESH_TOKEN_SECRET'
     },
     refresh_secret_options: {
       expiresIn: {

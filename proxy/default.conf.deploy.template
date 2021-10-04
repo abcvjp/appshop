@@ -1,0 +1,41 @@
+server {
+	listen 80;
+	server_name ${APP_SERVER_NAME};
+	location / {
+		proxy_pass ${APP_SERVER_URI};
+		proxy_set_header    X-Forwarded-Host   $host;
+		proxy_set_header    X-Forwarded-Server $host;
+		proxy_set_header    X-Forwarded-For    $proxy_add_x_forwarded_for;
+		proxy_set_header    X-Forwarded-Proto  $scheme;
+		proxy_set_header    X-Real-IP          $remote_addr;
+		proxy_set_header    Host               $host;
+	}
+}
+
+server {
+	listen 80;
+	server_name ${API_SERVER_NAME};
+	location / {
+		proxy_pass ${API_SERVER_URI};
+		proxy_set_header    X-Forwarded-Host   $host;
+		proxy_set_header    X-Forwarded-Server $host;
+		proxy_set_header    X-Forwarded-For    $proxy_add_x_forwarded_for;
+		proxy_set_header    X-Forwarded-Proto  $scheme;
+		proxy_set_header    X-Real-IP          $remote_addr;
+		proxy_set_header    Host               $host;
+	}
+}
+
+server {
+	listen 80;
+	server_name ${ADMIN_SERVER_NAME};
+	location / {
+		proxy_pass ${ADMIN_SERVER_URI};
+		proxy_set_header    X-Forwarded-Host   $host;
+		proxy_set_header    X-Forwarded-Server $host;
+		proxy_set_header    X-Forwarded-For    $proxy_add_x_forwarded_for;
+		proxy_set_header    X-Forwarded-Proto  $scheme;
+		proxy_set_header    X-Real-IP          $remote_addr;
+		proxy_set_header    Host               $host;
+	}
+}

@@ -14,6 +14,13 @@ services:
     networks:
       - frontend
       - backend
+    environment:
+      - APP_SERVER_NAME=app.webshopbeta.cf
+      - APP_SERVER_URI=http://app:3000
+      - ADMIN_SERVER_NAME=admin.webshopbeta.cf
+      - ADMIN_SERVER_URI=http://admin:3000
+      - API_SERVER_NAME=api.webshopbeta.cf
+      - API_SERVER_URI=http://api:5000
   app:
     image: harbor.zinza.com.vn/hoaihv/webshop/webshop_app:latest
     depends_on:
@@ -68,8 +75,18 @@ services:
       - ./api/.env
     environment:
       - NODE_ENV=production
+      - PORT=5000
+      - DB_HOST=db
+      - DB_NAME=webshop_db
+      - DB_USERNAME=hoaideptrai
+      - DB_PASSWORD=123456
+      - APP_BASE=http://webshopbeta.cf
+      - ADMIN_BASE=http://admin.webshopbeta.cf
+      - JWT_ACCESS_TOKEN_SECRET=Ysg$fG&DG
+      - JWT_REFRESH_TOKEN_SECRET=Txlcvkb^32y
   db:
     image: mysql:8.0.26
+    restart: always
     expose:
       - 3306
     volumes:

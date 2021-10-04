@@ -1,8 +1,8 @@
 server {
 	listen 80;
-	server_name app.webshop.local;
+	server_name ${APP_SERVER_NAME};
 	location / {
-		proxy_pass http://app:3000;
+		proxy_pass ${APP_SERVER_URI};
 		proxy_set_header    X-Forwarded-Host   $host;
 		proxy_set_header    X-Forwarded-Server $host;
 		proxy_set_header    X-Forwarded-For    $proxy_add_x_forwarded_for;
@@ -14,9 +14,9 @@ server {
 
 server {
 	listen 80;
-	server_name api.webshop.local;
+	server_name ${API_SERVER_NAME};
 	location / {
-		proxy_pass http://api:5000;
+		proxy_pass ${API_SERVER_URI};
 		proxy_set_header    X-Forwarded-Host   $host;
 		proxy_set_header    X-Forwarded-Server $host;
 		proxy_set_header    X-Forwarded-For    $proxy_add_x_forwarded_for;
@@ -28,9 +28,9 @@ server {
 
 server {
 	listen 80;
-	server_name admin.webshop.local;
+	server_name ${ADMIN_SERVER_NAME};
 	location / {
-		proxy_pass http://admin:3000;
+		proxy_pass ${ADMIN_SERVER_URI};
 		proxy_set_header    X-Forwarded-Host   $host;
 		proxy_set_header    X-Forwarded-Server $host;
 		proxy_set_header    X-Forwarded-For    $proxy_add_x_forwarded_for;
@@ -42,9 +42,9 @@ server {
 
 server {
 	listen 80;
-	server_name db.webshop.local;
+	server_name ${PHPMYADMIN_SERVER_NAME};
 	location / {
-		proxy_pass http://phpmyadmin:80;
+		proxy_pass ${PHPMYADMIN_SERVER_URI};
 		proxy_set_header    X-Forwarded-Host   $host;
 		proxy_set_header    X-Forwarded-Server $host;
 		proxy_set_header    X-Forwarded-For    $proxy_add_x_forwarded_for;
