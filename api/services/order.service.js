@@ -7,10 +7,10 @@ const {
 } = require('../models');
 const { sequelize, Sequelize } = require('../models');
 const createError = require('http-errors');
-const slug = require('slug');
 const { uuid } = require('uuidv4');
 const { calculateLimitAndOffset, paginate } = require('paginate-info');
 const { roundPrice } = require('../helpers/logicFunc.helper');
+const { orderConfirmationMailQueue } = require('../queues');
 
 exports.getOrders = async ({
   id,
@@ -418,14 +418,46 @@ exports.cancelOrder = async ({ id }) => {
 exports.confirmlOrder = async ({ id }) => {
   try {
     const orderToConfirm = await Order.findByPk(id, {
-      attributes: ['id', 'status']
+      include: [
+        {
+          association: 'payment_method',
+          attributes: ['name']
+        },
+        {
+          association: 'shipping_method',
+          attributes: ['name']
+        },
+        {
+          association: 'order_items',
+          attributes: [
+            'product_id',
+            'product_name',
+            'product_thumbnail',
+            'price',
+            'quantity'
+          ]
+        }
+      ],
+      attributes: {
+        exclude: ['payment_method_id', 'shipping_method_id']
+      }
     });
     if (!orderToConfirm) throw createError(404, 'Order does not exist');
     if (orderToConfirm.status === 'Canceled') {
       throw createError(409, 'Order is canceled');
     } else if (orderToConfirm.status !== 'Pending')
       throw createError(409, 'Order is already confirmed');
-    await orderToConfirm.update({ status: 'Handling' });
+
+    await sequelize.transaction(async (t) => {
+      await orderToConfirm.update({ status: 'Handling' });
+      orderConfirmationMailQueue.add(
+        `Send email: confirm order ${orderToConfirm.id}`,
+        {
+          order: orderToConfirm
+        }
+      );
+    });
+
     return { success: true };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);

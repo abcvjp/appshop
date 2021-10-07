@@ -24,6 +24,11 @@
       "decimalNumbers": true
     }
   },
+  "redis": {
+    "host": "redis",
+    "port": 6379,
+    "password": "123456"
+  },
   "cors": {
     "whiteList": ["http://admin.webshop.local", "http://app.webshop.local"],
     "credentials": true

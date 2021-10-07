@@ -21,8 +21,13 @@
     "host": "db",
     "dialect": "mysql"
   },
+  "redis": {
+    "host": "redis",
+    "port": 6379,
+    "password": "123456"
+  },
   "cors": {
-    "whiteList": ["http://webshopbeta.cf","http://admin.webshopbeta.cf"],
+    "whiteList": ["http://webshopbeta.cf", "http://admin.webshopbeta.cf"],
     "credentials": true
   },
   "jwt": {

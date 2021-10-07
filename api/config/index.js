@@ -122,6 +122,23 @@ var config = convict({
       }
     }
   },
+  redis: {
+    host: {
+      format: String,
+      default: 'redis',
+      env: 'REDIS_HOST'
+    },
+    port: {
+      format: Number,
+      default: 6379,
+      env: 'REDIS_PORT'
+    },
+    password: {
+      format: String,
+      default: '123456',
+      env: 'REDIS_PASSWORD'
+    }
+  },
   cors: {
     whiteList: {
       format: 'array',

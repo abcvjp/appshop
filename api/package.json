@@ -21,6 +21,7 @@
     "@joi/date": "^2.1.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
+    "bullmq": "^1.48.3",
     "cls-hooked": "^4.2.2",
     "convict": "^6.1.0",
     "cookie-parser": "~1.4.4",

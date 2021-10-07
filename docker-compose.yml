@@ -5,6 +5,7 @@ services:
       - app
       - admin
       - api
+      - worker
       - phpmyadmin
     build: "./proxy"
     ports:
@@ -64,16 +65,35 @@ services:
     env_file:
       - ./api/.env
     environment:
-    - NODE_ENV=development
-    - PORT=5000
-    - DB_HOST=db
-    - DB_NAME=webshop_db
-    - DB_USERNAME=hoaideptrai
-    - DB_PASSWORD=123456
-    - APP_BASE=http://app.webshop.local
-    - ADMIN_BASE=http://admin.webshop.local
-    - JWT_ACCESS_TOKEN_SECRET=Ysg$fG&DG
-    - JWT_REFRESH_TOKEN_SECRET=Txlcvkb^32y
+      - NODE_ENV=development
+      - PORT=5000
+      - DB_HOST=db
+      - DB_NAME=webshop_db
+      - DB_USERNAME=hoaideptrai
+      - DB_PASSWORD=123456
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=123456
+      - APP_BASE=http://app.webshop.local
+      - ADMIN_BASE=http://admin.webshop.local
+      - JWT_ACCESS_TOKEN_SECRET=Ysg$fG&DG
+      - JWT_REFRESH_TOKEN_SECRET=Txlcvkb^32y
+  worker:
+    depends_on:
+      - api
+    build: "./worker"
+    expose:
+      - 5000
+    volumes:
+      - ./worker:/worker
+      - /worker/node_modules
+    networks:
+      - backend
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=123456
   db:
     image: mysql:8.0.26
     expose:
@@ -102,6 +122,16 @@ services:
       - MYSQL_PASSWORD=123456
     cap_add:
       - CAP_SYS_NICE
+  redis:
+    # remember to SET PASSWORD below
+    command: "redis-server --requirepass 123456 --maxmemory-policy noeviction"
+    image: redis:6.2.5-alpine
+    expose:
+      - 6379
+    networks:
+      - backend
+    environment:
+      - REDIS_REPLICATION_MODE=master
   phpmyadmin:
     depends_on:
       - db
