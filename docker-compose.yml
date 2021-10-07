@@ -54,7 +54,10 @@ services:
   api:
     depends_on:
       - db
+      - redis
+      - worker
     build: "./api"
+    command: ["npm", "start"]
     expose:
       - 5000
     volumes:
@@ -80,7 +83,7 @@ services:
       - JWT_REFRESH_TOKEN_SECRET=Txlcvkb^32y
   worker:
     depends_on:
-      - api
+      - redis
     build: "./worker"
     expose:
       - 5000
@@ -123,9 +126,9 @@ services:
     cap_add:
       - CAP_SYS_NICE
   redis:
+    image: redis:6.2.5-alpine
     # remember to SET PASSWORD below
     command: "redis-server --requirepass 123456 --maxmemory-policy noeviction"
-    image: redis:6.2.5-alpine
     expose:
       - 6379
     networks:

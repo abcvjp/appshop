@@ -12,6 +12,7 @@ variables:
   APP_IMAGE_NAME: "webshop_app"
   ADMIN_IMAGE_NAME: "webshop_admin"
   API_IMAGE_NAME: "webshop_api"
+  WORKER_IMAGE_NAME: "webshop_worker"
 
 before_script:
   - docker version
@@ -21,7 +22,7 @@ build-api:
   stage: build
   script:
     - docker pull $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest --tag $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest ./api
+    - docker build --cache-from $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest --tag $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest --file api/Dockerfile.prod ./api
     - docker push $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest
 
@@ -41,12 +42,19 @@ build-app:
     - docker push $CI_REGISTRY_IMAGE/$APP_IMAGE_NAME:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE/$APP_IMAGE_NAME:latest
 
+build-worker:
+  stage: build
+  script:
+    - docker pull $CI_REGISTRY_IMAGE/$WORKER_IMAGE_NAME:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/$WORKER_IMAGE_NAME:latest --tag $CI_REGISTRY_IMAGE/$WORKER_IMAGE_NAME:latest --file worker/Dockerfile.prod ./worker
+    - docker push $CI_REGISTRY_IMAGE/$WORKER_IMAGE_NAME:latest
+
 test-api:
   stage: test
-  # when: manual
   script:
     - docker pull $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest || true
-    - COMPOSE_HTTP_TIMEOUT=1000 docker-compose -f docker-compose.ci-test.yml up -d
+    - docker pull $CI_REGISTRY_IMAGE/$WORKER_IMAGE_NAME:latest || true
+    - COMPOSE_HTTP_TIMEOUT=1000 docker-compose -f docker-compose.test.yml up -d
     - sleep 15
     - docker-compose exec -T api npm run ci:test
 
@@ -62,5 +70,6 @@ deploy:
     - docker pull $CI_REGISTRY_IMAGE/$API_IMAGE_NAME:latest || true
     - docker pull $CI_REGISTRY_IMAGE/$ADMIN_IMAGE_NAME:latest || true
     - docker pull $CI_REGISTRY_IMAGE/$APP_IMAGE_NAME:latest || true
-    - COMPOSE_HTTP_TIMEOUT=1000 docker-compose -f docker-compose.ci-deploy.yml up -d --build --force-recreate
+    - docker pull $CI_REGISTRY_IMAGE/$WORKER_IMAGE_NAME:latest || true
+    - COMPOSE_HTTP_TIMEOUT=1000 docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
     # - docker-compose exec -T api npm run db:reset

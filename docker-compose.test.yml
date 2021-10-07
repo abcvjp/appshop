@@ -1,0 +1,70 @@
+version: "3.3"
+services:
+  api:
+    depends_on:
+      - db-test
+      - redis-test
+      - worker
+    image: harbor.zinza.com.vn/hoaihv/webshop/webshop_api:latest
+    expose:
+      - 5000
+    volumes:
+      - ./api:/api
+      - /api/node_modules
+    networks:
+      - backend
+    environment:
+      - NODE_ENV=test
+      - PORT=5000
+      - DB_HOST=db
+      - DB_NAME=webshop_db
+      - DB_USERNAME=hoaideptrai
+      - DB_PASSWORD=123456
+      - REDIS_HOST=redis-test
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=123456
+      - APP_BASE=http://app.webshop.local
+      - ADMIN_BASE=http://admin.webshop.local
+      - JWT_ACCESS_TOKEN_SECRET=Ysg$fG&DG
+      - JWT_REFRESH_TOKEN_SECRET=Txlcvkb^32y
+  worker:
+    depends_on:
+      - redis-test
+    image: harbor.zinza.com.vn/hoaihv/webshop/webshop_worker:latest
+    expose:
+      - 5000
+    volumes:
+      - ./worker:/worker
+      - /worker/node_modules
+    networks:
+      - backend
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis-test
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=123456
+  db-test:
+    image: mysql:8.0.26
+    expose:
+      - 3306
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=webshop_db
+      - MYSQL_USER=hoaideptrai
+      - MYSQL_PASSWORD=123456
+    cap_add:
+      - CAP_SYS_NICE
+  redis-test:
+    image: redis:6.2.5-alpine
+    # remember to SET PASSWORD below
+    command: "redis-server --requirepass 123456 --maxmemory-policy noeviction"
+    expose:
+      - 6379
+    networks:
+      - backend
+    environment:
+      - REDIS_REPLICATION_MODE=master
+networks:
+  backend:

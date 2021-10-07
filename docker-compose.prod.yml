@@ -7,7 +7,7 @@ services:
       - api
     build:
       context: ./proxy
-      dockerfile: Dockerfile.deploy
+      dockerfile: Dockerfile.prod
     restart: always
     ports:
       - 80:80
@@ -63,6 +63,8 @@ services:
     image: harbor.zinza.com.vn/hoaihv/webshop/webshop_api:latest
     depends_on:
       - db
+      - redis
+      - worker
     restart: always
     expose:
       - 5000
@@ -88,9 +90,9 @@ services:
       - JWT_ACCESS_TOKEN_SECRET=Ysg$fG&DG
       - JWT_REFRESH_TOKEN_SECRET=Txlcvkb^32y
   worker:
+    image: harbor.zinza.com.vn/hoaihv/webshop/webshop_worker:latest
     depends_on:
-      - api
-    build: "./worker"
+      - redis
     expose:
       - 5000
     volumes:
@@ -120,9 +122,9 @@ services:
     cap_add:
       - CAP_SYS_NICE
   redis:
+    image: redis:6.2.5-alpine
     # remember to SET PASSWORD below
     command: "redis-server --requirepass 123456 --maxmemory-policy noeviction"
-    image: redis:6.2.5-alpine
     expose:
       - 6379
     networks:

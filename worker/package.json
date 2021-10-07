@@ -11,7 +11,7 @@
     "nodemailer": "^6.6.5"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node mailer/index.js",
     "dev": "nodemon mailer/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -5,6 +5,7 @@ services:
       - app
       - admin
       - api
+      - worker
       - phpmyadmin
     build: "./proxy"
     ports:
@@ -12,6 +13,15 @@ services:
     networks:
       - frontend
       - backend
+    environment:
+      - APP_SERVER_NAME=app.webshop.local
+      - APP_SERVER_URI=http://app:3000
+      - ADMIN_SERVER_NAME=admin.webshop.local
+      - ADMIN_SERVER_URI=http://admin:3000
+      - API_SERVER_NAME=api.webshop.local
+      - API_SERVER_URI=http://api:5000
+      - PHPMYADMIN_SERVER_NAME=db.webshop.local
+      - PHPMYADMIN_SERVER_URI=http://phpmyadmin:80
   app:
     build: "./app"
     depends_on:
@@ -23,6 +33,9 @@ services:
       - /app/node_modules
     networks:
       - frontend
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_BASE=http://api.webshop.local
   admin:
     build: "./admin"
     depends_on:
@@ -34,9 +47,15 @@ services:
       - /admin/node_modules
     networks:
       - frontend
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_BASE=http://api.webshop.local
+      - REACT_APP_APP_BASE=http://app.webshop.local
   api:
     depends_on:
       - db
+      - redis
+      - worker
     build: "./api"
     expose:
       - 5000
@@ -47,6 +66,36 @@ services:
       - backend
     env_file:
       - ./api/.env
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - DB_HOST=db
+      - DB_NAME=webshop_db
+      - DB_USERNAME=hoaideptrai
+      - DB_PASSWORD=123456
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=123456
+      - APP_BASE=http://app.webshop.local
+      - ADMIN_BASE=http://admin.webshop.local
+      - JWT_ACCESS_TOKEN_SECRET=Ysg$fG&DG
+      - JWT_REFRESH_TOKEN_SECRET=Txlcvkb^32y
+  worker:
+    depends_on:
+      - redis
+    build: "./worker"
+    expose:
+      - 5000
+    volumes:
+      - ./worker:/worker
+      - /worker/node_modules
+    networks:
+      - backend
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=123456
   db:
     image: mysql:8.0.26
     expose:
@@ -75,6 +124,16 @@ services:
       - MYSQL_PASSWORD=123456
     cap_add:
       - CAP_SYS_NICE
+  redis:
+    image: redis:6.2.5-alpine
+    # remember to SET PASSWORD below
+    command: "redis-server --requirepass 123456 --maxmemory-policy noeviction"
+    expose:
+      - 6379
+    networks:
+      - backend
+    environment:
+      - REDIS_REPLICATION_MODE=master
   phpmyadmin:
     depends_on:
       - db
