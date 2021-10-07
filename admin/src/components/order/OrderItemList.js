@@ -1,7 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Table, TableBody, TableHead, TableCell, TableContainer, TableRow, Box, Avatar, Typography
+  Table,
+  TableBody,
+  TableHead,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Box,
+  Avatar,
+  Typography
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
@@ -27,7 +35,7 @@ const OrderItemList = ({ items }) => (
                 }}
               >
                 <Avatar
-                  src={item.product_thumbnail ? item.product_thumbnail.url : null}
+                  src={item.product_thumbnail}
                   sx={{ mr: 2 }}
                   variant="rounded"
                 />
