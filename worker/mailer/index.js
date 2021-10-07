@@ -1,0 +1,1 @@
+require('./senders/orderConfirmation.sender');

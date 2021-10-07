@@ -1,0 +1,13 @@
+{
+  "env": "development",
+  "mailer": {
+    "service": "gmail",
+    "user": "webshoptest4@gmail.com",
+    "password": "R$@rn65#sc3LhNkD"
+  },
+  "redis": {
+    "host": "redis",
+    "port": 6379,
+    "password": "123456"
+  }
+}
