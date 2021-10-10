@@ -36,7 +36,7 @@ module.exports = {
   createOrder: {
     body: Joi.object({
       customer_name: Joi.string().trim().min(1).max(100).required(),
-      address: Joi.string().trim().min(10).max(200).required(),
+      address: Joi.string().trim().min(10).max(255).required(),
       email: Joi.string().trim().email().required(),
       phone_number: Joi.string()
         .length(10)
@@ -50,13 +50,13 @@ module.exports = {
         .items(
           Joi.object({
             product_id: Joi.string().guid({ version: 'uuidv4' }).required(),
-            price: Joi.number().precision(3).min(0).required(),
+            price: Joi.number().precision(2).min(0).required(),
             quantity: Joi.number().integer().min(1).required(),
             product_name: Joi.string().trim().min(1).max(200).required(),
             product_thumbnail: Joi.object({
-              url: Joi.string().trim().required().min(10),
-              alt: Joi.string().trim().min(10),
-              title: Joi.string().trim().min(10)
+              url: Joi.string().trim().required().min(10).max(255),
+              alt: Joi.string().trim().min(10).max(255),
+              title: Joi.string().trim().min(10).max(255)
             })
           })
         )
@@ -72,7 +72,7 @@ module.exports = {
       // payment_status: Joi.string().trim().valid('Unpaid', 'Paid').required(),
       // shipping_status: Joi.string().trim().valid('Undelivered', 'Delivering', 'Successfully delivered', 'Delivery failed').required(),
       customer_name: Joi.string().trim().min(1).max(100).required(),
-      address: Joi.string().trim().min(10).max(200).required(),
+      address: Joi.string().trim().min(10).max(255).required(),
       email: Joi.string().trim().email().required(),
       phone_number: Joi.string()
         .length(10)

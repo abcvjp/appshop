@@ -22,7 +22,7 @@ module.exports = {
         .items(
           Joi.object({
             product_id: Joi.string().guid({ version: 'uuidv4' }).required(),
-            price: Joi.number().precision(3).min(0).required(),
+            price: Joi.number().precision(2).min(0).required(),
             quantity: Joi.number().integer().min(1).required(),
             product_name: Joi.string().trim().min(1).max(200).required()
           })

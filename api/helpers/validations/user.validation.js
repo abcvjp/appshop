@@ -13,7 +13,7 @@ module.exports = {
       password: Joi.string()
         .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
         .min(6)
-        .max(100)
+        .max(32)
         .required(),
       full_name: Joi.string().trim().min(1).max(50).required(),
       email: Joi.string().trim().email().required(),
@@ -26,7 +26,7 @@ module.exports = {
   login: {
     body: Joi.object({
       username: Joi.string().trim().min(4).max(20).required(),
-      password: Joi.string().trim().min(6).max(100).required()
+      password: Joi.string().trim().min(6).max(32).required()
     })
   },
   getUserById: {
@@ -48,7 +48,7 @@ module.exports = {
       phone_number: Joi.string()
         .length(10)
         .pattern(/^[0-9]+$/),
-      avatar: Joi.string().allow(null)
+      avatar: Joi.string().max(255).allow(null)
     }),
     params: Joi.object({
       userId: Joi.string().guid({ version: 'uuidv4' }).required()
@@ -59,12 +59,12 @@ module.exports = {
       current_password: Joi.string()
         .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
         .min(6)
-        .max(100)
+        .max(32)
         .required(),
       new_password: Joi.string()
         .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
         .min(6)
-        .max(100)
+        .max(32)
         .required()
     }),
     params: Joi.object({
