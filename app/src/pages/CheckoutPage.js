@@ -153,7 +153,7 @@ const CheckoutPage = () => {
     validationSchema: Yup.object().shape({
       customer_name: Yup.string().max(100).required('Full name is required'),
       email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-      phone_number: Yup.string().matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Phone number is not valid').required('Phone number is required'),
+      phone_number: Yup.string().length(10).matches(/^[0-9]+$/, 'Phone number is not valid').required('Phone number is required'),
       address: Yup.string().min(10).max(255).required('Shipping address is required'),
       shipping_note: Yup.string().max(255),
       shipping_method_id: Yup.number().required('Shipping method is required'),

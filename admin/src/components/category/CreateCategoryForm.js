@@ -84,15 +84,15 @@ const CreateCategoryForm = () => {
           meta_keywords: ''
         }}
         validationSchema={Yup.object().shape({
-          name: Yup.string().trim().min(1).max(30)
+          name: Yup.string().trim().min(1).max(50)
             .required('Category name is required'),
-          description: Yup.string().trim().min(20).max(100)
+          description: Yup.string().trim().min(20).max(255)
             .required('Category description is required'),
           parent_id: Yup.string().uuid().nullable(),
           published: Yup.boolean().required(),
-          meta_title: Yup.string().trim().min(1).max(100)
+          meta_title: Yup.string().trim().min(1).max(150)
             .required('Meta title is required'),
-          meta_description: Yup.string().trim().min(20).max(200)
+          meta_description: Yup.string().trim().min(20).max(255)
             .nullable(),
           meta_keywords: Yup.string().trim().min(1).max(150)
             .lowercase()

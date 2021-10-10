@@ -40,7 +40,8 @@ const AccountProfileDetails = () => {
       username: Yup.string().min(4).max(20).required('Username is required'),
       full_name: Yup.string().min(1).max(50).required('Full name is required'),
       email: Yup.string().min(1).max(50).email('Email is invalid'),
-      phone_number: Yup.string().matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Phone number is not valid').length(10).required('Phone number is required'),
+      phone_number: Yup.string().length(10).matches(/^[0-9]+$/, 'Phone number is not valid').length(10)
+        .required('Phone number is required'),
     }),
     onSubmit: async (values) => {
       dispatch(openFullScreenLoading());

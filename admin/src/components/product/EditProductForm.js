@@ -136,7 +136,7 @@ const EditProductForm = ({ productId }) => {
             name: Yup.string().trim().min(1).max(200)
               .required('Name is required'),
             category_id: Yup.string().uuid().required('Cateogory is required'),
-            title: Yup.string().trim().min(1).max(200)
+            title: Yup.string().trim().min(1).max(255)
               .required('Title is requried'),
             price: Yup.number().positive().min(0).required('Price is required'),
             root_price: Yup.number().positive().min(0).required('Root price is required'),
@@ -145,14 +145,16 @@ const EditProductForm = ({ productId }) => {
             short_description: Yup.string().trim().min(20).max(300)
               .required('Short description is required'),
             description: Yup.string().min(20).required('Description is required'),
-            meta_title: Yup.string().trim().min(1).max(100)
+            meta_title: Yup.string().trim().min(1).max(150)
               .required('Meta title is required'),
-            meta_description: Yup.string().trim().min(20).max(200)
+            meta_description: Yup.string().trim().min(20).max(255)
               .nullable(),
             meta_keywords: Yup.string().trim().min(1).max(150)
               .nullable()
           })}
           onSubmit={onSubmit}
+          validateOnBlur
+          validateOnChange={false}
         >
           {({
             errors,
