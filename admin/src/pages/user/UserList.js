@@ -1,34 +1,31 @@
 import {
   useEffect, useReducer
 } from 'react';
-import { orderApi } from 'src/utils/api';
-import OrderListToolbar from 'src/components/order/OrderListToolbar';
-import OrderListResults from 'src/components/order/OrderListResult';
-import { OrderListContext } from 'src/utils/contexts';
+import { userApi } from 'src/utils/api';
+import UserListToolbar from 'src/components/user/UserListToolbar';
+import UserListResults from 'src/components/user/UserListResult';
+import { UserListContext } from 'src/utils/contexts';
 import Page from '../../components/Page';
 
 const initialState = {
-  orders: [],
+  users: [],
   pageSize: 10,
   currentPage: 0,
   count: 10,
   triggerFetch: Date.now(),
   filters: {
     id: '',
-    status: '',
-    payment_status: '',
-    shipping_status: '',
-    customer_name: '',
     email: '',
+    username: '',
+    full_name: '',
     phone_number: '',
-    start_date: '',
-    end_date: ''
+    enable: undefined
   },
   sort: '',
   isLoading: false
 };
 
-function orderListReducer(state, action) {
+function userListReducer(state, action) {
   switch (action.type) {
     case 'CHANGE_PAGE_SIZE':
       return {
@@ -53,10 +50,10 @@ function orderListReducer(state, action) {
         ...state,
         sort: action.sort
       };
-    case 'SET_ORDERS':
+    case 'SET_USERS':
       return {
         ...state,
-        orders: action.orders,
+        users: action.users,
         count: action.count
       };
     case 'TRIGGER_FETCH':
@@ -80,26 +77,26 @@ function orderListReducer(state, action) {
         ...state,
         isLoading: false
       };
-    case 'UPDATE_ORDER':
+    case 'UPDATE_USER':
       return {
         ...state,
-        orders: state.orders.map((i) => {
-          if (i.id === action.order.id) {
-            return { ...i, ...action.order };
+        users: state.users.map((i) => {
+          if (i.id === action.user.id) {
+            return { ...i, ...action.user };
           } return i;
         })
       };
-    case 'UPDATE_ORDERS': {
-      const newOrders = state.orders.slice();
-      action.orders.forEach((order) => {
-        const index = newOrders.findIndex((curOrder) => curOrder.id === order.id);
+    case 'UPDATE_USERS': {
+      const newUsers = state.users.slice();
+      action.users.forEach((user) => {
+        const index = newUsers.findIndex((curUser) => curUser.id === user.id);
         if (index !== -1) {
-          newOrders[index] = { ...newOrders[index], ...order };
+          newUsers[index] = { ...newUsers[index], ...user };
         }
       });
       return {
         ...state,
-        orders: newOrders
+        users: newUsers
       };
     }
     default:
@@ -107,53 +104,46 @@ function orderListReducer(state, action) {
   }
 }
 
-const OrderList = () => {
-  const [state, dispatch] = useReducer(orderListReducer, initialState);
+const UserList = () => {
+  const [state, dispatch] = useReducer(userListReducer, initialState);
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchUsers = async () => {
       dispatch({ type: 'SET_LOADING' });
       const { filters } = state;
       try {
-        const response = await orderApi.getOrders({
+        const response = await userApi.getUsers({
           current_page: state.currentPage + 1,
           page_size: state.pageSize,
           ...filters,
           sort: state.sort
         });
         dispatch({
-          type: 'SET_ORDERS',
-          orders: response.data.data,
+          type: 'SET_USERS',
+          users: response.data.data,
           count: response.data.pagination.count
         });
       } catch (err) {
-        if (err.response && err.response.status === 404) {
-          dispatch({
-            type: 'SET_ORDERS',
-            orders: [],
-            count: 0
-          });
-        }
         console.log(err);
       }
       dispatch({ type: 'SET_UNLOADING' });
     };
-    fetchOrders();
+    fetchUsers();
   }, [state.pageSize, state.currentPage, state.filters, state.sort, state.triggerFetch]);
 
   return (
     <Page
-      title="Orders"
-      context={OrderListContext}
+      title="Users"
+      context={UserListContext}
       contextValue={{ state, dispatch }}
       toolbar={(
-        <OrderListToolbar />
+        <UserListToolbar />
       )}
       main={(
-        <OrderListResults />
+        <UserListResults />
       )}
     />
   );
 };
 
-export default OrderList;
+export default UserList;

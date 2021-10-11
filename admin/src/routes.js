@@ -2,7 +2,6 @@ import { Navigate } from 'react-router-dom';
 import DashboardLayout from './components/DashboardLayout';
 import MainLayout from './components/MainLayout';
 import Account from './pages/Account';
-import CustomerList from './pages/CustomerList';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
@@ -17,6 +16,8 @@ import EditProduct from './pages/product/EditProduct';
 import OrderList from './pages/order/OrderList';
 import ViewOrder from './pages/order/ViewOrder';
 import ReportOrder from './pages/report/ReportOrder';
+import UserList from './pages/user/UserList';
+import EditUser from './pages/user/EditUser';
 
 const routes = [
   {
@@ -24,7 +25,8 @@ const routes = [
     element: <DashboardLayout />,
     children: [
       { path: 'account', element: <Account /> },
-      { path: 'customer', element: <CustomerList /> },
+      { path: 'user', element: <UserList /> },
+      { path: 'user/:userId/edit', element: <EditUser /> },
       { path: 'category', element: <CategoryList /> },
       { path: 'category/create', element: <CreateCategory /> },
       { path: 'category/:categoryId/edit', element: <EditCategory /> },

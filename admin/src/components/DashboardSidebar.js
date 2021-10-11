@@ -16,7 +16,7 @@ import {
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
-  // Users as UsersIcon,
+  Users as UsersIcon,
   Folder as CategoryIcon,
   ShoppingCart as OrderIcon,
   FileText as ReportIcon
@@ -29,11 +29,11 @@ const items = [
     icon: BarChartIcon,
     title: 'Dashboard'
   },
-  // {
-  // href: '/management/customer',
-  // icon: UsersIcon,
-  // title: 'Customers'
-  // },
+  {
+    href: '/management/user',
+    icon: UsersIcon,
+    title: 'Users'
+  },
   {
     href: '/management/category',
     icon: CategoryIcon,
@@ -100,7 +100,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
             width: 64,
             height: 64
           }}
-          to="/app/account"
+          to="/management/account"
         />
         <Typography
           color="textPrimary"

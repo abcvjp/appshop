@@ -39,14 +39,14 @@ const Login = () => {
         <Container maxWidth="sm">
           <Formik
             initialValues={{
-              username: 'toidaidot',
+              email: 'toidaidot@yahoo.com',
               password: '123456'
             }}
             validationSchema={Yup.object().shape({
-              username: Yup.string()
+              email: Yup.string()
                 .min(4)
                 .max(255)
-                .required('Username is required'),
+                .required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={async (values) => {
@@ -91,7 +91,7 @@ const Login = () => {
                     color="textSecondary"
                     variant="body1"
                   >
-                    Enter your username and password
+                    Enter your email and password
                   </Typography>
                 </Box>
                 {error && (
@@ -107,16 +107,16 @@ const Login = () => {
                   </Box>
                 )}
                 <TextField
-                  error={Boolean(touched.username && errors.username)}
+                  error={Boolean(touched.email && errors.email)}
                   fullWidth
-                  helperText={touched.username && errors.username}
-                  label="User name"
+                  helperText={touched.email && errors.email}
+                  label="Email address"
                   margin="normal"
-                  name="username"
+                  name="email"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  type="username"
-                  value={values.username}
+                  type="email"
+                  value={values.email}
                   variant="outlined"
                 />
                 <TextField

@@ -138,6 +138,13 @@ const CategoryList = () => {
         count: response.data.pagination.count
       });
     } catch (err) {
+      if (err.response && err.response.status === 404) {
+        dispatch({
+          type: 'SET_CATEGORIES',
+          categories: [],
+          count: 0
+        });
+      }
       console.log(err);
     }
     dispatch({ type: 'SET_UNLOADING' });
@@ -145,18 +152,29 @@ const CategoryList = () => {
 
   const searchCategories = async () => {
     dispatch({ type: 'SET_LOADING' });
-    const response = await categoryApi.searchCategories({
-      q: state.searchValue,
-      current_page: state.currentPage + 1,
-      page_size: state.pageSize,
-      ...state.filters,
-      sort: state.sort
-    });
-    dispatch({
-      type: 'SET_CATEGORIES',
-      categories: response.data.data,
-      count: response.data.pagination.count
-    });
+    try {
+      const response = await categoryApi.searchCategories({
+        q: state.searchValue,
+        current_page: state.currentPage + 1,
+        page_size: state.pageSize,
+        ...state.filters,
+        sort: state.sort
+      });
+      dispatch({
+        type: 'SET_CATEGORIES',
+        categories: response.data.data,
+        count: response.data.pagination.count
+      });
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        dispatch({
+          type: 'SET_CATEGORIES',
+          categories: [],
+          count: 0
+        });
+      }
+      console.log(err);
+    }
     dispatch({ type: 'SET_UNLOADING' });
   };
 

@@ -105,7 +105,6 @@ const AccountProfileDetails = () => {
               onChange={handleChange}
               value={values.username}
               required
-              disabled
             />
           </Grid>
           <Grid

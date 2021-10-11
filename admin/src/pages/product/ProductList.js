@@ -142,6 +142,13 @@ const ProductList = () => {
         count: response.data.pagination.count
       });
     } catch (err) {
+      if (err.response && err.response.status === 404) {
+        dispatch({
+          type: 'SET_PRODUCTS',
+          products: [],
+          count: 0
+        });
+      }
       console.log(err);
     }
     dispatch({ type: 'SET_UNLOADING' });
@@ -149,21 +156,32 @@ const ProductList = () => {
 
   const searchProducts = async () => {
     dispatch({ type: 'SET_LOADING' });
-    const response = await productApi.searchProducts({
-      q: state.searchValue,
-      current_page: state.currentPage + 1,
-      page_size: state.pageSize,
-      category_id: state.filters.categoryId,
-      enable: state.filters.enable,
-      in_stock: state.filters.inStock,
-      published: state.filters.published,
-      sort: state.sort
-    });
-    dispatch({
-      type: 'SET_PRODUCTS',
-      products: response.data.data,
-      count: response.data.pagination.count
-    });
+    try {
+      const response = await productApi.searchProducts({
+        q: state.searchValue,
+        current_page: state.currentPage + 1,
+        page_size: state.pageSize,
+        category_id: state.filters.categoryId,
+        enable: state.filters.enable,
+        in_stock: state.filters.inStock,
+        published: state.filters.published,
+        sort: state.sort
+      });
+      dispatch({
+        type: 'SET_PRODUCTS',
+        products: response.data.data,
+        count: response.data.pagination.count
+      });
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        dispatch({
+          type: 'SET_PRODUCTS',
+          products: [],
+          count: 0
+        });
+      }
+      console.log(err);
+    }
     dispatch({ type: 'SET_UNLOADING' });
   };
 
