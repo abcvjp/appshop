@@ -32,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 'user',
         allowNull: false
       },
+      enable: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+      },
       full_name: {
         type: DataTypes.STRING,
         field: 'full_name',

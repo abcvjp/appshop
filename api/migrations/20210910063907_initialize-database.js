@@ -200,6 +200,12 @@ const migrationCommands = (transaction) => [
           defaultValue: 'user',
           field: 'role'
         },
+        enable: {
+          type: Sequelize.BOOLEAN,
+          field: 'enable',
+          defaultValue: true,
+          allowNull: false
+        },
         full_name: {
           type: Sequelize.STRING,
           allowNull: false,
