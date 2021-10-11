@@ -4,8 +4,8 @@ const asyncHandler = require('express-async-handler');
 const Role = require('../helpers/roles.helper');
 
 exports.login = asyncHandler(async (req, res, next) => {
-  const { username, password } = req.body;
-  const result = await userService.login({ username, password });
+  const { email, password } = req.body;
+  const result = await userService.login({ email, password });
   if (result.success) {
     res.cookie('access_token', result.access_token, { httpOnly: true });
     res.cookie('refresh_token', result.refresh_token, {
@@ -55,9 +55,32 @@ exports.refreshToken = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.getAll = asyncHandler(async (req, res, next) => {
-  const data = await userService.getAll();
-  res.json(data);
+exports.getUsers = asyncHandler(async (req, res, next) => {
+  const {
+    current_page,
+    page_size,
+    sort,
+    id,
+    email,
+    username,
+    full_name,
+    phone_number,
+    role,
+    enable
+  } = req.query;
+  const result = await userService.getUsers({
+    current_page,
+    page_size,
+    sort,
+    id,
+    email,
+    username,
+    full_name,
+    phone_number,
+    role,
+    enable
+  });
+  res.status(200).json(result);
 });
 
 exports.getUserById = asyncHandler(async (req, res, next) => {
@@ -71,15 +94,31 @@ exports.updateUserInfo = asyncHandler(async (req, res, next) => {
   if (!(req.user.id === userId || req.user.role === Role.Admin)) {
     throw createError(403, "You don't have permission to perform this");
   }
-  const { username, full_name, email, phone_number, avatar } = req.body;
+  const { username, full_name, email, phone_number, avatar, enable } = req.body;
   const result = await userService.updateUserInfo({
     id: userId,
     username,
     full_name,
     email,
     phone_number,
-    avatar
+    avatar,
+    enable
   });
+  res.status(200).json(result);
+});
+
+exports.deleteUser = asyncHandler(async (req, res, next) => {
+  const userId = req.params.userId;
+  if (!(req.user.id === userId || req.user.role === Role.Admin)) {
+    throw createError(403, "You don't have permission to perform this");
+  }
+  const result = await userService.deleteUser({ id: userId });
+  res.status(200).json(result);
+});
+
+exports.deleteUsers = asyncHandler(async (req, res, next) => {
+  const { userIds } = req.body;
+  const result = await userService.deleteUsers({ userIds });
   res.status(200).json(result);
 });
 
@@ -114,6 +153,8 @@ exports.authenticate = ({ required }) =>
 
 exports.authorize = (roles = []) =>
   asyncHandler(async (req, res, next) => {
+    const user = req.user;
+    if (!user) throw createError(500, 'User to be authorized does not exist');
     if (typeof roles === 'string') {
       roles = [roles];
     }
@@ -123,3 +164,29 @@ exports.authorize = (roles = []) =>
     }
     next();
   });
+
+exports.enableUser = asyncHandler(async (req, res, next) => {
+  const userId = req.params.userId;
+  if (req.user.role !== Role.Admin) {
+    throw createError(403, "You don't have permission to perform this");
+  }
+  const result = await userService.enableUser({ id: userId });
+  res.status(200).json(result);
+});
+
+exports.disableUser = asyncHandler(async (req, res, next) => {
+  const userId = req.params.userId;
+  if (req.user.role !== Role.Admin) {
+    throw createError(403, "You don't have permission to perform this");
+  }
+  const result = await userService.disableUser({ id: userId });
+  res.status(200).json(result);
+});
+
+exports.checkLockUser = asyncHandler(async (req, res, next) => {
+  const user = req.user;
+  if (!user) throw createError(500, 'User to be checked (lock) does not exist');
+  if (req.user.enable === false)
+    throw createError(403, 'Your account is locked');
+  next();
+});

@@ -5,7 +5,8 @@ module.exports = {
     query: Joi.object({
       current_page: Joi.number().integer().min(1),
       page_size: Joi.number().integer().min(1),
-      sort: Joi.string().min(1)
+      sort: Joi.string().min(1),
+      published: Joi.bool()
     })
   },
   getCategoryById: {

@@ -1,5 +1,5 @@
 const Joi = require('joi');
-
+const Roles = require('../roles.helper');
 module.exports = {
   signup: {
     body: Joi.object({
@@ -25,13 +25,35 @@ module.exports = {
   },
   login: {
     body: Joi.object({
-      username: Joi.string().trim().min(4).max(20).required(),
+      email: Joi.string().trim().email().required(),
       password: Joi.string().trim().min(6).max(32).required()
     })
   },
   getUserById: {
     params: Joi.object({
       userId: Joi.string().guid({ version: 'uuidv4' }).required()
+    })
+  },
+  getUsers: {
+    query: Joi.object({
+      current_page: Joi.number().integer().min(1),
+      page_size: Joi.number().integer().min(1),
+      sort: Joi.string().min(1),
+      email: Joi.string().trim().email().required(),
+      username: Joi.string()
+        .alphanum()
+        .lowercase()
+        .trim()
+        .min(4)
+        .max(20)
+        .required(),
+      full_name: Joi.string().trim().min(1).max(50).required(),
+      phone_number: Joi.string()
+        .length(10)
+        .pattern(/^[0-9]+$/)
+        .required(),
+      role: Joi.string().trim().valid(Roles.User, Roles.User),
+      enable: Joi.bool()
     })
   },
   updateUserInfo: {
@@ -48,7 +70,8 @@ module.exports = {
       phone_number: Joi.string()
         .length(10)
         .pattern(/^[0-9]+$/),
-      avatar: Joi.string().max(255).allow(null)
+      avatar: Joi.string().max(255).allow(null),
+      enable: Joi.bool()
     }),
     params: Joi.object({
       userId: Joi.string().guid({ version: 'uuidv4' }).required()
@@ -67,6 +90,29 @@ module.exports = {
         .max(32)
         .required()
     }),
+    params: Joi.object({
+      userId: Joi.string().guid({ version: 'uuidv4' }).required()
+    })
+  },
+  deleteUser: {
+    params: Joi.object({
+      userId: Joi.string().guid({ version: 'uuidv4' }).required()
+    })
+  },
+  deleteUsers: {
+    body: Joi.object({
+      userIds: Joi.array()
+        .min(1)
+        .items(Joi.string().guid({ version: 'uuidv4' }))
+        .required()
+    })
+  },
+  enableUser: {
+    params: Joi.object({
+      userId: Joi.string().guid({ version: 'uuidv4' }).required()
+    })
+  },
+  disableUser: {
     params: Joi.object({
       userId: Joi.string().guid({ version: 'uuidv4' }).required()
     })
