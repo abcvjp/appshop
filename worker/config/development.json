@@ -1,9 +1,9 @@
 {
   "env": "development",
   "mailer": {
-    "service": "gmail",
-    "user": "webshoptest4@gmail.com",
-    "password": "R$@rn65#sc3LhNkD"
+    "host": "localhost",
+    "port": 1025,
+    "user": "webshop@zinza.com.vn"
   },
   "redis": {
     "host": "redis",

@@ -1,3 +1,4 @@
+const config = require('../../config');
 const { sendMail } = require('../transporter');
 const {
   generateOrderConfirmationMail

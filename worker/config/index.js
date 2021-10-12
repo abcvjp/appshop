@@ -22,6 +22,16 @@ var config = convict({
       default: 'gmail',
       env: 'MAILER_SERVICE'
     },
+    host: {
+      format: String,
+      default: 'mailhog',
+      env: 'MAILER_HOST'
+    },
+    port: {
+      format: Number,
+      default: 1025,
+      env: 'MAILER_PORT'
+    },
     user: {
       format: String,
       default: 'webshoptest4@gmail.com',
