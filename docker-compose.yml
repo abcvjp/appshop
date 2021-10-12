@@ -81,6 +81,8 @@ services:
       - ADMIN_BASE=http://admin.webshop.local
       - JWT_ACCESS_TOKEN_SECRET=Ysg$fG&DG
       - JWT_REFRESH_TOKEN_SECRET=Txlcvkb^32y
+      - MAILHOG_HOST=mailhog
+      - MAILHOG_PORT=8025
   worker:
     depends_on:
       - redis
@@ -97,6 +99,9 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=123456
+      - MAILER_HOST=mailhog
+      - MAILER_PORT=1025
+      - MAILER_USER=webshop@zinza.com.vn
   db:
     image: mysql:8.0.26
     expose:
@@ -147,6 +152,19 @@ services:
       - PMA_HOST=db
       - PMA_PORT=3306
       - PMA_ARBITRARY=1
+  mailhog:
+    depends_on:
+      - api
+      - worker
+    image: mailhog/mailhog
+    logging:
+      driver: "none" # disable saving logs
+    networks:
+      - backend
+    expose:
+      - 1025 # smtp server
+    ports:
+      - 8025:8025 # ui server
 volumes:
   db-data:
 networks:

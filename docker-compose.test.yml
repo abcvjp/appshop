@@ -2,8 +2,8 @@ version: "3.3"
 services:
   api:
     depends_on:
-      - db-test
-      - redis-test
+      - db
+      - redis
       - worker
     image: harbor.zinza.com.vn/hoaihv/webshop/webshop_api:latest
     expose:
@@ -20,16 +20,18 @@ services:
       - DB_NAME=webshop_db
       - DB_USERNAME=hoaideptrai
       - DB_PASSWORD=123456
-      - REDIS_HOST=redis-test
+      - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=123456
       - APP_BASE=http://app.webshop.local
       - ADMIN_BASE=http://admin.webshop.local
       - JWT_ACCESS_TOKEN_SECRET=Ysg$fG&DG
       - JWT_REFRESH_TOKEN_SECRET=Txlcvkb^32y
+      - MAILHOG_HOST=mailhog
+      - MAILHOG_PORT=8025
   worker:
     depends_on:
-      - redis-test
+      - redis
     image: harbor.zinza.com.vn/hoaihv/webshop/webshop_worker:latest
     expose:
       - 5000
@@ -40,10 +42,13 @@ services:
       - backend
     environment:
       - NODE_ENV=development
-      - REDIS_HOST=redis-test
+      - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=123456
-  db-test:
+      - MAILER_HOST=mailhog
+      - MAILER_PORT=1025
+      - MAILER_USER=webshop@zinza.com.vn
+  db:
     image: mysql:8.0.26
     expose:
       - 3306
@@ -56,7 +61,7 @@ services:
       - MYSQL_PASSWORD=123456
     cap_add:
       - CAP_SYS_NICE
-  redis-test:
+  redis:
     image: redis:6.2.5-alpine
     # remember to SET PASSWORD below
     command: "redis-server --requirepass 123456 --maxmemory-policy noeviction"
@@ -66,5 +71,18 @@ services:
       - backend
     environment:
       - REDIS_REPLICATION_MODE=master
+  mailhog:
+    depends_on:
+      - api
+      - worker
+    image: mailhog/mailhog
+    logging:
+      driver: "none" # disable saving logs
+    networks:
+      - backend
+    expose:
+      - 1025 # smtp server
+    ports:
+      - 8025:8025 # ui server
 networks:
   backend:
