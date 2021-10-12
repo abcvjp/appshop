@@ -18,9 +18,6 @@ import {
   Checkbox
 } from '@material-ui/core';
 
-import { EditorState } from 'draft-js';
-import { stateFromHTML } from 'draft-js-import-html';
-
 import { useCategories } from 'src/utils/customHooks';
 import { productApi } from 'src/utils/api';
 import { uploadProductImages } from 'src/firebase';
@@ -302,7 +299,7 @@ const EditProductForm = ({ productId }) => {
                     error={errors.description}
                     touched={touched.description}
                     label="Description*"
-                    initialState={EditorState.createWithContent(stateFromHTML(values.description))}
+                    initialContent={values.description}
                     fieldName="description"
                     setFieldValue={setFieldValue}
                   />

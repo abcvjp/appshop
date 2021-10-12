@@ -5,8 +5,9 @@ import { Box, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
+import { EditorState, ContentState, convertToRaw } from 'draft-js';
+import htmlToDraft from 'html-to-draftjs';
 
 const useStyles = makeStyles(() => ({
   error: {
@@ -18,11 +19,18 @@ const RichEditor = ({
   touched,
   error,
   label,
-  initialState,
+  initialContent,
   fieldName,
   setFieldValue
 }) => {
   const classes = useStyles();
+
+  // convert initial html to draftjs
+  const blocksFromHtml = htmlToDraft(initialContent);
+  const { contentBlocks, entityMap } = blocksFromHtml;
+  const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+  const initialState = EditorState.createWithContent(contentState);
+
   const [editorState, setEditorState] = useState(
     initialState || EditorState.createEmpty()
   );
@@ -63,7 +71,7 @@ RichEditor.propTypes = {
   touched: PropTypes.bool,
   error: PropTypes.string,
   label: PropTypes.string,
-  initialState: PropTypes.object,
+  initialContent: PropTypes.object,
   fieldName: PropTypes.string,
   setFieldValue: PropTypes.func
 };
