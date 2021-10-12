@@ -12,8 +12,7 @@ beforeAll(async () => {
 
 describe('POST /user/login', () => {
   // prepare data
-  const sampleUser =
-    sampleUsers[Math.floor(Math.random() * sampleUsers.length)];
+  const sampleUser = sampleUsers.find((user) => user.enable === true);
 
   test('with valid email', async () => {
     const data = {
@@ -65,6 +64,21 @@ describe('POST /user/login', () => {
       .set('Accept', 'application/json')
       .send(data)
       .expect(401)
+      .expect('Content-Type', /json/);
+    expect(res.body).toHaveProperty('success', false);
+  });
+
+  test('with disabled account', async () => {
+    const sampleUser = sampleUsers.find((user) => user.enable === false);
+    const data = {
+      email: sampleUser.email,
+      password: 'wrongpassword'
+    };
+    const res = await testClient
+      .post(`/user/login`)
+      .set('Accept', 'application/json')
+      .send(data)
+      .expect(403)
       .expect('Content-Type', /json/);
     expect(res.body).toHaveProperty('success', false);
   });

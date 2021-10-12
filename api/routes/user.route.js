@@ -49,12 +49,14 @@ router.post(
 router.post(
   '/:userId/enable',
   authenticate({ required: true }),
+  authorize(Role.Admin),
   validate(userValidation.enableUser),
   userController.enableUser
 );
 router.post(
   '/:userId/disable',
   authenticate({ required: true }),
+  authorize(Role.Admin),
   validate(userValidation.disableUser),
   userController.disableUser
 );
