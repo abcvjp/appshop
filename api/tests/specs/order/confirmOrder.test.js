@@ -5,8 +5,8 @@ const sampleUsers = require('../../../sample-data/user.sample');
 const rolesHelper = require('../../../helpers/roles.helper');
 const { generateAccessTokenByUser } = require('../../../helpers/jwt.helper');
 const { Order } = require('../../../models');
-const { orderMatcher } = require('../../matchers');
 const { uuid } = require('uuidv4');
+const mailhog = require('../../mailhog');
 
 beforeAll(async () => {
   await queryInterface.bulkDelete('Orders', null, {});
@@ -36,6 +36,7 @@ describe('PUT /order/${orderId}/confirm', () => {
       },
       { hooks: false }
     );
+    await mailhog.deleteAll();
     await testClient
       .put(`/order/${order.id}/confirm`)
       .set('Cookie', [
@@ -50,6 +51,10 @@ describe('PUT /order/${orderId}/confirm', () => {
 
     const orderAfterUpdate = await Order.findByPk(sampleOrder.id);
     expect(orderAfterUpdate.status).toEqual('Handling');
+
+    await new Promise((r) => setTimeout(r, 3000)); // wait for 3 second
+    const orderConfirmationMail = await mailhog.latestTo(sampleOrder.email);
+    expect(orderConfirmationMail).toHaveProperty('to', sampleOrder.email);
   });
 
   test('with handling order', async () => {

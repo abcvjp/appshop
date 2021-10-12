@@ -139,6 +139,18 @@ var config = convict({
       env: 'REDIS_PASSWORD'
     }
   },
+  mailhog: {
+    host: {
+      format: String,
+      default: 'redis',
+      env: 'MAILHOG_HOST'
+    },
+    port: {
+      format: Number,
+      default: 6379,
+      env: 'MAILHOG_PORT'
+    }
+  },
   cors: {
     whiteList: {
       format: 'array',
