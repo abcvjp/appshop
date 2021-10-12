@@ -15,9 +15,9 @@ describe('POST /user/login', () => {
   const sampleUser =
     sampleUsers[Math.floor(Math.random() * sampleUsers.length)];
 
-  test('with valid username and email', async () => {
+  test('with valid email', async () => {
     const data = {
-      username: sampleUser.username,
+      email: sampleUser.email,
       password: '123456'
     };
 
@@ -36,14 +36,14 @@ describe('POST /user/login', () => {
     // check access_token in res cookies
     const cookies = extractCookies(res.headers);
     expect(cookies).toHaveProperty('access_token');
-    expect(JWT.verifyAccessToken(cookies.access_token.value).username).toEqual(
-      data.username
+    expect(JWT.verifyAccessToken(cookies.access_token.value).email).toEqual(
+      data.email
     );
   });
 
-  test('with non-exist username', async () => {
+  test('with non-exist email', async () => {
     const data = {
-      username: 'non-exist-username',
+      email: 'non-exist@email.com',
       password: '123456'
     };
     const res = await testClient
@@ -57,7 +57,7 @@ describe('POST /user/login', () => {
 
   test('with wrong password', async () => {
     const data = {
-      username: sampleUser.username,
+      email: sampleUser.email,
       password: 'wrongpassword'
     };
     const res = await testClient
