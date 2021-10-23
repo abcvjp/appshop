@@ -59,6 +59,11 @@ services:
       - REACT_APP_FIREBASE_MESSAGING_SENDER_ID=1057783220542
       - REACT_APP_FIREBASE_APP_ID=1:1057783220542:web:14904508fb92f27adcc46f
       - REACT_APP_FIREBASE_MEASUREMENT_ID=G-BC1C3M52TZ
+      - REACT_APP_AWS_ACCESS_KEY_ID=test
+      - REACT_APP_AWS_SECRET_KEY=test
+      - REACT_APP_AWS_REGION=us-east-1
+      - REACT_APP_AWS_BUCKET_NAME=webshop
+      - REACT_APP_AWS_S3_URI=http://webshop.s3.localhost:4566
   api:
     image: harbor.zinza.com.vn/hoaihv/webshop/webshop_api:latest
     depends_on:

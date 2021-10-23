@@ -25,12 +25,24 @@ module.exports = [
   },
   {
     id: 'd278a1cb-d2e9-47a0-afd2-36925ca84e60',
-    name: 'Áo khoác nam',
-    description: 'Áo khoác dành riêng cho nam giới',
+    name: 'Áo nam',
+    description: 'Áo dành riêng cho nam giới',
     published: true,
-    path: 'Thời trang nam - Áo khoác nam',
-    slug: 'ao-khoac-nam',
-    meta_title: 'Áo khoác nam',
+    path: 'Thời trang nam - Áo nam',
+    slug: 'ao-nam',
+    meta_title: 'Áo nam',
+    parent_id: 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989',
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    id: '42cfd49d-e9bc-4e17-b603-95df6ea3c19a',
+    name: 'Quần nam',
+    description: 'Quần dành riêng cho nam giới',
+    published: true,
+    path: 'Thời trang nam - Quần nam',
+    slug: 'quan-nam',
+    meta_title: 'Quần nam',
     parent_id: 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989',
     createdAt: new Date(),
     updatedAt: new Date()
@@ -49,12 +61,12 @@ module.exports = [
   },
   {
     id: 'd649137e-2e01-45cf-8ef7-50b737fd8548',
-    name: 'Áo khoác sơ mi nam',
-    description: 'Áo khoác sơ mi nam sieu cap vjp pro',
+    name: 'Áo sơ mi nam',
+    description: 'Áo sơ mi nam sieu cap vjp pro',
     published: true,
-    path: 'Thời trang nam - Áo khoác nam - Áo khoác sơ mi nam',
-    slug: 'ao-khoac-so-mi-nam',
-    meta_title: 'Áo khoác sơ mi nam',
+    path: 'Thời trang nam - Áo khoác nam - Áo sơ mi nam',
+    slug: 'ao-so-mi-nam',
+    meta_title: 'Áo sơ mi nam',
     parent_id: 'd278a1cb-d2e9-47a0-afd2-36925ca84e60',
     createdAt: new Date(),
     updatedAt: new Date()
@@ -106,14 +118,14 @@ module.exports = [
     name: 'Áo thun nam',
     published: true,
     description: 'Áo thun nammmmmmmmmmm',
-    path: 'Thời trang nam - Áo thun nam',
+    path: 'Thời trang nam - Áo nam - Áo thun nam',
     slug: 'ao-thun-nam',
     meta_title: 'Áo thun nam',
     meta_description: null,
     meta_keywords: null,
     createdAt: new Date(),
     updatedAt: new Date(),
-    parent_id: 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989'
+    parent_id: 'd278a1cb-d2e9-47a0-afd2-36925ca84e60'
   },
   {
     id: 'dcd05ce9-b72f-4d70-bae3-9fc1c2a75ae3',
@@ -128,5 +140,43 @@ module.exports = [
     createdAt: new Date(),
     updatedAt: new Date(),
     parent_id: '463db887-e64c-4062-be1a-a24109d2cb4a'
+  },
+  {
+    id: '07f47041-b838-457e-9b4d-687addc61e0d',
+    name: 'Áo blazer nam',
+    published: true,
+    description: 'Áo blazer nammmmmmmmmmmmmmmmmmmmmmmmmmmm',
+    path: 'Thời trang nam - Áo nam - Áo blazer nam',
+    slug: 'ao-blazer-nam',
+    meta_title: 'Áo blazer nam',
+    meta_description: null,
+    meta_keywords: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    parent_id: 'd278a1cb-d2e9-47a0-afd2-36925ca84e60'
+  },
+  {
+    id: '16e88582-58a0-47e8-bdcf-87549bfddb5a',
+    name: 'Quần tây',
+    description: 'Quần tây dành riêng cho nam giới',
+    published: true,
+    path: 'Thời trang nam - Quần nam - Quần tây',
+    slug: 'quan-tay',
+    meta_title: 'Quần tây',
+    parent_id: '42cfd49d-e9bc-4e17-b603-95df6ea3c19a',
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    id: 'e71ab7e6-c8f0-41a0-98ec-7cb5b817aa76',
+    name: 'Quần jean',
+    description: 'Quần jean dành riêng cho nam giới',
+    published: true,
+    path: 'Thời trang nam - Quần nam - Quần jean',
+    slug: 'quan-jean',
+    meta_title: 'Quần jean',
+    parent_id: '42cfd49d-e9bc-4e17-b603-95df6ea3c19a',
+    createdAt: new Date(),
+    updatedAt: new Date()
   }
 ];

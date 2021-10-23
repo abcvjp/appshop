@@ -1,4 +1,4 @@
-module.exports = [
+let productSamples = [
   {
     id: '08452667-319d-4f19-abfe-9db953a18587',
     name: 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY',
@@ -10,6 +10,7 @@ module.exports = [
     price: 5,
     root_price: 8,
     quantity: 100,
+    sold: 0,
     short_description:
       'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn - HÀNG CHÍNH HÃNG',
     description:
@@ -27,9 +28,7 @@ module.exports = [
     ]),
     slug: 'ao-so-mi-dai-tay-linh-my-u458-us-army',
     meta_title:
-      'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp',
-    createdAt: new Date(),
-    updatedAt: new Date()
+      'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp'
   },
   {
     id: '598d6f47-7c7e-4365-9c3a-83f322926658',
@@ -42,6 +41,7 @@ module.exports = [
     price: 5,
     root_price: 8,
     quantity: 0,
+    sold: 0,
     short_description:
       'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn - HÀNG CHÍNH HÃNG',
     description:
@@ -59,9 +59,7 @@ module.exports = [
     ]),
     slug: 'ao-so-mi-dai-tay-linh-my-u458-us-army-2',
     meta_title:
-      'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 2',
-    createdAt: new Date(),
-    updatedAt: new Date()
+      'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 2'
   },
   {
     id: '8dbe1324-58ce-437b-9d75-bd50b79759b0',
@@ -74,6 +72,7 @@ module.exports = [
     price: 5,
     root_price: 8,
     quantity: 100,
+    sold: 0,
     short_description:
       'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn - HÀNG CHÍNH HÃNG',
     description:
@@ -91,9 +90,7 @@ module.exports = [
     ]),
     slug: 'ao-so-mi-dai-tay-linh-my-u458-us-army-3',
     meta_title:
-      'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 3',
-    createdAt: new Date(),
-    updatedAt: new Date()
+      'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 3'
   },
   {
     id: '42b9177b-8bbb-4dae-88da-c2e20e8db908',
@@ -106,6 +103,7 @@ module.exports = [
     price: 5,
     root_price: 8,
     quantity: 100,
+    sold: 0,
     short_description:
       'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn - HÀNG CHÍNH HÃNG',
     description:
@@ -123,9 +121,7 @@ module.exports = [
     ]),
     slug: 'ao-so-mi-dai-tay-linh-my-u458-us-army-4',
     meta_title:
-      'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 4',
-    createdAt: new Date(),
-    updatedAt: new Date()
+      'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 4'
   },
   {
     id: 'cf8253ef-5a0b-4ce6-b2b2-9d2d7a44da4a',
@@ -138,6 +134,7 @@ module.exports = [
     price: 5,
     root_price: 8,
     quantity: 0,
+    sold: 0,
     short_description:
       'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn - HÀNG CHÍNH HÃNG',
     description:
@@ -155,8 +152,20 @@ module.exports = [
     ]),
     slug: 'ao-so-mi-dai-tay-linh-my-u458-us-army-5',
     meta_title:
-      'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 5',
-    createdAt: new Date(),
-    updatedAt: new Date()
+      'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 5'
   }
 ];
+
+productSamples.push(...require('./ao_so_mi.data.json'));
+productSamples.push(...require('./ao_thun.data.json'));
+productSamples.push(...require('./ao_blazer.data.json'));
+productSamples.push(...require('./quan_tay.data.json'));
+productSamples.push(...require('./quan_jean.data.json'));
+
+productSamples = productSamples.map((record) => {
+  record.createdAt = new Date();
+  record.updatedAt = new Date();
+  return record;
+});
+
+module.exports = productSamples;

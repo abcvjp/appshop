@@ -471,7 +471,7 @@ const migrationCommands = (transaction) => [
           allowNull: false
         },
         short_description: {
-          type: Sequelize.STRING,
+          type: Sequelize.TEXT('medium'),
           field: 'short_description',
           allowNull: false
         },

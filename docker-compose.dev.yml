@@ -40,6 +40,7 @@ services:
     build: "./admin"
     depends_on:
       - api
+      - aws
     expose:
       - 3000
     volumes:
@@ -51,6 +52,18 @@ services:
       - NODE_ENV=development
       - REACT_APP_API_BASE=http://api.webshop.local
       - REACT_APP_APP_BASE=http://app.webshop.local
+      - REACT_APP_FIREBASE_API_KEY=AIzaSyDqoLUYQhW7NlH57EfBO63D4KRqi3IgE78
+      - REACT_APP_FIREBASE_AUTH_DOMAIN=webshop-e2f76.firebaseapp.com
+      - REACT_APP_FIREBASE_PROJECT_ID=webshop-e2f76
+      - REACT_APP_FIREBASE_STORAGE_BUCKET=webshop-e2f76.appspot.com
+      - REACT_APP_FIREBASE_MESSAGING_SENDER_ID=1057783220542
+      - REACT_APP_FIREBASE_APP_ID=1:1057783220542:web:14904508fb92f27adcc46f
+      - REACT_APP_FIREBASE_MEASUREMENT_ID=G-BC1C3M52TZ
+      - REACT_APP_AWS_ACCESS_KEY_ID=test
+      - REACT_APP_AWS_SECRET_KEY=test
+      - REACT_APP_AWS_REGION=us-east-1
+      - REACT_APP_AWS_BUCKET_NAME=webshop
+      - REACT_APP_AWS_S3_URI=http://webshop.s3.localhost:4566
   api:
     depends_on:
       - db
@@ -164,6 +177,31 @@ services:
       - 1025 # smtp server
     ports:
       - 8025:8025 # ui server
+  aws:
+    image: localstack/localstack-light:0.12.18
+    expose:
+      - 4566
+    ports:
+      - 4563-4599:4563-4599
+    volumes:
+      - localstack-data:/tmp/localstack
+    networks:
+      - frontend
+    # command: "aws --endpoint-url=http://localhost:4566 s3 mb s3://webshop" # create webshop bucket
+    environment:
+      - SERVICES=s3 
+      - DEBUG=1
+      - DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      # - PORT_WEB_UI=8080
+      # - START_WEB=1
+      - DATA_DIR=/tmp/localstack/data
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - EXTRA_CORS_ALLOWED_ORIGINS=http://admin.webshop.local
+    volumes:
+      - ./.localstack:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
 volumes:
   db-data:
 networks:

@@ -20,7 +20,8 @@ import {
 
 import { useCategories } from 'src/utils/customHooks';
 import { productApi } from 'src/utils/api';
-import { uploadProductImages } from 'src/firebase';
+// import { uploadProductImages } from 'src/firebase';
+import { uploadImages } from 'src/utils/imageUploader';
 
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
 import { isArrayEmpty } from 'src/utils/functions';
@@ -63,7 +64,7 @@ const EditProductForm = ({ productId }) => {
   const handleAddImages = async (imagesToUp) => {
     dispatch(openFullScreenLoading());
     try {
-      const imageURLs = await uploadProductImages(imagesToUp);
+      const imageURLs = await uploadImages(imagesToUp);
       const newImages = [...state.images].concat(imagesToUp.map((image, i) => ({
         url: imageURLs[i],
         alt: image.alt === '' ? null : image.alt,

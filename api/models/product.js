@@ -77,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       short_description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT('medium'),
         allowNull: false
       },
       description: {

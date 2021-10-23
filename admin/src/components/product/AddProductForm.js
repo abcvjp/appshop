@@ -22,7 +22,8 @@ import {
 import { useCategories } from 'src/utils/customHooks';
 import { useNavigate } from 'react-router';
 import { productApi } from 'src/utils/api';
-import { uploadProductImages } from 'src/firebase';
+// import { uploadProductImages } from 'src/firebase';
+import { uploadImages } from 'src/utils/imageUploader';
 import { closeFullScreenLoading, openFullScreenLoading } from 'src/actions/fullscreenLoading';
 import ProductImageList from './ProductImageList';
 import ProductUploadImage from './ProductUploadImage';
@@ -63,7 +64,7 @@ const AddProductForm = () => {
   const onSubmit = useCallback(async (values, images) => { // eslint-disable-line
     dispatch(openFullScreenLoading());
     try {
-      const imageURLs = await uploadProductImages(images);
+      const imageURLs = await uploadImages(images);
       await productApi.createProduct({
         ...values,
         images: imageURLs.map((url, i) => ({
@@ -273,6 +274,7 @@ const AddProductForm = () => {
               error={errors.description}
               touched={touched.description}
               label="Description*"
+              initialContent={values.description}
               fieldName="description"
               setFieldValue={setFieldValue}
             />

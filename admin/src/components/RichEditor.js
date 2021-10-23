@@ -57,6 +57,7 @@ const RichEditor = ({
         editorStyle={{
           minWidth: '37px',
           minHeight: '200px',
+          maxHeight: '700px',
           overFlow: 'auto',
           border: '1px solid #bfbfbf',
           padding: '5px'
@@ -71,7 +72,7 @@ RichEditor.propTypes = {
   touched: PropTypes.bool,
   error: PropTypes.string,
   label: PropTypes.string,
-  initialContent: PropTypes.object,
+  initialContent: PropTypes.string,
   fieldName: PropTypes.string,
   setFieldValue: PropTypes.func
 };

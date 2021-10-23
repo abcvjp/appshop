@@ -19,6 +19,8 @@ import { makeStyles } from '@material-ui/styles';
 import { Delete } from '@material-ui/icons';
 import { openConfirmDialog } from 'src/actions/confirmDialog';
 
+// import { deleteImage } from 'src/utils/imageUploader';
+
 const useStyles = makeStyles(() => ({
   root: {
     flexWrap: 'wrap',
@@ -54,7 +56,9 @@ const ProductImageList = ({ imageList, handleUpdateImages }) => {
   const handleDeleteImage = (i) => {
     dispatch(openConfirmDialog({
       message: 'Are you sure want to delete this image?',
-      onConfirm: () => {
+      onConfirm: async () => {
+        // const imageName = images[i].url.substr(images[i].url.lastIndexOf('/') + 1);
+        // await deleteImage(imageName);
         const temp = [...images];
         temp.splice(i, 1);
         handleUpdateImages(temp);

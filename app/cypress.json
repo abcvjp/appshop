@@ -1,0 +1,9 @@
+{
+	"baseUrl": "http://app.webshop.local",
+	"experimentalStudio": true,
+	"env": {
+		"cypress-react-selector": {
+		"root": "#root"
+		}
+	}
+}
