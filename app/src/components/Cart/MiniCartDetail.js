@@ -24,12 +24,12 @@ const MiniCartDetail = ({ cart_items }) => {
   const dispatch = useDispatch();
 
   const deleteItem = useCallback((itemIndex) => () => dispatch(openConfirmDialog({
-    message: 'Are you sure want to delete item from your cart',
+    message: 'Are you sure want to delete item from your cart?',
     onConfirm: () => dispatch(deleteItemCart({ itemIndex }))
   })));
 
   return (
-    <>
+    <div id="mini-cart-detail">
       <List className={classes.root} disablePadding dense>
         {cart_items.map((item, itemIndex) => (
           <MiniCartItem
@@ -39,7 +39,7 @@ const MiniCartDetail = ({ cart_items }) => {
           />
         ))}
       </List>
-    </>
+    </div>
   );
 };
 

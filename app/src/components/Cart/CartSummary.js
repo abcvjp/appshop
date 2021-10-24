@@ -64,6 +64,7 @@ const CartSummary = ({ subtotal, discount = 0, handleProceedToCheckout }) => {
 
       <ContainedButton
         className={classes.checkout}
+        id="checkout-button"
         size="large"
         fullWidth
         onClick={handleProceedToCheckout}

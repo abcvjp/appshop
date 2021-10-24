@@ -10,14 +10,14 @@ import SearchBar from './SearchBar';
 
 const useStyles = makeStyles((theme) => ({
   headerbar: {
-    position: 'fixed',
+    position: 'fixed'
   },
   toolbar: {
     margin: 0,
     padding: 0
   },
   grow: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   logo: {
     maxHeight: 80,
@@ -34,9 +34,13 @@ const HeaderBar = () => {
       <AppBar position="sticky" color="inherit" elevation={0}>
         <Container maxWidth="lg">
           <Toolbar className={classes.toolbar}>
-
             <Link to="/">
-              <img className={classes.logo} alt="logo" src={`${process.env.PUBLIC_URL}/logo.jpg`} />
+              <img
+                className={classes.logo}
+                id="logo"
+                alt="logo"
+                src={`${process.env.PUBLIC_URL}/logo.jpg`}
+              />
             </Link>
             <div className={classes.grow} />
 

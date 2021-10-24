@@ -27,38 +27,40 @@ const useStyles = makeStyles(() => ({
 const MiniCartItem = ({ item, deleteItem }) => {
   const classes = useStyles();
   return (
-    <ListItem button>
-      <ListItemAvatar>
-        <Avatar
-          variant="square"
-          src={item.product_thumbnail.url}
+    <div id="mini-cart-item">
+      <ListItem button>
+        <ListItemAvatar>
+          <Avatar
+            variant="square"
+            src={item.product_thumbnail.url}
+          />
+        </ListItemAvatar>
+        <ListItemText
+          className={classes.itemText}
+          primary={(
+            <Link
+              to={`/product/${item.product_slug}`}
+              component={RouterLink}
+            >
+              {item.product_name}
+            </Link>
+          )}
+          secondary={`${item.price}$ - Qty: ${item.quantity}`}
         />
-      </ListItemAvatar>
-      <ListItemText
-        className={classes.itemText}
-        primary={(
-          <Link
-            to={`/product/${item.product_slug}`}
-            component={RouterLink}
+        <ListItemSecondaryAction>
+          <IconButton
+            className={classes.deleteButton}
+            edge="end"
+            disableRipple
+            disableFocusRipple
+            disableTouchRipple
+            onClick={deleteItem}
           >
-            {item.product_name}
-          </Link>
-        )}
-        secondary={`${item.price}$ - Qty: ${item.quantity}`}
-      />
-      <ListItemSecondaryAction>
-        <IconButton
-          className={classes.deleteButton}
-          edge="end"
-          disableRipple
-          disableFocusRipple
-          disableTouchRipple
-          onClick={deleteItem}
-        >
-          <Delete />
-        </IconButton>
-      </ListItemSecondaryAction>
-    </ListItem>
+            <Delete />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+    </div>
   );
 };
 

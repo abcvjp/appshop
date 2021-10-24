@@ -50,6 +50,7 @@ const MiniCart = () => {
     <div
       onMouseEnter={handlePopoverOpen}
       onMouseLeave={handlePopoverClose}
+      id="mini-cart"
     >
       <IconButton
         color="inherit"
