@@ -13,3 +13,69 @@ export const SAMPLE_CART_DATA_2 =
   '[{"product_id":"08452667-319d-4f19-abfe-9db953a18587","product_name":"Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY","product_slug":"ao-so-mi-dai-tay-linh-my-u458-us-army","product_thumbnail":{"url":"https://salt.tikicdn.com/ts/product/f2/07/0c/f82510bad668f00d4f057a70a9c72802.jpg"},"price":5,"quantity":2,"buy_able":true,"isSelected":true}]'
 export const SAMPLE_CATEGORY_NAME = 'Thời trang nam';
 export const SAMPLE_CATEGORY_ID = 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989';
+export const SAMPLE_SLIDER = [
+  {
+    url: '/thoi-trang-nam',
+    imgAlt: 'thoi trang nam',
+    imgUrl: `/slider/slide1.jpg`
+  },
+  {
+    url: '/thoi-trang-nam',
+    imgAlt: 'thoi trang nam',
+    imgUrl: `/slider/slide3.jpg`
+  }
+];
+
+export const SAMPLE_PRODUCT = {
+    id: "08452667-319d-4f19-abfe-9db953a18587",
+    enable: true,
+    published: true,
+    name: "Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY",
+    title: "Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn",
+    price: 5,
+    quantity: 100,
+    sold: 0,
+    root_price: 8,
+    short_description: "Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn - HÀNG CHÍNH HÃNG",
+    images: [
+      {
+        url: "https://salt.tikicdn.com/ts/product/f2/07/0c/f82510bad668f00d4f057a70a9c72802.jpg"
+      },
+      {
+        url: "https://salt.tikicdn.com/ts/product/53/bd/48/fd85de4aaa30597279083e2b6203f924.jpg"
+      },
+      {
+        url: "https://salt.tikicdn.com/ts/product/f0/f9/63/6f987aed1912faf0248639e533616f50.jpg"
+      }
+    ],
+    slug: "ao-so-mi-dai-tay-linh-my-u458-us-army",
+    meta_title: "Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp",
+    meta_description: null,
+    meta_keywords: null,
+    createdAt: "2021-10-23T03:19:27.000Z",
+    updatedAt: "2021-10-23T03:19:27.000Z",
+    category: {
+      id: "d08e5a2d-fba2-4d5b-90cd-8cc1cd90e989",
+      name: "Thời trang nam",
+      path: "Thời trang nam",
+      slug: "thoi-trang-nam"
+    }
+  }
+
+export const SAMPLE_PRODUCT_BREADCRUMBS =  [
+  { name: 'Home', path: '/' },
+  { name: 'Thời trang nam', path: '/thoi-trang-nam'},
+  { name: 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY', path: '/product/ao-so-mi-dai-tay-linh-my-u458-us-army'}
+]
+
+export const SAMPLE_CATEGORY_BREADCRUMBS = [
+  { name: 'Home', path: '/' },
+  { name: 'Thời trang nam', path: '/thoi-trang-nam'},
+  { name: 'Áo nam', path: '/ao-nam' },
+  { name: 'Áo sơ mi nam', path: '/ao-so-mi-nam'}
+]
+
+export const SAMPLE_SEARCH_BREADCRUMBS = [
+  { name: 'Home', path: '/' },
+  { name: "Search results for: 'quan jean'", path: 'search?q=quan%20jean'},
+]

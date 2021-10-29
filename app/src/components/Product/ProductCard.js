@@ -120,9 +120,11 @@ const ProductCard = ({ product }) => {
             $
             {product.price}
           </Typography>
+          {(discount > 0) && (
           <Typography variant="button" className={classes.discount}>
-            {discount > 0 ? `-${discount}%` : null}
+            {`-${discount}%`}
           </Typography>
+          )}
         </Box>
       </CardContent>
       <CardActions>

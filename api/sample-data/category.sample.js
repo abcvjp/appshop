@@ -64,7 +64,7 @@ module.exports = [
     name: 'Áo sơ mi nam',
     description: 'Áo sơ mi nam sieu cap vjp pro',
     published: true,
-    path: 'Thời trang nam - Áo khoác nam - Áo sơ mi nam',
+    path: 'Thời trang nam - Áo nam - Áo sơ mi nam',
     slug: 'ao-so-mi-nam',
     meta_title: 'Áo sơ mi nam',
     parent_id: 'd278a1cb-d2e9-47a0-afd2-36925ca84e60',

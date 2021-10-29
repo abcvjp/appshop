@@ -51,7 +51,7 @@ const ProductImages = ({ images }) => {
   };
 
   return (
-    <>
+    <div id="product-images">
       <Carousel
         index={imgIndex}
         autoPlay={false}
@@ -115,7 +115,7 @@ const ProductImages = ({ images }) => {
         handleClose={handleViewerClose}
       />
       )}
-    </>
+    </div>
   );
 };
 

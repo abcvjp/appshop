@@ -178,36 +178,40 @@ const ProductPage = () => {
 
               <Grid item>
                 <Divider light />
-                <Box sx={{ my: 2 }}>
-                  <QuantitySelector qty={qty} handleQtyChange={handleQtyChange} />
-                </Box>
-                <Button
-                  className={classes.addcart}
-                  variant="contained"
-                  color="primary"
-                  size="medium"
-                  disableElevation
-                  onClick={handleAddtoCart}
-                >
-                  ADD TO CART
-                </Button>
-                <Button
-                  className={classes.buynow}
-                  variant="contained"
-                  color="primary"
-                  size="medium"
-                  disableElevation
-                  onClick={handleBuyNow}
-                >
-                  BUY NOW
-                </Button>
+                <div id="select-area">
+                  <Box sx={{ my: 2 }}>
+                    <QuantitySelector qty={qty} handleQtyChange={handleQtyChange} />
+                  </Box>
+                  <Button
+                    className={classes.addcart}
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    disableElevation
+                    onClick={handleAddtoCart}
+                  >
+                    ADD TO CART
+                  </Button>
+                  <Button
+                    className={classes.buynow}
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    disableElevation
+                    onClick={handleBuyNow}
+                  >
+                    BUY NOW
+                  </Button>
+                </div>
               </Grid>
             </Grid>
           </Grid>
         </Paper>
 
         <Box sx={{ my: 4 }}>
-          <ProductDescription description={product.description} />
+          <div id="product-description">
+            <ProductDescription description={product.description} />
+          </div>
         </Box>
 
       </>
