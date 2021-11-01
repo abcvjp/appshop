@@ -112,23 +112,25 @@ const OrderSummary = ({ orderItems = [], shippingMethod, paymentMethod }) => {
       </Grid>
 
       <Grid key="orderItems" item>
-        <ListItem button onClick={handleClickCartDetail}>
-          <ListItemText primary={`${orderItems.length} item to buy`} />
-          {openCartDetail ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Divider />
-        <Collapse in={openCartDetail} timeout="auto" unmountOnExit>
-          <List disablePadding dense>
-            {orderItems.map((item) => (
-              <ListItem key={shortid.generate()} button>
-                <ListItemAvatar>
-                  <Avatar src={item.product_thumbnail.url} />
-                </ListItemAvatar>
-                <ListItemText primary={item.product_name} secondary={`Price: ${item.price}\nQty: ${item.quantity}`} />
-              </ListItem>
-            ))}
-          </List>
-        </Collapse>
+        <div id="order-item-list">
+          <ListItem button onClick={handleClickCartDetail}>
+            <ListItemText primary={`${orderItems.length} item to buy`} />
+            {openCartDetail ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Divider />
+          <Collapse in={openCartDetail} timeout="auto" unmountOnExit>
+            <List disablePadding dense>
+              {orderItems.map((item) => (
+                <ListItem key={shortid.generate()} button>
+                  <ListItemAvatar>
+                    <Avatar src={item.product_thumbnail.url} />
+                  </ListItemAvatar>
+                  <ListItemText primary={item.product_name} secondary={`Price: ${item.price}\nQty: ${item.quantity}`} />
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
+        </div>
       </Grid>
 
     </Grid>

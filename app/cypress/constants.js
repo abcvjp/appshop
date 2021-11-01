@@ -79,3 +79,63 @@ export const SAMPLE_SEARCH_BREADCRUMBS = [
   { name: 'Home', path: '/' },
   { name: "Search results for: 'quan jean'", path: 'search?q=quan%20jean'},
 ]
+
+export const SAMPLE_DISABLED_PRODUCT = {
+  id: '598d6f47-7c7e-4365-9c3a-83f322926658',
+  name: 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY 2',
+  title:
+    'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn 2',
+  category_id: 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989',
+  enable: false,
+  published: true,
+  price: 5,
+  root_price: 8,
+  quantity: 0,
+  sold: 0,
+  short_description:
+    'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn - HÀNG CHÍNH HÃNG',
+  images: JSON.stringify([
+    {
+      url: 'https://salt.tikicdn.com/ts/product/f2/07/0c/f82510bad668f00d4f057a70a9c72802.jpg'
+    },
+    {
+      url: 'https://salt.tikicdn.com/ts/product/53/bd/48/fd85de4aaa30597279083e2b6203f924.jpg'
+    },
+    {
+      url: 'https://salt.tikicdn.com/ts/product/f0/f9/63/6f987aed1912faf0248639e533616f50.jpg'
+    }
+  ]),
+  slug: 'ao-so-mi-dai-tay-linh-my-u458-us-army-2',
+  meta_title:
+    'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 2'
+}
+
+export const SAMPLLE_OUTOFSTOCK_PRODUCT = {
+  id: 'cf8253ef-5a0b-4ce6-b2b2-9d2d7a44da4a',
+  name: 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY 5',
+  title:
+    'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn 5',
+  category_id: 'd649137e-2e01-45cf-8ef7-50b737fd8548',
+  enable: true,
+  published: true,
+  price: 5,
+  root_price: 8,
+  quantity: 0,
+  sold: 0,
+  short_description:
+    'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp Thiết Kế Túi Hộp Phong Cách Loại Xịn - HÀNG CHÍNH HÃNG',
+  images: JSON.stringify([
+    {
+      url: 'https://salt.tikicdn.com/ts/product/f2/07/0c/f82510bad668f00d4f057a70a9c72802.jpg'
+    },
+    {
+      url: 'https://salt.tikicdn.com/ts/product/53/bd/48/fd85de4aaa30597279083e2b6203f924.jpg'
+    },
+    {
+      url: 'https://salt.tikicdn.com/ts/product/f0/f9/63/6f987aed1912faf0248639e533616f50.jpg'
+    }
+  ]),
+  slug: 'ao-so-mi-dai-tay-linh-my-u458-us-army-5',
+  meta_title:
+    'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 5'
+}

@@ -96,9 +96,9 @@ const ProductPage = () => {
 
   const handleBuyNow = useCallback(() => {
     if (product.enable === false) {
-      dispatch(showAlertMessage({ type: 'error', content: 'This product is disabled' }));
+      dispatch(showAlertMessage({ type: 'error', content: 'This product has been disabled' }));
     } else if (product.quantity === 0) {
-      dispatch(showAlertMessage({ type: 'error', content: 'This product is sold out' }));
+      dispatch(showAlertMessage({ type: 'error', content: 'This product has sold out' }));
     } else {
       navigate('/checkout', {
         state: {

@@ -1,6 +1,6 @@
 import { SAMPLE_PRODUCT as sampleProduct } from '../../../constants';
 
-describe('product page: quantitySelector', () => {
+describe('product page: quantity selector', () => {
 	beforeEach(() => {
 		cy.gotoSampleProduct();
 	})
@@ -26,7 +26,7 @@ describe('product page: quantitySelector', () => {
 			.getProps('value')
 			.should('eq', '')
 	})
-	it('type number', () => {
+	it('with input < 1', () => {
 		cy.get('div#select-area')
 			.react('QuantitySelector')
 			.react('InputBase')
@@ -38,5 +38,46 @@ describe('product page: quantitySelector', () => {
 			.getReact('InputBase')
 			.getProps('value')
 			.should('eq', 1)
+	})
+	it('with input = 1', () => {
+		cy.get('div#select-area')
+			.react('QuantitySelector')
+			.react('InputBase')
+			.find('input')
+			.clear()
+			.type(1)
+		cy.get('div#select-area')
+			.react('QuantitySelector')
+			.getReact('InputBase')
+			.getProps('value')
+			.should('eq', 1)
+	})
+	it('with input 1 <= x <= productQuantity', () => {
+		const x = Math.floor(Math.random() * sampleProduct.quantity) + 1;
+		cy.get('div#select-area')
+			.react('QuantitySelector')
+			.react('InputBase')
+			.find('input')
+			.clear()
+			.type(x)
+		cy.get('div#select-area')
+			.react('QuantitySelector')
+			.getReact('InputBase')
+			.getProps('value')
+			.should('eq', x)
+	})
+	it('with input x > productQuantity', () => {
+		const x = sampleProduct.quantity + 1;
+		cy.get('div#select-area')
+			.react('QuantitySelector')
+			.react('InputBase')
+			.find('input')
+			.clear()
+			.type(x)
+		cy.get('div#select-area')
+			.react('QuantitySelector')
+			.getReact('InputBase')
+			.getProps('value')
+			.should('be.lessThan', x)
 	})
 })

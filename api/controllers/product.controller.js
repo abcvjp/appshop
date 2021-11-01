@@ -97,9 +97,9 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
       sort,
       category_id,
       category_slug,
-      enable: true,
-      published: true,
-      in_stock: true,
+      enable,
+      published,
+      in_stock,
       price
     });
   }
