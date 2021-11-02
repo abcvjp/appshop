@@ -111,6 +111,7 @@ const ProductCard = ({ product }) => {
           </Typography>
         </Box>
         <Box
+          className="price"
           display="flex"
           flexDirection="row"
           justifyContent="flex-start"

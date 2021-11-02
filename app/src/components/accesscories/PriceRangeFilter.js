@@ -12,8 +12,8 @@ const PriceRangeFilter = ({ initialValues, onApply }) => (
       end: initialValues ? initialValues.split(',')[1] : 0
     }}
     validationSchema={Yup.object().shape({
-      start: Yup.number().min(0),
-      end: Yup.number().min(0)
+      start: Yup.number().min(0).max(9999999999),
+      end: Yup.number().min(0).max(9999999999)
     })}
     onSubmit={(values) => onApply(`${values.start},${values.end}`)}
   >

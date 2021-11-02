@@ -116,9 +116,11 @@ const ProductList = ({ filters, sortElemnents }) => {
   return (
     <>
       <Box className={classes.toolbar} key="toolbar1">
-        <Typography>
-          {`Found ${state.itemCount} items`}
-        </Typography>
+        <div id="product-count">
+          <Typography>
+            {`Found ${state.itemCount} items`}
+          </Typography>
+        </div>
 
         <SortSelector
           sortBy={state.sort}
@@ -127,25 +129,29 @@ const ProductList = ({ filters, sortElemnents }) => {
         />
       </Box>
 
-      {
-        // eslint-disable-next-line
-        isLoading ? <ProductListSkeleton size={state.pageSize} />
-          : !isArrayEmpty(products.current) ? <Products products={products.current} />
-            : (
-              <Box m={2}>
-                <Typography>There are no available product now!</Typography>
-              </Box>
-            )
-      }
+      <div id="products">
+        {
+          // eslint-disable-next-line
+          isLoading ? <ProductListSkeleton size={state.pageSize} />
+            : !isArrayEmpty(products.current) ? <Products products={products.current} />
+              : (
+                <Box m={2}>
+                  <Typography>There are no available product now!</Typography>
+                </Box>
+              )
+        }
+      </div>
 
       <Box className={classes.toolbar} key="toolbar2">
-        <Pagination
-          size="large"
-          color="primary"
-          count={state.pageCount}
-          page={state.currentPage}
-          onChange={handlePageChange}
-        />
+        <div className="pagination">
+          <Pagination
+            size="large"
+            color="primary"
+            count={state.pageCount}
+            page={state.currentPage}
+            onChange={handlePageChange}
+          />
+        </div>
 
         <PageSizeSelector
           pageSize={state.pageSize}

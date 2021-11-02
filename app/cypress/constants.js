@@ -139,3 +139,20 @@ export const SAMPLLE_OUTOFSTOCK_PRODUCT = {
   meta_title:
     'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY, Chất Liệu Vải Kaki Cao Cấp 5'
 }
+
+export const SAMPLE_ROOT_CATEGORY = {
+  id: 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989',
+  name: 'Thời trang nam',
+  description: 'Thời trang dành riêng cho nam giới',
+  published: true,
+  path: 'Thời trang nam',
+  slug: 'thoi-trang-nam',
+  meta_title: 'Thời trang nam',
+  parent_id: null,
+  childs: [
+    { name: 'Quần nam', slug: 'quan-nam' },
+    { name: 'Áo nam', slug: 'ao-nam' }
+  ]
+}
+
+export const DEFAULT_PAGE_SIZE = 8
