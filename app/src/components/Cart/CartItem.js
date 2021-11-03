@@ -108,9 +108,10 @@ const CartItem = ({
               variant="outlined"
               margin="none"
               defaultValue={item.quantity}
+              InputProps={{ inputProps: { min: 1, max: 999999999 } }}
               onChange={(e) => {
-                if (e.target.value < 1) {
-                  e.target.value = 1;
+                if (parseInt(e.target.value, 10) > 999999999) {
+                  e.target.value = 999999999;
                 }
               }}
               onBlur={handleChangeQtyItem}

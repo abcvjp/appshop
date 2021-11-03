@@ -110,3 +110,12 @@ Cypress.Commands.add('gotoCartWithCart', () => {
   });
   cy.waitForReact();
 });
+
+Cypress.Commands.add('gotoSampleCart', () => {
+  cy.visit('/cart', {
+    onBeforeLoad: function (window) {
+      window.localStorage.setItem('cart', SAMPLE_CART_DATA);
+    }
+  });
+  cy.waitForReact();
+})

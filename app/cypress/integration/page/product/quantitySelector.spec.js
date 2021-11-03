@@ -37,7 +37,7 @@ describe('product page: quantity selector', () => {
 			.react('QuantitySelector')
 			.getReact('InputBase')
 			.getProps('value')
-			.should('eq', 1)
+			.should('eq', '')
 	})
 	it('with input = 1', () => {
 		cy.get('div#select-area')

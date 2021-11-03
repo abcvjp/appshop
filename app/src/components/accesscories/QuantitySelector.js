@@ -22,7 +22,7 @@ const QuantitySelector = ({ qty, handleQtyChange }) => {
     <div className={classes.root}>
       <TextField
         className={classes.qty}
-        type="Number"
+        type="number"
         variant="outlined"
         label="Quantity"
         InputProps={{ inputProps: { min: 1 } }}
