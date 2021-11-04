@@ -7,7 +7,8 @@ describe('product card', () => {
 		it('can show product information', () => {
 			cy.react('ProductCard').each(card => {
 				cy.wrap(card).should('be.visible')
-					.react('CardMedia').should('be.visible')
+					.react('CardMedia')
+					.should('exist')
 				// product info is visible
 				cy.wrap(card)
 					.react('CardContent')
@@ -47,7 +48,8 @@ describe('product card', () => {
 		it('can show product information', () => {
 			cy.react('ProductCard').each(card => {
 				cy.wrap(card).should('be.visible')
-					.react('CardMedia').should('be.visible')
+					.react('CardMedia')
+					.should('exist')
 				// product info is visible
 				cy.wrap(card)
 					.react('CardContent')
@@ -87,7 +89,8 @@ describe('product card', () => {
 		it('can show product information', () => {
 			cy.react('ProductCard').each(card => {
 				cy.wrap(card).should('be.visible')
-					.react('CardMedia').should('be.visible')
+					.react('CardMedia')
+					.should('exist')
 				// product info is visible
 				cy.wrap(card)
 					.react('CardContent')
@@ -115,6 +118,7 @@ describe('product card', () => {
 			cy.react('ProductCard').react('CardActions')
 				.react('Button')
 				.click()
+				.wait(500)
 			cy.react('AlertMessage').should('be.visible')
 		})
 	})

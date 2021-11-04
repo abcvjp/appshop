@@ -8,5 +8,7 @@ describe('cart page: item selector', () => {
 			.react('CartItem')
 			.react('Checkbox')
 			.should('be.visible')
+			.eq(0)
+			.click()
 	})
 })

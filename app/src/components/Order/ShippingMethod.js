@@ -59,7 +59,7 @@ const ShippingMethod = ({ fieldName, setShippingMethod }) => {
   }, [])
 
   return (
-    <>
+    <div id="shipping-methods">
       <div className={classes.title}>
         <Typography variant="h6" className={classes.margin}>Shipping Methods</Typography>
         <Divider />
@@ -105,7 +105,7 @@ const ShippingMethod = ({ fieldName, setShippingMethod }) => {
       </Typography>
       )}
 
-    </>
+    </div>
   );
 };
 

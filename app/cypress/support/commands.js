@@ -51,6 +51,11 @@ Cypress.Commands.add('gotoSampleProduct', () => {
   cy.waitForReact();
 });
 
+Cypress.Commands.add('gotoSampleProduct2', () => {
+  cy.visit('/product/ao-so-mi-ar90780d2')
+  cy.waitForReact()
+})
+
 Cypress.Commands.add('gotoSampleCategory', () => {
   cy.visit(CATEGORY_SAMPLE_PAGE_PATH);
   cy.waitForReact();
@@ -118,4 +123,45 @@ Cypress.Commands.add('gotoSampleCart', () => {
     }
   });
   cy.waitForReact();
+})
+
+Cypress.Commands.add('searchSampleProduct', () => {
+  cy.visit('/')
+  cy.waitForReact()
+  cy.react('SearchBar').type('quan jean{enter}');
+})
+
+Cypress.Commands.add('typeSampleCheckoutInfo', () => {
+  cy.react('TextField', { props: { name: "email" } })
+    .type('aothatday@gmail.com')
+  cy.react('TextField', { props: { name: "customer_name" } })
+    .type('Vừ A Dính')
+  cy.react('TextField', { props: { name: "phone_number" } })
+    .type('0123456789')
+  cy.react('TextField', { props: { name: "address" } })
+    .type('Số 144 Xuân Thủy, quận Cầu Giấy, thành phố Hà Nội')
+  cy.react('TextField', { props: { name: "shipping_note" } })
+    .type('Shipper cẩn thận vì nhà có chó dữ')
+})
+
+Cypress.Commands.add('checkoutWithSampleInfo', () => {
+  // type checkout info
+  cy.typeSampleCheckoutInfo();
+  // select shipping method
+  cy.react('ShippingMethod')
+    .find('[type="radio"]').first().check()
+  // click next
+  cy.react('ContainedButton')
+    .eq(1)
+    .click()
+  // select payment method
+  cy.react('ReviewAndPayment')
+    .find('[type="radio"]').first().check()
+  // click place order
+  cy.react('ContainedButton')
+    .eq(1)
+    .click()
+  // click confirm order
+  cy.react('ConfirmDialog')
+    .react('Button').eq(1).click()
 })

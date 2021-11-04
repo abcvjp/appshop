@@ -4,6 +4,10 @@ describe('add product to cart', () => {
 			cy.gotoHome()
 		})
 
+		afterEach(() => {
+			cy.clearCookies()
+		})
+
 		it('visit home page, add a valid product to cart, view mini cart then go to cart page', () => {
 			cy.react('ProductCard')		
 				.eq(0)
@@ -24,7 +28,7 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
@@ -58,14 +62,13 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
 				.react('CartItem')
 				.should('have.length', 1)
-				.react('TextField')
-				.find('input')
+				.find('input[type="number"]')
 				.invoke('val')
 				// item quantity is correct
 				.should('eq', times.toString())
@@ -96,14 +99,13 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
 				.react('CartItem')
 				.should('have.length', productNumber)
-				.react('TextField')
-				.find('input')
+				.find('input[type="number"]')
 				.invoke('val')
 				// item quantity is correct
 				.should('eq', '1')
@@ -138,7 +140,7 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
@@ -152,8 +154,12 @@ describe('add product to cart', () => {
 			cy.gotoSampleCategory()
 		})
 
+		afterEach(() => {
+			cy.clearCookies()
+		})
+
 		it('visit category page, add a valid product to cart, view mini cart then go to cart page', () => {
-			cy.react('ProductCard')		
+			cy.react('ProductCard')
 				.eq(0)
 				.react('CardActions')
 				.react('Button')
@@ -172,7 +178,7 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
@@ -206,21 +212,20 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
 				.react('CartItem')
 				.should('have.length', 1)
-				.react('TextField')
-				.find('input')
+				.find('input[type="number"]')
 				.invoke('val')
 				// item quantity is correct
 				.should('eq', times.toString())
 		})
 
 		it('visit category page, add multiple valid product to cart, then go to cart page', () => {
-			const productNumber = 8
+			const productNumber = 6
 			for (let i=0; i<productNumber; i++) {
 				cy.react('ProductCard')		
 					.eq(i)
@@ -244,14 +249,13 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
 				.react('CartItem')
 				.should('have.length', productNumber)
-				.react('TextField')
-				.find('input')
+				.find('input[type="number"]')
 				.invoke('val')
 				// item quantity is correct
 				.should('eq', '1')
@@ -286,7 +290,7 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
@@ -298,6 +302,10 @@ describe('add product to cart', () => {
 	describe('search product, add product to cart from search page', () => {
 		beforeEach(() => {
 			cy.gotoSampleSearch()
+		})
+
+		afterEach(() => {
+			cy.clearCookies()
 		})
 
 		it('add a valid product to cart, view mini cart then go to cart page', () => {
@@ -320,7 +328,7 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
@@ -354,21 +362,20 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
 				.react('CartItem')
 				.should('have.length', 1)
-				.react('TextField')
-				.find('input')
+				.find('input[type="number"]')
 				.invoke('val')
 				// item quantity is correct
 				.should('eq', times.toString())
 		})
 
 		it('search product, add multiple valid product to cart, then go to cart page', () => {
-			const productNumber = 8
+			const productNumber = 6
 			for (let i=0; i<productNumber; i++) {
 				cy.react('ProductCard')		
 					.eq(i)
@@ -392,14 +399,13 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
 				.react('CartItem')
 				.should('have.length', productNumber)
-				.react('TextField')
-				.find('input')
+				.find('input[type="number"]')
 				.invoke('val')
 				// item quantity is correct
 				.should('eq', '1')
@@ -434,7 +440,7 @@ describe('add product to cart', () => {
 				.eq(1)
 				.click()
 				.waitForReact()
-			// view mini cart page have product
+			// check cart page have product
 			cy.location('pathname')
 				.should('eq', '/cart')
 			cy.react('CartDetail')
@@ -446,6 +452,10 @@ describe('add product to cart', () => {
 	describe('view a product, add product to cart from product page', () => {
 		beforeEach(() => {
 			cy.gotoSampleProduct()
+		})
+
+		afterEach(() => {
+			cy.clearCookies()
 		})
 
 		it('add product to cart with quantity = 1, view mini cart and go to cart page', () => {
@@ -462,6 +472,23 @@ describe('add product to cart', () => {
 				.should('have.length', 1)
 				.should('contain.text', 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY')
 				.should('contain.text', 'Qty: 1')
+			// click to go to cart page
+			cy.react('MiniCart')
+				.trigger('mouseover')
+				.react('ContainedButton')
+				.eq(1)
+				.click()
+				.waitForReact()
+			// check cart page have product
+			cy.location('pathname')
+				.should('eq', '/cart')
+			cy.react('CartDetail')
+				.react('CartItem')
+				.should('have.length', 1)
+				.find('input[type="number"]')
+				.invoke('val')
+				// item quantity is correct
+				.should('eq', '1')
 		})
 
 		it('view a product, add product to cart with 1 < quantity < max, view mini cart and go to cart page', () => {
@@ -486,6 +513,23 @@ describe('add product to cart', () => {
 				.should('have.length', 1)
 				.should('contain.text', 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY')
 				.should('contain.text', `Qty: ${quantity}`)
+			// click to go to cart page
+			cy.react('MiniCart')
+				.trigger('mouseover')
+				.react('ContainedButton')
+				.eq(1)
+				.click()
+				.waitForReact()
+			// check cart page have product
+			cy.location('pathname')
+				.should('eq', '/cart')
+			cy.react('CartDetail')
+				.react('CartItem')
+				.should('have.length', 1)
+				.find('input[type="number"]')
+				.invoke('val')
+				// item quantity is correct
+				.should('eq', quantity.toString())
 		})
 
 		it('view a product, add product to cart with quantity = max, view mini cart and go to cart page', () => {
@@ -510,6 +554,23 @@ describe('add product to cart', () => {
 				.should('have.length', 1)
 				.should('contain.text', 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY')
 				.should('contain.text', `Qty: ${quantity}`)
+			// click to go to cart page
+			cy.react('MiniCart')
+				.trigger('mouseover')
+				.react('ContainedButton')
+				.eq(1)
+				.click()
+				.waitForReact()
+			// check cart page have product
+			cy.location('pathname')
+				.should('eq', '/cart')
+			cy.react('CartDetail')
+				.react('CartItem')
+				.should('have.length', 1)
+				.find('input[type="number"]')
+				.invoke('val')
+				// item quantity is correct
+				.should('eq', quantity.toString())
 		})
 	})
 })

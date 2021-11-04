@@ -1,5 +1,9 @@
 describe('delete item in cart', () => {
 	describe('delete item from mini cart', () => {
+		afterEach(() => {
+			cy.clearCookies()
+		})
+
 		it('add a product to cart then delete it', () => {
 			// add a ptoduct to cart
 			cy.gotoSampleCategory();
@@ -97,6 +101,10 @@ describe('delete item in cart', () => {
 	})
 
 	describe('delete item from cart page', () => {
+		afterEach(() => {
+			cy.clearCookies()
+		})
+		
 		it('add a product to cart, go to cart page and delete it', () => {
 			// add a ptoduct to cart
 			cy.gotoSampleCategory();

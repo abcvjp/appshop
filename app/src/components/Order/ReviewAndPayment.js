@@ -54,7 +54,7 @@ const ReviewAndPayment = ({ fieldName, setPaymentMethod }) => {
 	}, [])
 
   return (
-    <>
+    <div id="review-and-payment">
       <div className={classes.title}>
         <Typography variant="h6" className={classes.margin}>Payment Method</Typography>
         <Divider />
@@ -94,7 +94,7 @@ const ReviewAndPayment = ({ fieldName, setPaymentMethod }) => {
           {meta.error}
         </Typography>
       )}
-    </>
+    </div>
   );
 };
 

@@ -16,7 +16,7 @@ describe('product page: buy now', () => {
 	it('buy now valid product', () => {
 		// visit product page
 		cy.gotoSampleProduct()
-		// click add to cart
+		// click buy now
 		cy.get('div#select-area')
 			.react('Button')
 			.eq(1)
@@ -39,7 +39,7 @@ describe('product page: buy now', () => {
 		// visit product page
 		cy.visit('/product/' + sampleSoldOutProduct.slug);
 		cy.waitForReact()
-		// click add to cart
+		// click buy now
 		cy.get('div#select-area')
 			.react('Button')
 			.eq(1)
@@ -62,7 +62,7 @@ describe('product page: buy now', () => {
 		// visit product page
 		cy.visit('/product/' + sampleDisabledProduct.slug);
 		cy.waitForReact()
-		// click add to cart
+		// click buy now
 		cy.get('div#select-area')
 			.react('Button')
 			.eq(1)
