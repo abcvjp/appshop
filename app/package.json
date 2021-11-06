@@ -33,7 +33,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "cypress open",
+    "test:dev:open": "cypress open --config baseUrl=http://app.webshop.local --browser chrome",
+    "test:dev:run": "cypress run --config video=false --config baseUrl=http://app.webshop.local --browser chrome",
+    "test:ci:run": "cypress run --config video=false --config baseUrl=http://localhost:3000 --browser chrome",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

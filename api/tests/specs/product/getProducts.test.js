@@ -90,7 +90,7 @@ describe('GET /product/all', () => {
   });
 
   test('with category_id param', async () => {
-    const category_id = 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989';
+    const category_id = 'd649137e-2e01-45cf-8ef7-50b737fd8548';
     await testClient
       .get(`/product/all?category_id=${category_id}`)
       .set('Accept', 'application/json')
@@ -111,7 +111,7 @@ describe('GET /product/all', () => {
   });
 
   test('with category_slug param', async () => {
-    const category_slug = 'thoi-trang-nam';
+    const category_slug = 'ao-so-mi-nam';
     await testClient
       .get(`/product/all?category_slug=${category_slug}`)
       .set('Accept', 'application/json')
