@@ -36,7 +36,9 @@ describe('product card', () => {
 			cy.react('ProductCard').react('CardActions')
 				.react('Button')
 				.click()
-			cy.react('AlertMessage').should('be.visible')
+				.wait(500)
+			cy.react('AlertMessage')
+				.should('be.visible')
 		})
 	})
 
@@ -77,6 +79,7 @@ describe('product card', () => {
 			cy.react('ProductCard').react('CardActions')
 				.react('Button')
 				.click()
+				.wait(500)
 			cy.react('AlertMessage').should('be.visible')
 		})
 	})
