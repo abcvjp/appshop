@@ -14,6 +14,7 @@ router.get(
 );
 router.post('/signup', validate(userValidation.signup), userController.signup);
 router.post('/login', validate(userValidation.login), userController.login);
+router.post('/login-with-firebase', validate(userValidation.loginWithFirebase), userController.loginWithFirebase);
 router.get('/refresh-token', userController.refreshToken);
 router.get('/logout', authenticate({ required: true }), userController.logout);
 router.get(

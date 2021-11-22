@@ -29,6 +29,11 @@ module.exports = {
       password: Joi.string().trim().min(6).max(32).required()
     })
   },
+  loginWithFirebase: {
+    body: Joi.object({
+      idToken: Joi.string().trim().required()
+    })
+  },
   getUserById: {
     params: Joi.object({
       userId: Joi.string().guid({ version: 'uuidv4' }).required()

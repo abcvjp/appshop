@@ -3,6 +3,7 @@ import { cleanObj, convertObjToQuery } from '../functions';
 
 const userApi = {
   login: (data) => API.post('/user/login', data),
+  loginWithFirebase: (data) => API.post('/user/login-with-firebase', data),
   logout: () => API.get('user/logout'),
   signup: (data) => API.post('/user/signup', cleanObj(data)),
   getUserById: (id) => API.get(`/user/${id}`),

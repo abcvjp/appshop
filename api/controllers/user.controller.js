@@ -7,14 +7,20 @@ exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   const result = await userService.login({ email, password });
   if (result.success) {
-    res.cookie('access_token', result.access_token, { httpOnly: true });
-    res.cookie('refresh_token', result.refresh_token, {
-      httpOnly: true,
-      path: '/user'
-    });
+    // res.cookie('access_token', result.access_token, { httpOnly: true });
+    // res.cookie('refresh_token', result.refresh_token, {
+      // httpOnly: true,
+      // path: '/user'
+    // });
   }
   res.status(200).json(result);
 });
+
+exports.loginWithFirebase = asyncHandler(async (req, res, next) => {
+  const { idToken } = req.body;
+  const result = await userService.loginWithFirebase({ idToken });
+  res.status(200).json(result);
+})
 
 exports.signup = asyncHandler(async (req, res, next) => {
   const { username, password, email, phone_number, full_name } = req.body;
@@ -32,8 +38,8 @@ exports.logout = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (user) {
     await userService.deleteRefreshToken({ user });
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
+    // res.clearCookie('access_token');
+    // res.clearCookie('refresh_token');
     res.status(200).json({ success: true });
   } else {
     throw createError(409, 'You are not logged in');
@@ -44,11 +50,11 @@ exports.refreshToken = asyncHandler(async (req, res, next) => {
   const { refresh_token } = req.cookies;
   if (refresh_token) {
     const result = await userService.refreshToken({ refresh_token });
-    res.cookie('access_token', result.access_token, { httpOnly: true });
-    res.cookie('refresh_token', result.refresh_token, {
-      httpOnly: true,
-      path: '/user'
-    });
+    // res.cookie('access_token', result.access_token, { httpOnly: true });
+    // res.cookie('refresh_token', result.refresh_token, {
+      // httpOnly: true,
+      // path: '/user'
+    // });
     res.status(200).json(result);
   } else {
     throw createError(400, 'You do not have refresh token');
@@ -138,7 +144,14 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 
 exports.authenticate = ({ required }) =>
   asyncHandler(async (req, res, next) => {
-    const { access_token } = req.cookies;
+    const headerToken = req.headers.authorization;
+    if (!headerToken) {
+      throw createError(401, 'No token provided');
+    }
+    if (headerToken && headerToken.split(" ")[0] !== "Bearer") {
+      throw createError(401, 'Invalid token');
+    }
+    const access_token = headerToken.split(" ")[1];
     if (access_token) {
       const user = await userService.authenticate({ access_token });
       req.user = user ? user : null;

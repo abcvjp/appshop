@@ -14,13 +14,13 @@ services:
       - frontend
       - backend
     environment:
-      - APP_SERVER_NAME=app.webshop.local
+      - APP_SERVER_NAME=appshop.local
       - APP_SERVER_URI=http://app:3000
-      - ADMIN_SERVER_NAME=admin.webshop.local
+      - ADMIN_SERVER_NAME=admin.appshop.local
       - ADMIN_SERVER_URI=http://admin:3000
-      - API_SERVER_NAME=api.webshop.local
+      - API_SERVER_NAME=api.appshop.local
       - API_SERVER_URI=http://api:5000
-      - PHPMYADMIN_SERVER_NAME=db.webshop.local
+      - PHPMYADMIN_SERVER_NAME=db.appshop.local
       - PHPMYADMIN_SERVER_URI=http://phpmyadmin:80
   app:
     build: "./app"
@@ -35,12 +35,11 @@ services:
       - frontend
     environment:
       - NODE_ENV=development
-      - REACT_APP_API_BASE=http://api.webshop.local
+      - REACT_APP_API_BASE=http://api.appshop.local
   admin:
     build: "./admin"
     depends_on:
       - api
-      - aws
     expose:
       - 3000
     volumes:
@@ -50,8 +49,8 @@ services:
       - frontend
     environment:
       - NODE_ENV=development
-      - REACT_APP_API_BASE=http://api.webshop.local
-      - REACT_APP_APP_BASE=http://app.webshop.local
+      - REACT_APP_API_BASE=http://api.appshop.local
+      - REACT_APP_APP_BASE=http://appshop.local
       - REACT_APP_FIREBASE_API_KEY=AIzaSyDqoLUYQhW7NlH57EfBO63D4KRqi3IgE78
       - REACT_APP_FIREBASE_AUTH_DOMAIN=webshop-e2f76.firebaseapp.com
       - REACT_APP_FIREBASE_PROJECT_ID=webshop-e2f76
@@ -83,14 +82,14 @@ services:
       - NODE_ENV=development
       - PORT=5000
       - DB_HOST=db
-      - DB_NAME=webshop_db
+      - DB_NAME=appshop_db
       - DB_USERNAME=hoaideptrai
       - DB_PASSWORD=123456
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=123456
-      - APP_BASE=http://app.webshop.local
-      - ADMIN_BASE=http://admin.webshop.local
+      - APP_BASE=http://appshop.local
+      - ADMIN_BASE=http://admin.appshop.local
       - JWT_ACCESS_TOKEN_SECRET=Ysg$fG&DG
       - JWT_REFRESH_TOKEN_SECRET=Txlcvkb^32y
       - MAILHOG_HOST=mailhog
@@ -113,7 +112,7 @@ services:
       - REDIS_PASSWORD=123456
       - MAILER_HOST=mailhog
       - MAILER_PORT=1025
-      - MAILER_USER=webshop@zinza.com.vn
+      - MAILER_USER=appshop@vippro.com.vn
   db:
     image: mysql:8.0.26
     expose:
@@ -124,7 +123,7 @@ services:
       - backend
     environment:
       - MYSQL_ROOT_PASSWORD=123456
-      - MYSQL_DATABASE=webshop_db
+      - MYSQL_DATABASE=appshop_db
       - MYSQL_USER=hoaideptrai
       - MYSQL_PASSWORD=123456
     cap_add:
@@ -177,31 +176,31 @@ services:
       - 1025 # smtp server
     ports:
       - 8025:8025 # ui server
-  aws:
-    image: localstack/localstack-light:0.12.18
-    expose:
-      - 4566
-    ports:
-      - 4563-4599:4563-4599
-    volumes:
-      - localstack-data:/tmp/localstack
-    networks:
-      - frontend
-    # command: "aws --endpoint-url=http://localhost:4566 s3 mb s3://webshop" # create webshop bucket
-    environment:
-      - SERVICES=s3 
-      - DEBUG=1
-      - DEFAULT_REGION=us-east-1
-      - AWS_ACCESS_KEY_ID=test
-      - AWS_SECRET_ACCESS_KEY=test
-      # - PORT_WEB_UI=8080
-      # - START_WEB=1
-      - DATA_DIR=/tmp/localstack/data
-      - DOCKER_HOST=unix:///var/run/docker.sock
-      - EXTRA_CORS_ALLOWED_ORIGINS=http://admin.webshop.local
-    volumes:
-      - ./.localstack:/tmp/localstack
-      - /var/run/docker.sock:/var/run/docker.sock
+  # aws:
+    # image: localstack/localstack-light:0.12.18
+    # expose:
+      # - 4566
+    # ports:
+      # - 4563-4599:4563-4599
+    # volumes:
+      # - localstack-data:/tmp/localstack
+    # networks:
+      # - frontend
+    # # command: "aws --endpoint-url=http://localhost:4566 s3 mb s3://webshop" # create webshop bucket
+    # environment:
+      # - SERVICES=s3 
+      # - DEBUG=1
+      # - DEFAULT_REGION=us-east-1
+      # - AWS_ACCESS_KEY_ID=test
+      # - AWS_SECRET_ACCESS_KEY=test
+      # # - PORT_WEB_UI=8080
+      # # - START_WEB=1
+      # - DATA_DIR=/tmp/localstack/data
+      # - DOCKER_HOST=unix:///var/run/docker.sock
+      # - EXTRA_CORS_ALLOWED_ORIGINS=http://admin.appshop.local
+    # volumes:
+      # - ./.localstack:/tmp/localstack
+      # - /var/run/docker.sock:/var/run/docker.sock
 volumes:
   db-data:
 networks:

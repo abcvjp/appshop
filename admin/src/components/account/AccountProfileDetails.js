@@ -31,10 +31,10 @@ const AccountProfileDetails = () => {
 
   const formik = useFormik({
     initialValues: {
-      username,
-      full_name,
+      username: username || '',
+      full_name: full_name || '',
       email,
-      phone_number
+      phone_number: phone_number || ''
     },
     validationSchema: Yup.object().shape({
       username: Yup.string().min(4).max(20).required('Username is required'),

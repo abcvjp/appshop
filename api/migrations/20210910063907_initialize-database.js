@@ -191,7 +191,7 @@ const migrationCommands = (transaction) => [
         username: {
           type: Sequelize.STRING,
           unique: true,
-          allowNull: false,
+          allowNull: true,
           field: 'username'
         },
         role: {
@@ -220,10 +220,10 @@ const migrationCommands = (transaction) => [
         phone_number: {
           type: Sequelize.STRING,
           unique: true,
-          allowNull: false,
+          allowNull: true,
           field: 'phone_number'
         },
-        hash: { type: Sequelize.STRING, allowNull: false, field: 'hash' },
+        hash: { type: Sequelize.STRING, allowNull: true, field: 'hash' },
         avatar: { type: Sequelize.STRING, allowNull: true, field: 'avatar' },
         refresh_token: {
           type: Sequelize.TEXT,

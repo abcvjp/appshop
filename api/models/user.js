@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       username: {
         type: DataTypes.STRING,
         field: 'username',
-        allowNull: false,
+        allowNull: true,
         unique: true
       },
       role: {
@@ -54,13 +54,13 @@ module.exports = (sequelize, DataTypes) => {
       phone_number: {
         type: DataTypes.STRING,
         field: 'phone_number',
-        allowNull: false,
+        allowNull: true,
         unique: true
       },
       hash: {
         type: DataTypes.STRING,
         field: 'hash',
-        allowNull: false
+        allowNull: true
       },
       avatar: {
         type: DataTypes.STRING,

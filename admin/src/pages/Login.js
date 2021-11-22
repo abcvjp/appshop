@@ -15,17 +15,91 @@ import { setUser } from 'src/actions/user';
 
 import Role from 'src/constants/Roles';
 
-import API from '../utils/api/apiClient';
+import API from 'src/utils/api/apiClient';
+
+import { auth, firebase } from 'src/firebase';
+import { userApi } from 'src/utils/api';
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [error, setError] = useState(null);
-  console.log(error);
+
+  const handleLoginWithEmailPassword = async (values) => {
+    try {
+      const response = await API.post('/user/login', values); // eslint-disable-line
+      const { user, access_token } = response.data;
+      if (user && user.role === Role.Admin) {
+        dispatch(setUser(user));
+        localStorage.setItem('access_token', access_token);
+        navigate('/management/dashboard', { replace: true });
+      } else {
+        setError('Your account does not have permission to access');
+      }
+    } catch (err) {
+      console.log(err.response);
+      setError(err.response.data.error.message);
+    }
+  };
+
+  const handleLoginWithGoogle = async () => {
+    // init Google Auth Provider
+    const provider = new firebase.auth.GoogleAuthProvider();
+    // create the popup signIn
+    await auth.signInWithPopup(provider).then(
+      async () => {
+        // pick the result and store the token
+        const idToken = await auth.currentUser.getIdToken(true);
+        // check if have token in the current user
+        if (idToken) {
+          const loginResponse = await userApi.loginWithFirebase({ idToken });
+          const { user, access_token } = loginResponse.data;
+          if (user && user.role === Role.Admin) {
+            dispatch(setUser(user));
+            localStorage.setItem('access_token', access_token);
+            navigate('/management/dashboard', { replace: true });
+          } else {
+            setError('Your account does not have permission to access');
+          }
+        }
+      }, (err) => {
+        console.log(err);
+        setError(err.message);
+      }
+    );
+  };
+
+  const handleLoginWithFacebook = async () => {
+    // init Google Auth Provider
+    const provider = new firebase.auth.FacebookAuthProvider();
+    // create the popup signIn
+    await auth.signInWithPopup(provider).then(
+      async () => {
+        // pick the result and store the token
+        const idToken = await auth.currentUser.getIdToken(true);
+        // check if have token in the current user
+        if (idToken) {
+          const loginResponse = await userApi.loginWithFirebase({ idToken });
+          const { user, access_token } = loginResponse.data;
+          if (user && user.role === Role.Admin) {
+            dispatch(setUser(user));
+            localStorage.setItem('access_token', access_token);
+            navigate('/management/dashboard', { replace: true });
+          } else {
+            setError('Your account does not have permission to access');
+          }
+        }
+      }, (err) => {
+        console.log(err);
+        setError(err.message);
+      }
+    );
+  };
+
   return (
     <>
       <Helmet>
-        <title>Login | Webshop App</title>
+        <title>Login | AppShop</title>
       </Helmet>
       <Box
         sx={{
@@ -49,21 +123,7 @@ const Login = () => {
                 .required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={async (values) => {
-              try {
-                const response = await API.post('/user/login', values); // eslint-disable-line
-                const { user } = response.data;
-                if (user && user.role === Role.Admin) {
-                  dispatch(setUser(user));
-                  navigate('/management/dashboard', { replace: true });
-                } else {
-                  setError('Your account does not have permission to access');
-                }
-              } catch (err) {
-                console.log(err.response);
-                setError(err.response.data.error.message);
-              }
-            }}
+            onSubmit={handleLoginWithEmailPassword}
           >
             {({
               errors,
@@ -147,6 +207,40 @@ const Login = () => {
               </form>
             )}
           </Formik>
+
+          <Box
+            sx={{
+              pb: 1,
+              pt: 1
+            }}
+          >
+            <Typography
+              align="center"
+              color="textSecondary"
+              variant="body1"
+            >
+              Or:
+            </Typography>
+          </Box>
+          <Box display="flex" sx={{ py: 2, justifyContent: 'space-around' }}>
+            <Button
+              color="primary"
+              size="large"
+              variant="contained"
+              onClick={handleLoginWithGoogle}
+            >
+              Login with Google
+            </Button>
+            <Button
+              color="primary"
+              size="large"
+              variant="contained"
+              onClick={handleLoginWithFacebook}
+            >
+              Login with Facebook
+            </Button>
+          </Box>
+
         </Container>
       </Box>
     </>

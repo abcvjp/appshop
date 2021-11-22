@@ -4,7 +4,7 @@
   "port": "5000",
   "db": {
     "host": "db",
-    "name": "webshop_db",
+    "name": "appshop_db",
     "username": "hoaideptrai",
     "password": "123456",
     "pool": {
@@ -17,7 +17,7 @@
   "sequelize": {
     "username": "hoaideptrai",
     "password": "123456",
-    "database": "webshop_db",
+    "database": "appshop_db",
     "host": "db",
     "dialect": "mysql",
     "dialectOptions": {
@@ -30,7 +30,7 @@
     "password": "123456"
   },
   "cors": {
-    "whiteList": ["http://admin.webshop.local", "http://app.webshop.local"],
+    "whiteList": ["http://admin.appshop.local", "http://appshop.local"],
     "credentials": true
   },
   "jwt": {

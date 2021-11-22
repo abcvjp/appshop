@@ -82,10 +82,10 @@ const EditUserForm = ({ userId }) => {
           )}
           <Formik
             initialValues={{
-              username: user.username,
-              full_name: user.full_name,
+              username: user.username || '',
+              full_name: user.full_name || '',
               email: user.email,
-              phone_number: user.phone_number,
+              phone_number: user.phone_number || '',
               enable: user.enable
             }}
             validationSchema={Yup.object().shape({

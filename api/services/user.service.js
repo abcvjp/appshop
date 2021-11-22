@@ -5,6 +5,8 @@ const { uuid } = require('uuidv4');
 const { Op } = require('../models').Sequelize;
 const { calculateLimitAndOffset, paginate } = require('paginate-info');
 
+const firebase = require("../firebase");
+
 exports.login = async ({ email, password }) => {
   try {
     const user = await User.findOne({ where: { email } });
@@ -48,6 +50,58 @@ exports.login = async ({ email, password }) => {
     } else {
       throw createError(401, 'Password is incorrect');
     }
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+};
+
+exports.loginWithFirebase = async ({ idToken }) => {
+  try {
+    let decodedToken = await firebase.auth().verifyIdToken(idToken);
+    let user = await User.findOne({
+      where: { email: decodedToken.email }
+    });
+    if (!user) {
+      // create new user if email not exists
+      const userRecord = await firebase.auth().getUserByEmail(decodedToken.email);
+      user = await User.create({
+        id: uuid(),
+        email: userRecord.email,
+        phone_number: userRecord.phoneNumber,
+        full_name: userRecord.displayName,
+        avatar: userRecord.photoURL
+      });
+    }
+    const access_token = JWT.generateAccessTokenByUser(user);
+    const refresh_token = JWT.generateRefreshTokenByUser(user);
+    user = await user.update({
+      refresh_token
+    });
+    const {
+      id,
+      email,
+      username,
+      phone_number,
+      role,
+      enable,
+      full_name,
+      avatar
+    } = user;
+    return {
+      success: true,
+      user: {
+        id,
+        username,
+        full_name,
+        email,
+        phone_number,
+        role,
+        enable,
+        avatar
+      },
+      access_token,
+      refresh_token
+    };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
   }
