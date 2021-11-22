@@ -45,6 +45,7 @@ const Login = () => {
   const handleLoginWithGoogle = async () => {
     // init Google Auth Provider
     const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('email');
     // create the popup signIn
     await auth.signInWithPopup(provider).then(
       async () => {
@@ -72,6 +73,7 @@ const Login = () => {
   const handleLoginWithFacebook = async () => {
     // init Google Auth Provider
     const provider = new firebase.auth.FacebookAuthProvider();
+    provider.addScope('email');
     // create the popup signIn
     await auth.signInWithPopup(provider).then(
       async () => {

@@ -58,15 +58,17 @@ exports.login = async ({ email, password }) => {
 exports.loginWithFirebase = async ({ idToken }) => {
   try {
     let decodedToken = await firebase.auth().verifyIdToken(idToken);
+    const userRecord = await firebase.auth().getUser(decodedToken.uid);
+    const email = userRecord.email || userRecord.providerData[0].email;
+    if (!email) throw createError(401, 'This login does not contain email');
     let user = await User.findOne({
-      where: { email: decodedToken.email }
+      where: { email }
     });
     if (!user) {
       // create new user if email not exists
-      const userRecord = await firebase.auth().getUserByEmail(decodedToken.email);
       user = await User.create({
         id: uuid(),
-        email: userRecord.email,
+        email,
         phone_number: userRecord.phoneNumber,
         full_name: userRecord.displayName,
         avatar: userRecord.photoURL
@@ -79,7 +81,6 @@ exports.loginWithFirebase = async ({ idToken }) => {
     });
     const {
       id,
-      email,
       username,
       phone_number,
       role,
