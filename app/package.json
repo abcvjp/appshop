@@ -57,8 +57,6 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^8.6.0",
-    "cypress-react-selector": "^2.3.11",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1"
   }

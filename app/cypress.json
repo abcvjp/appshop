@@ -1,9 +1,0 @@
-{
-	"projectId": "wpfy7k",
-	"experimentalStudio": true,
-	"env": {
-		"cypress-react-selector": {
-		"root": "#root"
-		}
-	}
-}
