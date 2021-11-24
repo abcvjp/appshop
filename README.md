@@ -12,7 +12,7 @@ An in-depth paragraph about your project and overview of use.
 
 First, add these lines to your /etc/hosts file:
 ```
-127.0.0.1  app.appshop.local
+127.0.0.1  appshop.local
 127.0.0.1  admin.appshop.local
 127.0.0.1  api.appshop.local
 127.0.0.1  db.appshop.local

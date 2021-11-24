@@ -145,13 +145,10 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 exports.authenticate = ({ required }) =>
   asyncHandler(async (req, res, next) => {
     const headerToken = req.headers.authorization;
-    if (!headerToken) {
-      throw createError(401, 'No token provided');
-    }
     if (headerToken && headerToken.split(" ")[0] !== "Bearer") {
       throw createError(401, 'Invalid token');
     }
-    const access_token = headerToken.split(" ")[1];
+    const access_token = headerToken ? headerToken.split(" ")[1] : null;
     if (access_token) {
       const user = await userService.authenticate({ access_token });
       req.user = user ? user : null;
