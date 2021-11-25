@@ -34,6 +34,11 @@ module.exports = {
       idToken: Joi.string().trim().required()
     })
   },
+  refreshToken: {
+    body: Joi.object({
+      refresh_token: Joi.string().trim().required()
+    })
+  },
   getUserById: {
     params: Joi.object({
       userId: Joi.string().guid({ version: 'uuidv4' }).required()
