@@ -98,7 +98,7 @@ exports.checkCartValid = async ({ cart_items }) => {
 
     if (Object.keys(errors).length > 0) {
       return {
-        success: false,
+        success: true,
         errors,
         valid_items: valid_items
       };

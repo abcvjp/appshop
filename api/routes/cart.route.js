@@ -10,7 +10,7 @@ router.post(
   cartController.caculateSubTotal
 );
 router.post(
-  '/check_valid',
+  '/check-valid',
   validate(cartValidation.checkCartValid),
   cartController.checkCartValid
 );
