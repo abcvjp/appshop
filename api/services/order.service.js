@@ -144,6 +144,88 @@ exports.getOrderById = async ({ id }) => {
   }
 };
 
+exports.getOrdersByUserId = async ({
+  userId,
+  status,
+  payment_status,
+  shipping_status,
+  start_date,
+  end_date,
+  current_page,
+  page_size,
+  sort
+}) => {
+  try {
+    const whereConditions = {
+      user_id: userId
+    };
+    if (status) {
+      whereConditions['status'] = status;
+    }
+    if (payment_status) {
+      whereConditions['payment_status'] = payment_status;
+    }
+    if (shipping_status) {
+      whereConditions['shipping_status'] = shipping_status;
+    }
+    if (start_date) {
+      if (!end_date) {
+        whereConditions['createdAt'] = {
+          [Sequelize.Op.gte]: start_date
+        };
+      } else {
+        whereConditions['createdAt'] = {
+          [Sequelize.Op.between]: [start_date, end_date]
+        };
+      }
+    } else if (end_date) {
+      whereConditions['createdAt'] = {
+        [Sequelize.Op.lte]: end_date
+      };
+    }
+
+    const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
+    const { rows, count } = await Order.findAndCountAll({
+      where: whereConditions,
+      include: [
+        {
+          association: 'payment_method',
+          attributes: ['name']
+        },
+        {
+          association: 'shipping_method',
+          attributes: ['name']
+        },
+        {
+          association: 'order_items',
+          attributes: [
+            'product_id',
+            'product_name',
+            'product_thumbnail',
+            'price',
+            'quantity'
+          ]
+        }
+      ],
+      attributes: {
+        exclude: ['payment_method_id', 'shipping_method_id']
+      },
+      limit,
+      offset,
+      order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
+    });
+    if (rows.length === 0) throw createError(404, "Can't find any order");
+    const pagination = paginate(current_page, count, rows, page_size);
+    return {
+      success: true,
+      data: rows,
+      pagination
+    };
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+};
+
 exports.createOrder = async ({
   customer_name,
   address,

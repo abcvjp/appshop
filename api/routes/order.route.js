@@ -14,6 +14,12 @@ router.get(
   validate(orderValidation.getOrders),
   orderController.getOrders
 );
+router.get(
+  '/by-user/:userId',
+  authenticate({ required: true }),
+  validate(orderValidation.getOrdersByUserId),
+  orderController.getOrdersByUserId
+);
 router.post(
   '/',
   validate(orderValidation.createOrder),

@@ -93,6 +93,35 @@ exports.getOrders = asyncHandler(async (req, res, next) => {
   res.status(200).json(result);
 });
 
+exports.getOrdersByUserId = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
+  if (req.user.role !== Role.Admin && req.user.id !== userId) {
+    throw createError(403, 'You does not have permission to access this');
+  }
+  const {
+    status,
+    payment_status,
+    shipping_status,
+    start_date,
+    end_date,
+    current_page,
+    page_size,
+    sort
+  } = req.query;
+  const result = await orderService.getOrders({
+    userId,
+    status,
+    payment_status,
+    shipping_status,
+    start_date,
+    end_date,
+    current_page,
+    page_size,
+    sort
+  });
+  res.status(200).json(result);
+});
+
 exports.getOrderById = asyncHandler(async (req, res, next) => {
   const { orderId } = req.params;
   const result = await orderService.getOrderById({ id: orderId });

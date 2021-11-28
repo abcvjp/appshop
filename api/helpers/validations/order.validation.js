@@ -28,6 +28,30 @@ module.exports = {
       sort: Joi.string().min(1)
     })
   },
+  getOrdersByUserId: {
+    params: Joi.object({
+      userId: Joi.string().guid({ version: 'uuidv4' }).required()
+    }),
+    query: Joi.object({
+      status: Joi.string()
+        .trim()
+        .valid('Pending', 'Handling', 'Completed', 'Canceled'),
+      payment_status: Joi.string().trim().valid('Unpaid', 'Paid'),
+      shipping_status: Joi.string()
+        .trim()
+        .valid(
+          'Undelivered',
+          'Delivering',
+          'Successfully delivered',
+          'Delivery failed'
+        ),
+      start_date: Joi.date().format('YYYY-MM-DD'),
+      end_date: Joi.date().format('YYYY-MM-DD'),
+      current_page: Joi.number().integer().min(1),
+      page_size: Joi.number().integer().min(1),
+      sort: Joi.string().min(1)
+    })
+  },
   getOrderById: {
     params: Joi.object({
       orderId: Joi.string().guid({ version: 'uuidv4' }).required()
