@@ -1,6 +1,7 @@
 module.exports = [
   {
     id: '9e648f69-8381-4f67-b7d7-4743a78f7f34',
+    user_id: '3ce3237b-e19f-4cde-ace9-c7bdb6c1b1a0',
     order_total: 11,
     item_total: 10,
     shipping_fee: 1,

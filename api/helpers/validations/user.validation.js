@@ -11,10 +11,14 @@ module.exports = {
         .max(20)
         .required(),
       password: Joi.string()
-        // .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
         .min(6)
         .max(32)
-        .required(),
+        .pattern(new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"))
+        .required()
+        .messages({
+          "string.pattern.base": "Password must have minimum 8, at least one uppercase letter, one lowercase letter, one number and one special character"
+        })
+        ,
       full_name: Joi.string().trim().min(1).max(50).required(),
       email: Joi.string().trim().email().required(),
       phone_number: Joi.string()

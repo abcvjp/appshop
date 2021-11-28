@@ -22,7 +22,6 @@ router.post(
 router.get(
   '/:orderId',
   authenticate({ required: true }),
-  authorize(Role.Admin),
   validate(orderValidation.getOrderById),
   orderController.getOrderById
 );

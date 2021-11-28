@@ -1,5 +1,7 @@
 const orderService = require('../services/order.service');
 const asyncHandler = require('express-async-handler');
+const createError = require('http-errors');
+const Role = require('../helpers/roles.helper');
 
 exports.createOrder = asyncHandler(async (req, res, next) => {
   const {
@@ -94,6 +96,12 @@ exports.getOrders = asyncHandler(async (req, res, next) => {
 exports.getOrderById = asyncHandler(async (req, res, next) => {
   const { orderId } = req.params;
   const result = await orderService.getOrderById({ id: orderId });
+  if (req.user.role !== Role.Admin) {
+    const order_owner_user_id = result.data.user_id;
+    if (req.user.id !== order_owner_user_id) {
+      throw createError(403, "You don't have permission to access this");
+    }
+  }
   res.status(200).json(result);
 });
 

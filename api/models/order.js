@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
         as: 'order_items',
         foreignKey: { name: 'order_id', allowNull: false }
       });
+      Order.belongsTo(models.User, {
+        as: 'user',
+        foreignKey: { name: 'user_id', allowNull: true }
+      });
       Order.belongsTo(models.PaymentMethod, {
         as: 'payment_method',
         foreignKey: { name: 'payment_method_id', allowNull: false }

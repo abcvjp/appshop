@@ -400,6 +400,15 @@ const migrationCommands = (transaction) => [
           field: 'updatedAt',
           allowNull: false
         },
+        user_id: {
+          type: Sequelize.UUID,
+          field: 'user_id',
+          onUpdate: 'CASCADE',
+          onDelete: 'NO ACTION',
+          references: { model: 'Users', key: 'id' },
+          name: 'user_id',
+          allowNull: true
+        },
         payment_method_id: {
           type: Sequelize.INTEGER,
           field: 'payment_method_id',
