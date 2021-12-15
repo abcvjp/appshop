@@ -3,7 +3,7 @@ var router = express.Router();
 const categoryController = require('../controllers/category.controller');
 const categoryValidation = require('../helpers/validations/category.validation');
 
-const { authenticate, authorize } = require('../controllers/user.controller');
+const { authenticate, authorizeRole } = require('../controllers/auth.controller');
 const Role = require('../helpers/roles.helper');
 const { validate } = require('../helpers/validator.helper');
 
@@ -20,7 +20,7 @@ router.get(
 router.post(
   '/',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(categoryValidation.createCategory),
   categoryController.createCategory
 );
@@ -32,21 +32,21 @@ router.get(
 router.put(
   '/:categoryId',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(categoryValidation.updateCategory),
   categoryController.updateCategory
 );
 router.delete(
   '/',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(categoryValidation.deleteCategories),
   categoryController.deleteCategories
 );
 router.delete(
   '/:categoryId',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(categoryValidation.deleteCategory),
   categoryController.deleteCategory
 );

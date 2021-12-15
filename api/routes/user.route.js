@@ -3,13 +3,13 @@ var router = express.Router();
 const userController = require('../controllers/user.controller');
 const { validate } = require('../helpers/validator.helper');
 const userValidation = require('../helpers/validations/user.validation');
-const { authenticate, authorize } = require('../controllers/user.controller');
+const { authenticate, authorizeRole } = require('../controllers/auth.controller');
 const Role = require('../helpers/roles.helper');
 
 router.get(
   '/all',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   userController.getUsers
 );
 router.post('/signup', validate(userValidation.signup), userController.signup);
@@ -37,7 +37,7 @@ router.delete(
 router.delete(
   '/',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(userValidation.deleteUsers),
   userController.deleteUsers
 );
@@ -50,14 +50,14 @@ router.post(
 router.post(
   '/:userId/enable',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(userValidation.enableUser),
   userController.enableUser
 );
 router.post(
   '/:userId/disable',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(userValidation.disableUser),
   userController.disableUser
 );

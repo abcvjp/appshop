@@ -3,7 +3,7 @@ var router = express.Router();
 const productController = require('../controllers/product.controller');
 const productValidation = require('../helpers/validations/product.validation');
 
-const { authenticate, authorize } = require('../controllers/user.controller');
+const { authenticate, authorizeRole } = require('../controllers/auth.controller');
 const Role = require('../helpers/roles.helper');
 const { validate } = require('../helpers/validator.helper');
 
@@ -21,7 +21,7 @@ router.get(
 router.post(
   '/',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(productValidation.createProduct),
   productController.createProduct
 );
@@ -38,28 +38,28 @@ router.get(
 router.put(
   '/',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(productValidation.updateProducts),
   productController.updateProducts
 );
 router.put(
   '/:productId',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(productValidation.updateProduct),
   productController.updateProduct
 );
 router.delete(
   '/',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(productValidation.deleteProducts),
   productController.deleteProducts
 );
 router.delete(
   '/:productId',
   authenticate({ required: true }),
-  authorize(Role.Admin),
+  authorizeRole(Role.Admin),
   validate(productValidation.deleteProduct),
   productController.deleteProduct
 );
