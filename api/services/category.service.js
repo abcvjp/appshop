@@ -94,6 +94,7 @@ exports.getCategoryBySlug = async ({
 exports.createCategory = async ({
   name,
   description,
+  preview,
   parent_id,
   published,
   meta_title,
@@ -122,6 +123,7 @@ exports.createCategory = async ({
       id,
       name,
       description,
+      preview,
       parent_id,
       published,
       slug: slugName,
@@ -144,6 +146,7 @@ exports.updateCategory = async ({
   name,
   parent_id,
   description,
+  preview,
   published,
   meta_title,
   meta_description,
@@ -194,6 +197,7 @@ exports.updateCategory = async ({
       categoryAfterUpdate = await categoryToUpdate.update({
         name,
         description,
+        preview,
         published,
         slug: slugName,
         path: newPath,
@@ -206,6 +210,7 @@ exports.updateCategory = async ({
         categoryAfterUpdate = await categoryToUpdate.update({
           name,
           description,
+          preview,
           published,
           slug: slugName,
           path: newPath,

@@ -59,6 +59,11 @@ module.exports = (sequelize, DataTypes) => {
           isLowercase: true
         }
       },
+      preview: {
+        type: DataTypes.STRING,
+        field: 'preview',
+        allowNull: true
+      },
       meta_title: {
         type: DataTypes.STRING,
         allowNull: false

@@ -285,6 +285,11 @@ const migrationCommands = (transaction) => [
           unique: true,
           allowNull: false
         },
+        preview: {
+          type: Sequelize.STRING,
+          field: 'preview',
+          allowNull: true
+        },
         meta_title: {
           type: Sequelize.STRING,
           field: 'meta_title',

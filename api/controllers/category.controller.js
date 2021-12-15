@@ -53,6 +53,7 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
   const {
     name,
     description,
+    preview,
     parent_id,
     published,
     meta_title,
@@ -62,6 +63,7 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
   const result = await categoryService.createCategory({
     name,
     description,
+    preview,
     parent_id,
     published,
     meta_title,
@@ -77,6 +79,7 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
     name,
     parent_id,
     description,
+    preview,
     published,
     meta_title,
     meta_description,
@@ -87,6 +90,7 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
     name,
     parent_id,
     description,
+    preview,
     published,
     meta_title,
     meta_description,

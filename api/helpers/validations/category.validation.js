@@ -26,6 +26,7 @@ module.exports = {
     body: Joi.object({
       name: Joi.string().trim().min(1).max(50).required(),
       description: Joi.string().trim().min(20).max(255).required(),
+      preview: Joi.string().trim().min(10).max(255).allow(null),
       parent_id: Joi.string().guid({ version: 'uuidv4' }).allow(null),
       published: Joi.boolean(),
       meta_title: Joi.string().trim().min(1).max(150).required(),
@@ -40,6 +41,7 @@ module.exports = {
     body: Joi.object({
       name: Joi.string().trim().min(1).max(50).required(),
       description: Joi.string().trim().min(20).max(255).required(),
+      preview: Joi.string().trim().min(10).max(255).allow(null),
       published: Joi.boolean(),
       parent_id: Joi.string().guid({ version: 'uuidv4' }).allow(null),
       meta_title: Joi.string().trim().min(1).max(150).required(),
