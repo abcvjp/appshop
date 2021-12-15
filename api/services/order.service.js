@@ -145,7 +145,7 @@ exports.getOrderById = async ({ id }) => {
 };
 
 exports.getOrdersByUserId = async ({
-  userId,
+  user_id,
   status,
   payment_status,
   shipping_status,
@@ -157,7 +157,7 @@ exports.getOrdersByUserId = async ({
 }) => {
   try {
     const whereConditions = {
-      user_id: userId
+      user_id
     };
     if (status) {
       whereConditions['status'] = status;

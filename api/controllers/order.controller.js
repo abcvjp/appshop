@@ -95,9 +95,6 @@ exports.getOrders = asyncHandler(async (req, res, next) => {
 
 exports.getOrdersByUserId = asyncHandler(async (req, res, next) => {
   const { userId } = req.params;
-  if (req.user.role !== Role.Admin && req.user.id !== userId) {
-    throw createError(403, 'You does not have permission to access this');
-  }
   const {
     status,
     payment_status,
@@ -108,8 +105,8 @@ exports.getOrdersByUserId = asyncHandler(async (req, res, next) => {
     page_size,
     sort
   } = req.query;
-  const result = await orderService.getOrders({
-    userId,
+  const result = await orderService.getOrdersByUserId({
+    user_id: userId,
     status,
     payment_status,
     shipping_status,
@@ -125,12 +122,6 @@ exports.getOrdersByUserId = asyncHandler(async (req, res, next) => {
 exports.getOrderById = asyncHandler(async (req, res, next) => {
   const { orderId } = req.params;
   const result = await orderService.getOrderById({ id: orderId });
-  if (req.user.role !== Role.Admin) {
-    const order_owner_user_id = result.data.user_id;
-    if (req.user.id !== order_owner_user_id) {
-      throw createError(403, "You don't have permission to access this");
-    }
-  }
   res.status(200).json(result);
 });
 
