@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
       });
+      Product.hasMany(models.WishItem, {
+        foreignKey: { name: 'product_id', allowNull: false },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
     }
   }
 

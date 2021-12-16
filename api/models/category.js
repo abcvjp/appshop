@@ -10,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Category.hasMany(models.Product, {
         foreignKey: { name: 'category_id', allowNull: false },
-        as: 'products'
+        as: 'products',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       });
       Category.hasMany(Category, {
         foreignKey: {
@@ -18,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: true
         },
         as: 'childs',
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       });
     }
   }

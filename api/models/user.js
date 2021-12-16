@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: { name: 'user_id', allowNull: true },
         onDelete: 'RESTRICT'
       });
+      User.hasMany(models.WishItem, {
+        foreignKey: { name: 'user_id', allowNull: false },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
     }
   }
 
