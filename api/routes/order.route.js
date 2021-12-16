@@ -3,7 +3,7 @@ var router = express.Router();
 const orderController = require('../controllers/order.controller');
 const orderValidation = require('../helpers/validations/order.validation');
 
-const { authenticate, authorizeRole, AuthorizationController } = require('../controllers/auth.controller');
+const { authenticate, authorizeRole, authorizationController } = require('../controllers/auth.controller');
 const Role = require('../helpers/roles.helper');
 const { validate } = require('../helpers/validator.helper');
 
@@ -18,7 +18,7 @@ router.get(
   '/by-user/:userId',
   validate(orderValidation.getOrdersByUserId),
   authenticate({ required: true }),
-  AuthorizationController.getOrdersByUserId,
+  authorizationController.getOrdersByUserId,
   orderController.getOrdersByUserId
 );
 router.post(
@@ -30,7 +30,7 @@ router.get(
   '/:orderId',
   validate(orderValidation.getOrderById),
   authenticate({ required: true }),
-  AuthorizationController.getOrderById,
+  authorizationController.getOrderById,
   orderController.getOrderById
 );
 router.put(
@@ -58,7 +58,7 @@ router.put(
   '/:orderId/cancel',
   validate(orderValidation.cancelOrder),
   authenticate({ required: true }),
-  AuthorizationController.cancelOrder,
+  authorizationController.cancelOrder,
   orderController.cancelOrder
 );
 router.put(

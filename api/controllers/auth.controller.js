@@ -58,9 +58,9 @@ exports.authorizeOwner = (resourceType, resourceId) =>
 	}
   });
 
-const AuthorizationController = {}
+const authorizationController = {}
 
-AuthorizationController.multipleAuthorization = (authorizeServices = []) =>
+authorizationController.multipleAuthorization = (authorizeServices = []) =>
   asyncHandler(async (req, res, next) => {
     const user = req.user;
     if (!user) throw createError(500, 'User to be authorized does not exist');
@@ -73,7 +73,73 @@ AuthorizationController.multipleAuthorization = (authorizeServices = []) =>
 	next();
   });
 
-AuthorizationController.getOrderById = asyncHandler(async (req, res, next) => {
+authorizationController.getUserById = asyncHandler(async (req, res, next) => {
+	const user = req.user;
+	const userId = req.params;
+
+	if (
+		!(await checkPermissionByOwnership({
+			user,
+			resourceId: userId,
+			resourceType: ResourceType.User
+		}))
+			&&
+		!(await checkPermissionByRole({
+			user,
+			roles: Role.Admin
+		}))
+	) {
+		throw createError(403, `You don't have permission to access this`);
+	}
+
+	next();
+});
+
+authorizationController.updateUserInfo = asyncHandler(async (req, res, next) => {
+	const user = req.user;
+	const userId = req.params;
+
+	if (
+		!(await checkPermissionByOwnership({
+			user,
+			resourceId: userId,
+			resourceType: ResourceType.User
+		}))
+			&&
+		!(await checkPermissionByRole({
+			user,
+			roles: Role.Admin
+		}))
+	) {
+		throw createError(403, `You don't have permission to access this`);
+	}
+
+	next();
+});
+
+authorizationController.deleteUser = asyncHandler(async (req, res, next) => {
+	const user = req.user;
+	const userId = req.params;
+
+	if (
+		!(await checkPermissionByOwnership({
+			user,
+			resourceId: userId,
+			resourceType: ResourceType.User
+		}))
+			&&
+		!(await checkPermissionByRole({
+			user,
+			roles: Role.Admin
+		}))
+	) {
+		throw createError(403, `You don't have permission to access this`);
+	}
+
+	next();
+});
+
+authorizationController.getOrderById = asyncHandler(async (req, res, next) => {
 	const user = req.user;
 	const orderId = req.params;
 
@@ -95,7 +161,7 @@ AuthorizationController.getOrderById = asyncHandler(async (req, res, next) => {
 	next();
 });
 
-AuthorizationController.cancelOrder = asyncHandler(async (req, res, next) => {
+authorizationController.cancelOrder = asyncHandler(async (req, res, next) => {
 	const user = req.user;
 	const orderId = req.params;
 
@@ -117,7 +183,7 @@ AuthorizationController.cancelOrder = asyncHandler(async (req, res, next) => {
 	next();
 });
 
-AuthorizationController.getOrdersByUserId = asyncHandler(async (req, res, next) => {
+authorizationController.getOrdersByUserId = asyncHandler(async (req, res, next) => {
 	const user = req.user;
 	const { userId } = req.params;
 
@@ -139,4 +205,4 @@ AuthorizationController.getOrdersByUserId = asyncHandler(async (req, res, next) 
 	next();
 });
 
-exports.AuthorizationController = AuthorizationController;
+exports.authorizationController = authorizationController;

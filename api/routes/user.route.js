@@ -3,7 +3,7 @@ var router = express.Router();
 const userController = require('../controllers/user.controller');
 const { validate } = require('../helpers/validator.helper');
 const userValidation = require('../helpers/validations/user.validation');
-const { authenticate, authorizeRole } = require('../controllers/auth.controller');
+const { authenticate, authorizeRole, authorizationController } = require('../controllers/auth.controller');
 const Role = require('../helpers/roles.helper');
 
 router.get(
@@ -20,18 +20,21 @@ router.get('/logout', authenticate({ required: true }), userController.logout);
 router.get(
   '/:userId',
   validate(userValidation.getUserById),
+  authorizationController.getUserById,
   userController.getUserById
 );
 router.put(
   '/:userId',
   authenticate({ required: true }),
   validate(userValidation.updateUserInfo),
+  authorizationController.updateUserInfo,
   userController.updateUserInfo
 );
 router.delete(
   '/:userId',
   authenticate({ required: true }),
   validate(userValidation.deleteUser),
+  authorizationController.deleteUser,
   userController.deleteUser
 );
 router.delete(

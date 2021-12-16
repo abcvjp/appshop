@@ -3,7 +3,7 @@ var router = express.Router();
 const searchController = require('../controllers/search.controller');
 const searchValidation = require('../helpers/validations/search.validation');
 
-const { authenticate } = require('../controllers/user.controller');
+const { authenticate } = require('../controllers/auth.controller');
 const { validate } = require('../helpers/validator.helper');
 
 router.get(
