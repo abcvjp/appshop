@@ -42,6 +42,7 @@ module.exports = {
       quantity: Joi.number().integer().min(1).required(),
       short_description: Joi.string().trim().min(20).max(300).required(),
       description: Joi.string().min(20).max(30000).required(),
+      preview: Joi.string().trim().required().min(10).max(255).allow(null),
       images: Joi.array()
         .items(
           Joi.object({
@@ -71,6 +72,7 @@ module.exports = {
       quantity: Joi.number().integer().min(0),
       short_description: Joi.string().trim().min(20).max(300),
       description: Joi.string().min(20).max(30000),
+      preview: Joi.string().trim().required().min(10).max(255).allow(null),
       images: Joi.array()
         .items(
           Joi.object({
@@ -101,6 +103,7 @@ module.exports = {
             quantity: Joi.number().integer().min(0),
             short_description: Joi.string().trim().min(20).max(300),
             description: Joi.string().min(20).max(2500),
+            preview: Joi.string().trim().required().min(10).max(255).allow(null),
             images: Joi.array()
               .items(
                 Joi.object({

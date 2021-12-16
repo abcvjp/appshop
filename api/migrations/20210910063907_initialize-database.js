@@ -494,7 +494,16 @@ const migrationCommands = (transaction) => [
           field: 'description',
           allowNull: false
         },
-        images: { type: Sequelize.JSON, field: 'images', allowNull: true },
+        preview: {
+          type: Sequelize.STRING,
+          field: 'preview',
+          allowNull: true
+        },
+        images: {
+          type: Sequelize.JSON,
+          field: 'images',
+          allowNull: true
+        },
         slug: {
           type: Sequelize.STRING,
           field: 'slug',

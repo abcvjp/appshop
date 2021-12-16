@@ -165,6 +165,7 @@ productSamples.push(...require('./quan_jean.data.json'));
 productSamples = productSamples.map((record) => {
   record.createdAt = new Date();
   record.updatedAt = new Date();
+  record.preview = JSON.parse(record.images)[0].url;
   return record;
 });
 
