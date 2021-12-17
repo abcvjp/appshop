@@ -571,6 +571,63 @@
                 }
             }
         },
+        "Reviews": {
+            "tableName": "Reviews",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "star": {
+                    "allowNull": false,
+                    "field": "star",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "comment": {
+                    "allowNull": true,
+                    "field": "comment",
+                    "seqType": "Sequelize.TEXT(\"medium\")"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "product_id": {
+                    "allowNull": false,
+                    "name": "product_id",
+                    "references": {
+                        "model": "Products",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "field": "product_id",
+                    "seqType": "Sequelize.UUID"
+                },
+                "user_id": {
+                    "allowNull": false,
+                    "name": "user_id",
+                    "references": {
+                        "model": "Users",
+                        "key": "id"
+                    },
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
+                    "field": "user_id",
+                    "seqType": "Sequelize.UUID"
+                }
+            },
+            "indexes": []
+        },
         "ShippingMethods": {
             "tableName": "ShippingMethods",
             "schema": {

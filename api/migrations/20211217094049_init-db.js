@@ -11,6 +11,7 @@ const Sequelize = require("sequelize");
  * createTable() => "Orders", deps: [Users, PaymentMethods, ShippingMethods]
  * createTable() => "Products", deps: [Categories]
  * createTable() => "OrderItems", deps: [Orders, Products]
+ * createTable() => "Reviews", deps: [Products, Users]
  * createTable() => "WishItems", deps: [Products, Users]
  * addIndex(name_path_keyword_idx) => "Categories"
  * addIndex(name_title_keyword_idx) => "Products"
@@ -20,7 +21,7 @@ const Sequelize = require("sequelize");
 const info = {
   revision: 1,
   name: "init-db",
-  created: "2021-12-16T04:12:13.371Z",
+  created: "2021-12-17T09:40:49.359Z",
   comment: "",
 };
 
@@ -602,6 +603,56 @@ const migrationCommands = (transaction) => [
   {
     fn: "createTable",
     params: [
+      "Reviews",
+      {
+        id: {
+          type: Sequelize.INTEGER,
+          field: "id",
+          autoIncrement: true,
+          primaryKey: true,
+          allowNull: false,
+        },
+        star: { type: Sequelize.INTEGER, field: "star", allowNull: false },
+        comment: {
+          type: Sequelize.TEXT("medium"),
+          field: "comment",
+          allowNull: true,
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          field: "createdAt",
+          allowNull: false,
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          field: "updatedAt",
+          allowNull: false,
+        },
+        product_id: {
+          type: Sequelize.UUID,
+          field: "product_id",
+          onUpdate: "CASCADE",
+          onDelete: "CASCADE",
+          references: { model: "Products", key: "id" },
+          name: "product_id",
+          allowNull: false,
+        },
+        user_id: {
+          type: Sequelize.UUID,
+          field: "user_id",
+          onUpdate: "CASCADE",
+          onDelete: "NO ACTION",
+          references: { model: "Users", key: "id" },
+          name: "user_id",
+          allowNull: false,
+        },
+      },
+      { transaction },
+    ],
+  },
+  {
+    fn: "createTable",
+    params: [
       "WishItems",
       {
         id: {
@@ -651,6 +702,7 @@ const migrationCommands = (transaction) => [
       {
         indexName: "name_path_keyword_idx",
         name: "name_path_keyword_idx",
+        type: "FULLTEXT",
         transaction,
       },
     ],
@@ -663,6 +715,7 @@ const migrationCommands = (transaction) => [
       {
         indexName: "name_title_keyword_idx",
         name: "name_title_keyword_idx",
+        type: "FULLTEXT",
         transaction,
       },
     ],
@@ -685,6 +738,10 @@ const rollbackCommands = (transaction) => [
   {
     fn: "dropTable",
     params: ["OrderReports", { transaction }],
+  },
+  {
+    fn: "dropTable",
+    params: ["Reviews", { transaction }],
   },
   {
     fn: "dropTable",

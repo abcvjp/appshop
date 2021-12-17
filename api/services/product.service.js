@@ -1,4 +1,3 @@
-const Product = require('../models').Product;
 const { sequelize, Sequelize } = require('../models');
 const createError = require('http-errors');
 const slug = require('slug');
@@ -6,6 +5,8 @@ const { uuid } = require('uuidv4');
 const { calculateLimitAndOffset, paginate } = require('paginate-info');
 const { roundPrice } = require('../helpers/logicFunc.helper');
 const { deleteObjProps } = require('../helpers/js.helper');
+
+const { Product, Review, User } = require('../models');
 
 exports.getProducts = async ({
   current_page,
@@ -394,6 +395,56 @@ exports.deleteProducts = async ({ productIds }) => {
     });
     return {
       success: true
+    };
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+};
+
+exports.reviewProduct = async ({ userId, productId, star, comment }) => {
+  try {
+    await Review.create({
+      user_id: userId,
+      product_id: productId,
+      star,
+      comment
+    });
+    return { success: true };
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+};
+
+exports.getProductReviews = async ({
+  productId,
+  current_page,
+  page_size,
+  sort
+}) => {
+  try {
+    const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
+    const { rows, count } = await Review.findAndCountAll({
+      where: {
+        product_id: productId
+      },
+      include: [
+        {
+          association: 'user',
+          required: true,
+          attributes: ['id', 'full_name', 'avatar']
+        }
+      ],
+      attributes: ['star', 'comment'],
+      limit,
+      offset,
+      order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
+    });
+    if (rows.length === 0) throw createError(404, "Can't find any review of this product");
+    const pagination = paginate(current_page, count, rows, page_size);
+    return {
+      success: true,
+      data: rows,
+      pagination
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);

@@ -127,3 +127,28 @@ exports.getProductById = asyncHandler(async (req, res, next) => {
   const result = await productService.getProductById({ id: productId });
   res.status(200).json(result);
 });
+
+exports.reviewProduct = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id;
+  const { productId } = req.params;
+  const { star, comment } = req.body;
+  const result = await productService.reviewProduct({
+    userId,
+    productId,
+    star,
+    comment
+  });
+  res.status(200).json(result);
+});
+
+exports.getProductReviews = asyncHandler(async (req, res, next) => {
+  const { productId } = req.params;
+  const { current_page, page_size, sort } = req.query;
+  const result = await productService.getProductReviews({
+    productId,
+    current_page,
+    page_size,
+    sort
+  });
+  res.status(200).json(result);
+});

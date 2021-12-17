@@ -3,8 +3,8 @@ const Joi = require('joi');
 module.exports = {
   getProducts: {
     query: Joi.object({
-      current_page: Joi.number().integer().min(1),
-      page_size: Joi.number().integer().min(1),
+      current_page: Joi.number().integer().min(1).required(),
+      page_size: Joi.number().integer().min(1).required(),
       sort: Joi.string().min(1),
       category_id: Joi.string().guid({ version: 'uuidv4' }),
       category_slug: Joi.string().min(1),
@@ -133,6 +133,25 @@ module.exports = {
         .min(1)
         .items(Joi.string().guid({ version: 'uuidv4' }))
         .required()
+    })
+  },
+  reviewProduct: {
+    params: Joi.object({
+      productId: Joi.string().guid({ version: 'uuidv4' }).required()
+    }),
+    body: Joi.object({
+      star: Joi.number().integer().min(1).max(5),
+      comment: Joi.string().trim().min(30).max(300)
+    })
+  },
+  getProductReviews: {
+    params: Joi.object({
+      productId: Joi.string().guid({ version: 'uuidv4' }).required()
+    }),
+    query: Joi.object({
+      current_page: Joi.number().integer().min(1).required(),
+      page_size: Joi.number().integer().min(1).required(),
+      sort: Joi.string().min(1)
     })
   }
 };
