@@ -6,7 +6,7 @@ const { calculateLimitAndOffset, paginate } = require('paginate-info');
 const { roundPrice } = require('../helpers/logicFunc.helper');
 const { deleteObjProps } = require('../helpers/js.helper');
 
-const { Product, Review, User } = require('../models');
+const { Product, Review, OrderItem, Order } = require('../models');
 
 exports.getProducts = async ({
   current_page,
@@ -403,6 +403,32 @@ exports.deleteProducts = async ({ productIds }) => {
 
 exports.reviewProduct = async ({ userId, productId, star, comment }) => {
   try {
+    const reviewedCount = await Review.count({
+      where: {
+        user_id: userId,
+        product_id: productId
+      }
+    });
+    const orderedCount = await OrderItem.count({
+      where: {
+        product_id: productId
+      },
+      include: {
+        association: 'order',
+        required: true,
+        where: {
+          user_id: userId
+        }
+      }
+    });
+    console.log(orderedCount)
+    if (orderedCount === 0) {
+      throw createError(403, 'You have not bought to be able to review this product');
+    }
+    if (reviewedCount >= orderedCount) {
+      throw createError(403, 'You have already review this product');
+    }
+
     await Review.create({
       user_id: userId,
       product_id: productId,
