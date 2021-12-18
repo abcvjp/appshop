@@ -34,7 +34,9 @@ exports.getProducts = async ({
 				)
 				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, 1-p.price/p.root_price AS discount,
 					p.quantity, p.sold,
-					p.short_description, p.description, p.preview, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
+					p.short_description, p.description,
+          p.preview, p.images, (SELECT star from ProductStars WHERE product_id = p.id) as star,
+          p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
 				WHERE
@@ -75,7 +77,9 @@ exports.getProducts = async ({
 				)
 				SELECT p.id, p.name, p.enable, p.published, p.title, p.price, p.root_price, 1-p.price/p.root_price AS discount,
 					p.quantity, p.sold,
-					p.short_description, p.description, p.preview, p.images, p.slug, p.meta_title, p.meta_keywords, p.meta_description,
+					p.short_description, p.description,
+          p.preview, p.images, (SELECT star from ProductStars WHERE product_id = p.id) as star,
+          p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug'
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
 				WHERE
@@ -136,7 +140,10 @@ exports.getProducts = async ({
         },
         where: filter,
         attributes: {
-          include: [[Sequelize.literal('1-price/root_price'), 'discount']],
+          include: [
+            [Sequelize.literal('1-price/root_price'), 'discount'],
+            [Sequelize.literal(`(SELECT star from ProductStars WHERE product_id = Product.id)`), 'star']
+          ],
           exclude: ['category_id'].concat(exclude)
         },
         limit,
@@ -168,6 +175,9 @@ exports.getProductBySlug = async ({ slug }) => {
         attributes: ['id', 'name', 'path', 'slug']
       },
       attributes: {
+        include: [
+          [Sequelize.literal(`(SELECT star from ProductStars WHERE product_id = Product.id)`), 'star']
+        ],
         exclude: ['category_id']
       }
     });
@@ -190,6 +200,9 @@ exports.getProductById = async ({ id }) => {
         attributes: ['id', 'name', 'path', 'slug']
       },
       attributes: {
+        include: [
+          [Sequelize.literal(`(SELECT star from ProductStars WHERE product_id = Product.id)`), 'star']
+        ],
         exclude: ['category_id']
       }
     });
