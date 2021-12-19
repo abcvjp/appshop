@@ -133,12 +133,12 @@ exports.getProducts = async ({
         sort = ['createdAt', 'DESC'];
       }
       var { rows, count } = await Product.findAndCountAll({
+        where: filter,
         include: {
           association: 'category',
           required: true,
           attributes: ['id', 'name', 'slug']
         },
-        where: filter,
         attributes: {
           include: [
             [Sequelize.literal('1-price/root_price'), 'discount'],
@@ -231,6 +231,41 @@ exports.getRelatedProducts = async ({ productId }) => {
     return {
       success: true,
       data: relatedProducts
+    };
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+};
+
+exports.getHotProducts = async ({
+  current_page,
+  page_size,
+  sort
+}) => {
+  try {
+    const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
+    const { rows, count } = await Product.findAndCountAll({
+      include: {
+          association: 'category',
+          required: true,
+          attributes: ['id', 'name', 'slug']
+      },
+      attributes: {
+        include: [
+          [Sequelize.literal(`(SELECT star from ProductStars WHERE product_id = Product.id)`), 'star']
+        ],
+        exclude: ['category_id']
+      },
+      limit,
+      offset,
+      order: [['sold', 'DESC']]
+    });
+    if (rows.length < 1) throw createError(404, 'Can not find any hot product');
+    const pagination = paginate(current_page, count, rows, page_size);
+    return {
+      success: true,
+      data: rows,
+      pagination
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -430,11 +465,11 @@ exports.reviewProduct = async ({ userId, productId, star, comment }) => {
         association: 'order',
         required: true,
         where: {
-          user_id: userId
+          user_id: userId,
+          status: 'Completed'
         }
       }
     });
-    console.log(orderedCount)
     if (orderedCount === 0) {
       throw createError(403, 'You have not bought to be able to review this product');
     }

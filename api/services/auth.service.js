@@ -35,7 +35,7 @@ exports.checkPermissionByOwnership = async ({ user, resourceId, resourceType }) 
 			if (!resourceFromServer) {
 				throw createError(500, 'checkPermissionByOwnership error: resource does not exist');
 			}
-			if (!resourceFromServer.user_id) {
+			if (resourceFromServer.user_id === undefined) {
 				throw createError(500, 'checkPermissionByOwnership error: resource type does not have ownership with user type');
 			}
 
