@@ -2,11 +2,12 @@ const { sequelize, Sequelize } = require('../models');
 const createError = require('http-errors');
 const slug = require('slug');
 const { uuid } = require('uuidv4');
+const moment = require('moment');
 const { calculateLimitAndOffset, paginate } = require('paginate-info');
 const { roundPrice } = require('../helpers/logicFunc.helper');
 const { deleteObjProps } = require('../helpers/js.helper');
 
-const { Product, Review, OrderItem, Order } = require('../models');
+const { Product, Review, OrderItem } = require('../models');
 
 exports.getProducts = async ({
   current_page,
@@ -237,7 +238,8 @@ exports.getRelatedProducts = async ({ productId }) => {
   }
 };
 
-exports.getHotProducts = async ({
+exports.getRecentProducts = async ({
+  recent_days,
   current_page,
   page_size,
   sort
@@ -245,10 +247,17 @@ exports.getHotProducts = async ({
   try {
     const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
     const { rows, count } = await Product.findAndCountAll({
+      where: {
+        createdAt: {
+          [Sequelize.Op.gte]: moment().subtract(recent_days, 'days').toDate()
+        },
+        published: true,
+        enable: true
+      },
       include: {
-          association: 'category',
-          required: true,
-          attributes: ['id', 'name', 'slug']
+        association: 'category',
+        required: true,
+        attributes: ['id', 'name', 'slug']
       },
       attributes: {
         include: [
@@ -258,7 +267,7 @@ exports.getHotProducts = async ({
       },
       limit,
       offset,
-      order: [['sold', 'DESC']]
+      order: sort ? [[sort.split('.')]] : [['createdAt', 'DESC']]
     });
     if (rows.length < 1) throw createError(404, 'Can not find any hot product');
     const pagination = paginate(current_page, count, rows, page_size);

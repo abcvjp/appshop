@@ -14,6 +14,11 @@ router.get(
   productController.getProducts
 );
 router.get(
+  '/recent',
+  validate(productValidation.getRecentProducts),
+  productController.getRecentProducts
+);
+router.get(
   '/',
   validate(productValidation.getProduct),
   productController.getProduct

@@ -122,6 +122,12 @@ exports.getRelatedProducts = asyncHandler(async (req, res, next) => {
   res.status(200).json(result);
 });
 
+exports.getRecentProducts = asyncHandler(async (req, res, next) => {
+  const { recent_days, current_page, page_size, sort } = req.query;
+  const result = await productService.getRecentProducts({ recent_days, current_page, page_size, sort });
+  res.status(200).json(result);
+});
+
 exports.getProductById = asyncHandler(async (req, res, next) => {
   const productId = req.params.productId;
   const result = await productService.getProductById({ id: productId });

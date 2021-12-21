@@ -30,6 +30,14 @@ module.exports = {
       productId: Joi.string().guid({ version: 'uuidv4' }).required()
     })
   },
+  getRecentProducts: {
+    query: Joi.object({
+      recent_days: Joi.number().integer().min(1).required(),
+      current_page: Joi.number().integer().min(1).required(),
+      page_size: Joi.number().integer().min(1).required(),
+      sort: Joi.string().min(1)
+    })
+  },
   createProduct: {
     body: Joi.object({
       enable: Joi.boolean(),
