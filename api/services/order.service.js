@@ -238,9 +238,7 @@ exports.createOrder = async ({
 }) => {
   try {
     // VALID AND CACULATE TOTAL COST
-    order_items.sort((a, b) => {
-      return a.product_id < b.product_id ? -1 : 1;
-    });
+
     // fetch product and shipping method
     const [productsInDB, shippingMethod, paymentMethod] = await Promise.all([
       Product.findAll({
@@ -269,34 +267,38 @@ exports.createOrder = async ({
     if (productsInDB.length !== order_items.length)
       throw createError(409, 'Any or some product ordered no longer exist');
 
+    const productsFromServer = {};
+    productsInDB.forEach(product => {
+      productsFromServer[product.id] = product;
+    });
+
     let item_total = 0;
     let item_root_total = 0;
     let items_number = 0;
-    order_items.forEach((orderItem, i) => {
-      const productInDB = productsInDB[i];
-      if (!productInDB.enable) {
-        throw createError(409, `Product ${orderItem.name} is disabled`);
+
+    order_items.forEach((orderItem) => {
+      const productFromServer = productsFromServer[orderItem.product_id];
+      if (!productFromServer.enable) {
+        throw createError(409, `Product ${orderItem.product_name} is disabled`);
       }
-      if (productInDB.quantity < orderItem.quantity) {
+      if (productFromServer.quantity < orderItem.quantity) {
         throw createError(
           409,
-          `Stock quantity of ${orderItem.name} is not enough`
+          `Stock quantity of ${orderItem.product_name} is not enough`
         );
       }
-      if (productInDB.price !== orderItem.price) {
+      if (productFromServer.price !== orderItem.price) {
         throw createError(
           409,
           `Price of ${orderItem.product_name} has changed`
         );
       }
-      if (productInDB.name !== orderItem.product_name) {
-        throw createError(409, `Name of ${orderItem.product_name} has changed`);
-      }
-      orderItem.product_thumbnail = productInDB.images
-        ? productInDB.images[0].url
+
+      orderItem.product_thumbnail = productFromServer.images
+        ? productFromServer.preview
         : null;
-      item_total += productInDB.price * orderItem.quantity;
-      item_root_total += productInDB.root_price * orderItem.quantity;
+      item_total += productFromServer.price * orderItem.quantity;
+      item_root_total += productFromServer.root_price * orderItem.quantity;
       items_number += orderItem.quantity;
     });
 
@@ -329,14 +331,14 @@ exports.createOrder = async ({
           items_number
         })
       ]; // create order
-      order_items.map((order_item, i) => {
+      order_items.map(order_item => {
         // create order items and update product stock quantity
         promises.push(
           OrderItem.create({
             ...order_item,
             order_id: newOrder.id
           }),
-          productsInDB[i].decrement('quantity', { by: order_item.quantity })
+          productsFromServer[order_item.product_id].decrement('quantity', { by: order_item.quantity })
         );
       });
       await Promise.all(promises);
