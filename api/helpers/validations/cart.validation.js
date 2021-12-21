@@ -34,7 +34,7 @@ module.exports = {
   updateCart: {
     body: Joi.object({
       cart_items: Joi.array()
-        .min(1)
+        .min(0)
         .items(
           Joi.object({
             product_id: Joi.string().guid({ version: 'uuidv4' }).required(),

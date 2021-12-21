@@ -1,7 +1,28 @@
 const { Product, Cart } = require('../models');
 const createError = require('http-errors');
 const { roundPrice } = require('../helpers/logicFunc.helper');
+const { isObjectEmpty } = require('../helpers/js.helper');
 const { upsert } = require('../helpers/model.helper');
+
+exports.getCart = async ({ user_id }) => {
+  try {
+    const result = await Cart.findOne({
+      where: { user_id },
+      attributes: {
+        exclude: ['id', 'user_id', 'createdAt']
+      }
+    });
+    if (!result) {
+      throw createError(404, 'Your cart is empty');
+    }
+    return {
+      success: true,
+      data: result
+    };
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+};
 
 exports.caculateSubTotal = async ({ cart_items }) => {
   try {
@@ -124,6 +145,20 @@ exports.checkCartValid = async ({ cart_items }) => {
 
 exports.updateCart = async ({ user_id, cart_items }) => {
   try {
+    if (cart_items.length === 0) {
+      await Cart.destroy({
+        where: { user_id }
+      });
+      return {
+        success: true,
+        data: {
+          messages: null,
+          updated_items: null,
+          sub_total: 0
+        }
+      };
+    }
+
     const serverProducts = {};
     const fetchedProducts = await Product.findAll({
       where: {
@@ -212,9 +247,11 @@ exports.updateCart = async ({ user_id, cart_items }) => {
 
     return {
       success: true,
-      messages,
-      updated_items,
-      sub_total
+      data: {
+        messages: isObjectEmpty(messages) ? null : messages,
+        updated_items,
+        sub_total
+      }
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
