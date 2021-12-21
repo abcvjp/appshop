@@ -250,6 +250,49 @@ const migrationCommands = (transaction) => [
   {
     fn: "createTable",
     params: [
+      "Carts",
+      {
+        id: {
+          type: Sequelize.INTEGER,
+          field: "id",
+          autoIncrement: true,
+          primaryKey: true,
+          allowNull: false,
+        },
+        items: { type: Sequelize.JSON, field: "items", allowNull: true },
+        sub_total: {
+          type: Sequelize.DOUBLE,
+          field: "sub_total",
+          defaultValue: 0,
+          allowNull: false,
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          field: "createdAt",
+          allowNull: false,
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          field: "updatedAt",
+          allowNull: false,
+        },
+        user_id: {
+          type: Sequelize.UUID,
+          field: "user_id",
+          onUpdate: "CASCADE",
+          onDelete: "NO ACTION",
+          references: { model: "Users", key: "id" },
+          unique: true,
+          name: "user_id",
+          allowNull: false,
+        },
+      },
+      { transaction },
+    ],
+  },
+  {
+    fn: "createTable",
+    params: [
       "Categories",
       {
         id: {
@@ -725,6 +768,10 @@ const migrationCommands = (transaction) => [
 const rollbackCommands = (transaction) => [
   {
     fn: "dropTable",
+    params: ["Carts", { transaction }],
+  },
+  {
+    fn: "dropTable",
     params: ["WishItems", { transaction }],
   },
   {
@@ -762,7 +809,7 @@ const rollbackCommands = (transaction) => [
   {
     fn: "dropTable",
     params: ["Users", { transaction }],
-  },
+  }
 ];
 
 const pos = 0;

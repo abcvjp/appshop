@@ -23,6 +23,12 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'RESTRICT',
         as: 'reviews'
       });
+      User.hasOne(models.Cart, {
+        foreignKey: { name: 'user_id', allowNull: true },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        as: 'cart'
+      });
     }
   }
 

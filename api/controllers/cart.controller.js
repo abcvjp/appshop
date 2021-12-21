@@ -13,3 +13,13 @@ exports.checkCartValid = asyncHandler(async (req, res, next) => {
   const result = await cartService.checkCartValid({ cart_items });
   res.status(200).json(result);
 });
+
+exports.updateCart = asyncHandler(async (req, res, next) => {
+  const user = req.user;
+  const { cart_items } = req.body;
+  const result = await cartService.updateCart({
+    user_id: user.id,
+    cart_items
+  });
+  res.status(200).json(result);
+});
