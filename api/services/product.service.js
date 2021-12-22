@@ -217,21 +217,49 @@ exports.getProductById = async ({ id }) => {
   }
 };
 
-exports.getRelatedProducts = async ({ productId }) => {
+exports.getRelatedProducts = async ({
+  product_id,
+  current_page,
+  page_size
+}) => {
   try {
-    const productById = await Product.findByPk(productId, {
-      attributes: ['category_id']
+    const productFromServer = await Product.findByPk(product_id, {
+      attributes: ['category_id', 'name']
     });
-    if (!productById) throw createError(404, 'Product does not exist');
-    const relatedProducts = await Product.findAll({
+    if (!productFromServer) throw createError(404, 'Product does not exist');
+
+    const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
+    const { rows, count } = await Product.findAndCountAll({
       where: {
-        category_id: productById.category_id
+        category_id: productFromServer.category_id,
+        [Sequelize.Op.and]: [
+          Sequelize.literal(`MATCH (Product.name,Product.title,Product.meta_keywords) AGAINST ('${productFromServer.name}' IN BOOLEAN MODE)`)
+        ],
+        published: true,
+        enable: true
       },
-      limit: 10
+      include: {
+        association: 'category',
+        required: true,
+        attributes: ['id', 'name', 'slug']
+      },
+      attributes: {
+        include: [
+          [Sequelize.literal(`(SELECT star from ProductStars WHERE product_id = Product.id)`), 'star'],
+          [Sequelize.literal(`MATCH (Product.name,Product.title,Product.meta_keywords) AGAINST ('${productFromServer.name}' IN BOOLEAN MODE)`), 'relevance']
+        ],
+        exclude: ['category_id', 'description', 'publised', 'enabled']
+      },
+      limit,
+      offset,
+      order: [[Sequelize.literal('relevance'), 'DESC']]
     });
+    if (rows.length < 1) throw createError(404, 'Can not find any hot product');
+    const pagination = paginate(current_page, count, rows, page_size);
     return {
       success: true,
-      data: relatedProducts
+      data: rows,
+      pagination
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
@@ -517,7 +545,9 @@ exports.getProductReviews = async ({
           attributes: ['id', 'full_name', 'avatar']
         }
       ],
-      attributes: ['star', 'comment'],
+      attributes: {
+        exclude: ['id', 'user_id']
+      },
       limit,
       offset,
       order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]

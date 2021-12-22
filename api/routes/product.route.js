@@ -19,6 +19,11 @@ router.get(
   productController.getRecentProducts
 );
 router.get(
+  '/:productId/related',
+  validate(productValidation.getRelatedProducts),
+  productController.getRelatedProducts
+);
+router.get(
   '/',
   validate(productValidation.getProduct),
   productController.getProduct

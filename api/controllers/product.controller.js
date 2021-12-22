@@ -118,7 +118,8 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 
 exports.getRelatedProducts = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
-  const result = await productService.getRelatedProducts({ productId });
+  const { current_page, page_size } = req.query;
+  const result = await productService.getRelatedProducts({ product_id: productId, current_page, page_size });
   res.status(200).json(result);
 });
 

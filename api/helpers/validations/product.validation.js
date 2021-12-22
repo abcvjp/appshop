@@ -28,6 +28,10 @@ module.exports = {
   getRelatedProducts: {
     params: Joi.object({
       productId: Joi.string().guid({ version: 'uuidv4' }).required()
+    }),
+    query: Joi.object({
+      current_page: Joi.number().integer().min(1).required(),
+      page_size: Joi.number().integer().min(1).required(),
     })
   },
   getRecentProducts: {
