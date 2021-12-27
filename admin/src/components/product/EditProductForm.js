@@ -41,7 +41,6 @@ const EditProductForm = ({ productId }) => {
   const { product } = state;
 
   const handleUpdateImages = async (newImages) => {
-    console.log(newImages);
     dispatch(openFullScreenLoading());
     try {
       await productApi.editProduct(productId, {
