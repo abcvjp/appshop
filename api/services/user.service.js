@@ -280,8 +280,9 @@ exports.getUsers = async ({
       offset,
       order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
     });
-    if (rows.length === 0) throw createError(404, "Can't find any user");
+
     const pagination = paginate(current_page, count, rows, page_size);
+    
     return {
       success: true,
       data: rows,

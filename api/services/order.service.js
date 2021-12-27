@@ -95,8 +95,9 @@ exports.getOrders = async ({
       offset,
       order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
     });
-    if (rows.length === 0) throw createError(404, "Can't find any order");
+
     const pagination = paginate(current_page, count, rows, page_size);
+
     return {
       success: true,
       data: rows,
@@ -214,8 +215,9 @@ exports.getOrdersByUserId = async ({
       offset,
       order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
     });
-    if (rows.length === 0) throw createError(404, "Can't find any order");
+
     const pagination = paginate(current_page, count, rows, page_size);
+    
     return {
       success: true,
       data: rows,

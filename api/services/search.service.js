@@ -92,7 +92,7 @@ exports.searchProducts = async ({
       var count = rows.length;
       var result = rows.slice(offset, offset + limit);
     }
-    if (result.length < 1) throw createError(404, `No result found`);
+
     const pagination = paginate(current_page, count, result, page_size);
 
     if (exclude) {
@@ -161,7 +161,7 @@ exports.searchCategories = async ({
       offset,
       order: [order_by ? order_by : [Sequelize.literal('relevance'), 'DESC']]
     });
-    if (rows.length < 1) throw createError(404, 'Can not find any category');
+    
     const pagination = paginate(current_page, count, rows, page_size);
     return {
       success: true,

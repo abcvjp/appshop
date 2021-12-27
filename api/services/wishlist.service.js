@@ -29,8 +29,9 @@ exports.getWishList = async ({
 		offset,
 		order: [['createdAt', 'DESC']]
     });
-    if (rows.length < 1) throw createError(404, 'Can not find any wishlist item');
+
     const pagination = paginate(current_page, count, rows, page_size);
+	
     return {
       success: true,
       data: rows,

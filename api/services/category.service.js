@@ -28,7 +28,6 @@ exports.getCategories = async ({
       offset,
       order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
     });
-    if (rows.length < 1) throw createError(404, 'Can not find any category');
     const pagination = paginate(current_page, count, rows, page_size);
     return {
       success: true,

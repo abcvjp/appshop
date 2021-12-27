@@ -153,7 +153,7 @@ exports.getProducts = async ({
       });
       var result = rows;
     }
-    if (result.length < 1) throw createError(404, "Can't find any product");
+    
     const pagination = paginate(current_page, count, result, page_size);
 
     return {
@@ -254,7 +254,7 @@ exports.getRelatedProducts = async ({
       offset,
       order: [[Sequelize.literal('relevance'), 'DESC']]
     });
-    if (rows.length < 1) throw createError(404, 'Can not find any hot product');
+
     const pagination = paginate(current_page, count, rows, page_size);
     return {
       success: true,
@@ -297,8 +297,9 @@ exports.getRecentProducts = async ({
       offset,
       order: sort ? [[sort.split('.')]] : [['createdAt', 'DESC']]
     });
-    if (rows.length < 1) throw createError(404, 'Can not find any hot product');
+
     const pagination = paginate(current_page, count, rows, page_size);
+
     return {
       success: true,
       data: rows,
@@ -552,7 +553,7 @@ exports.getProductReviews = async ({
       offset,
       order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
     });
-    if (rows.length === 0) throw createError(404, "Can't find any review of this product");
+    
     const pagination = paginate(current_page, count, rows, page_size);
     return {
       success: true,

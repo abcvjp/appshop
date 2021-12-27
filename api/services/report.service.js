@@ -66,8 +66,7 @@ exports.getOrderReport = async ({
       order: sort ? [sort.split('.')] : [[Sequelize.literal('time'), 'DESC']]
     });
     const count = rows.length;
-    if (rows.length === 0)
-      throw createError(404, "Can't find any order report");
+    
     const pagination = paginate(current_page, count, rows, page_size);
     return {
       success: true,
