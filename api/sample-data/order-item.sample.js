@@ -1,4 +1,4 @@
-module.exports = [
+const sampleOrderItems = [
   {
     price: 5,
     quantity: 2,
@@ -7,8 +7,6 @@ module.exports = [
     product_name: 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY',
     product_thumbnail:
       'https://salt.tikicdn.com/ts/product/f2/07/0c/f82510bad668f00d4f057a70a9c72802.jpg',
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     price: 5,
@@ -18,7 +16,12 @@ module.exports = [
     product_name: 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY 2',
     product_thumbnail:
       'https://salt.tikicdn.com/ts/product/f2/07/0c/f82510bad668f00d4f057a70a9c72802.jpg',
-    createdAt: new Date(),
-    updatedAt: new Date()
   }
 ];
+
+sampleOrderItems.forEach(record => {
+  record.createdAt = new Date();
+  record.updatedAt = new Date();
+});
+
+module.exports = sampleOrderItems;

@@ -1,4 +1,4 @@
-module.exports = [
+const sampleOrders = [
   {
     id: '9e648f69-8381-4f67-b7d7-4743a78f7f34',
     user_id: '3ce3237b-e19f-4cde-ace9-c7bdb6c1b1a0',
@@ -12,8 +12,6 @@ module.exports = [
     shipping_note: 'Shipper cẩn thận vì nhà có chó dữ',
     payment_method_id: 1,
     shipping_method_id: 2,
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     id: '257d2905-e7d7-4060-8840-f63c1a456417',
@@ -27,7 +25,12 @@ module.exports = [
     shipping_note: 'Shipper cẩn thận vì nhà có chó dữ',
     payment_method_id: 2,
     shipping_method_id: 2,
-    createdAt: new Date(),
-    updatedAt: new Date()
   }
 ];
+
+sampleOrders.forEach(record => {
+  record.createdAt = new Date();
+  record.updatedAt = new Date();
+});
+
+module.exports = sampleOrders;

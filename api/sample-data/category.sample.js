@@ -1,4 +1,4 @@
-module.exports = [
+const sampleCategories = [
   {
     id: 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989',
     name: 'Thời trang nam',
@@ -8,8 +8,6 @@ module.exports = [
     slug: 'thoi-trang-nam',
     meta_title: 'Thời trang nam',
     parent_id: null,
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     id: '47a7e2d8-a1bb-4efd-a532-7b4a7dc2cde3',
@@ -20,8 +18,6 @@ module.exports = [
     slug: 'thoi-trang-nu',
     meta_title: 'Thời trang nữ',
     parent_id: null,
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     id: 'd278a1cb-d2e9-47a0-afd2-36925ca84e60',
@@ -32,8 +28,6 @@ module.exports = [
     slug: 'ao-nam',
     meta_title: 'Áo nam',
     parent_id: 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989',
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     id: '42cfd49d-e9bc-4e17-b603-95df6ea3c19a',
@@ -44,8 +38,6 @@ module.exports = [
     slug: 'quan-nam',
     meta_title: 'Quần nam',
     parent_id: 'd08e5a2d-fba2-4d5b-90cd-8cc1cd90e989',
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     id: 'cf24f9e7-aaa1-464f-8ceb-519ec05e0ed0',
@@ -56,8 +48,6 @@ module.exports = [
     slug: 'vay-nu',
     meta_title: 'Váy nữ',
     parent_id: '47a7e2d8-a1bb-4efd-a532-7b4a7dc2cde3',
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     id: 'd649137e-2e01-45cf-8ef7-50b737fd8548',
@@ -68,8 +58,6 @@ module.exports = [
     slug: 'ao-so-mi-nam',
     meta_title: 'Áo sơ mi nam',
     parent_id: 'd278a1cb-d2e9-47a0-afd2-36925ca84e60',
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     id: 'd4bcb431-7389-40cd-869e-087cebac5595',
@@ -81,8 +69,6 @@ module.exports = [
     meta_title: 'Nhà Cửa - Đời Sống',
     meta_description: null,
     meta_keywords: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
     parent_id: null
   },
   {
@@ -95,8 +81,6 @@ module.exports = [
     meta_title: 'Laptop - Máy Vi Tính',
     meta_description: null,
     meta_keywords: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
     parent_id: null
   },
   {
@@ -109,8 +93,6 @@ module.exports = [
     meta_title: 'Thiết Bị Số - Phụ Kiện Số',
     meta_description: null,
     meta_keywords: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
     parent_id: null
   },
   {
@@ -123,8 +105,6 @@ module.exports = [
     meta_title: 'Áo thun nam',
     meta_description: null,
     meta_keywords: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
     parent_id: 'd278a1cb-d2e9-47a0-afd2-36925ca84e60'
   },
   {
@@ -137,8 +117,6 @@ module.exports = [
     meta_title: 'Áo thun nam ngắn tay không cổ',
     meta_description: null,
     meta_keywords: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
     parent_id: '463db887-e64c-4062-be1a-a24109d2cb4a'
   },
   {
@@ -151,8 +129,6 @@ module.exports = [
     meta_title: 'Áo blazer nam',
     meta_description: null,
     meta_keywords: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
     parent_id: 'd278a1cb-d2e9-47a0-afd2-36925ca84e60'
   },
   {
@@ -164,8 +140,6 @@ module.exports = [
     slug: 'quan-tay',
     meta_title: 'Quần tây',
     parent_id: '42cfd49d-e9bc-4e17-b603-95df6ea3c19a',
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     id: 'e71ab7e6-c8f0-41a0-98ec-7cb5b817aa76',
@@ -176,7 +150,12 @@ module.exports = [
     slug: 'quan-jean',
     meta_title: 'Quần jean',
     parent_id: '42cfd49d-e9bc-4e17-b603-95df6ea3c19a',
-    createdAt: new Date(),
-    updatedAt: new Date()
   }
 ];
+
+sampleCategories.forEach(record => {
+  record.createdAt = new Date();
+  record.updatedAt = new Date();
+});
+
+module.exports = sampleCategories;

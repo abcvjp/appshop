@@ -1,4 +1,4 @@
-module.exports = [
+const sampleUsers = [
   // ALL PASSWORD MUST BE '123456'
   {
     id: '9e432cf8-0fbf-4723-b89d-f071dee0a47b',
@@ -11,8 +11,6 @@ module.exports = [
     avatar:
       'https://thuthuatnhanh.com/wp-content/uploads/2018/07/anh-dai-dien-dep-652x580.jpg',
     hash: '$2b$10$jNrqky8emMKbJgI/zMbtoulTZTRwO9ACLuxO/E08CSLx0GooDeqIO', // pass: 123456
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     id: '3ce3237b-e19f-4cde-ace9-c7bdb6c1b1a0',
@@ -23,8 +21,6 @@ module.exports = [
     email: 'xuanthimai@gmail.com',
     phone_number: '0369121581',
     hash: '$2b$10$jNrqky8emMKbJgI/zMbtoulTZTRwO9ACLuxO/E08CSLx0GooDeqIO', // pass: 123456
-    createdAt: new Date(),
-    updatedAt: new Date()
   },
   {
     id: '97c0cddb-d082-4b8a-af21-4bac0802d63c',
@@ -35,7 +31,12 @@ module.exports = [
     email: 'nguyenvana@example.com',
     phone_number: '0123345123',
     hash: '$2b$10$jNrqky8emMKbJgI/zMbtoulTZTRwO9ACLuxO/E08CSLx0GooDeqIO', // pass: 123456
-    createdAt: new Date(),
-    updatedAt: new Date()
   }
 ];
+
+sampleUsers.forEach(record => {
+  record.createdAt = new Date();
+  record.updatedAt = new Date();
+});
+
+module.exports = sampleUsers;

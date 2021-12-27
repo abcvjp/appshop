@@ -1,4 +1,4 @@
-let productSamples = [
+let sampleProducts = [
   {
     id: '08452667-319d-4f19-abfe-9db953a18587',
     name: 'Áo Sơ Mi Dài Tay Lính Mỹ U458 US ARMY',
@@ -156,17 +156,17 @@ let productSamples = [
   }
 ];
 
-productSamples.push(...require('./ao_so_mi.data.json'));
-productSamples.push(...require('./ao_thun.data.json'));
-productSamples.push(...require('./ao_blazer.data.json'));
-productSamples.push(...require('./quan_tay.data.json'));
-productSamples.push(...require('./quan_jean.data.json'));
+sampleProducts.push(...require('./ao_so_mi.data.json'));
+sampleProducts.push(...require('./ao_thun.data.json'));
+sampleProducts.push(...require('./ao_blazer.data.json'));
+sampleProducts.push(...require('./quan_tay.data.json'));
+sampleProducts.push(...require('./quan_jean.data.json'));
 
-productSamples = productSamples.map((record) => {
+sampleProducts = sampleProducts.map((record) => {
   record.createdAt = new Date();
   record.updatedAt = new Date();
   record.preview = JSON.parse(record.images)[0].url;
   return record;
 });
 
-module.exports = productSamples;
+module.exports = sampleProducts;
