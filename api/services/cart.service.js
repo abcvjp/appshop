@@ -169,7 +169,7 @@ exports.updateCart = async ({ user_id, cart_items }) => {
         'enable',
         'name',
         'slug',
-        'images',
+        'preview',
         'price',
         'quantity'
       ],
@@ -225,7 +225,7 @@ exports.updateCart = async ({ user_id, cart_items }) => {
         updated_item.selected = false;
       }
       updated_item.buy_able = buy_able;
-      updated_item.product_thumbnail = serverProduct
+      updated_item.product_preview = serverProduct
         ? serverProduct.preview
         : null;
 
