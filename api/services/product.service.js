@@ -229,36 +229,40 @@ exports.getRelatedProducts = async ({
     if (!productFromServer) throw createError(404, 'Product does not exist');
 
     const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
-    const { rows, count } = await Product.findAndCountAll({
-      where: {
-        category_id: productFromServer.category_id,
-        [Sequelize.Op.and]: [
-          Sequelize.literal(`MATCH (Product.name,Product.title,Product.meta_keywords) AGAINST ('${productFromServer.name}' IN BOOLEAN MODE)`)
-        ],
-        published: true,
-        enable: true
-      },
-      include: {
-        association: 'category',
-        required: true,
-        attributes: ['id', 'name', 'slug']
-      },
-      attributes: {
-        include: [
-          [Sequelize.literal(`(SELECT star from ProductStars WHERE product_id = Product.id)`), 'star'],
-          [Sequelize.literal(`MATCH (Product.name,Product.title,Product.meta_keywords) AGAINST ('${productFromServer.name}' IN BOOLEAN MODE)`), 'relevance']
-        ],
-        exclude: ['category_id', 'description', 'publised', 'enabled']
-      },
-      limit,
-      offset,
-      order: [[Sequelize.literal('relevance'), 'DESC']]
-    });
 
+    const rows = await sequelize.query(
+        `
+				WITH RECURSIVE cte (id, name, slug, parent_id) AS
+				(
+					SELECT id, name, parent_id, slug FROM Categories WHERE id = '${productFromServer.category_id}'
+					UNION
+					SELECT c.id, c.name, c.parent_id, c.slug FROM Categories c INNER JOIN cte ON c.parent_id = cte.id
+				)
+				SELECT p.id, p.name, p.title, p.price, p.root_price,
+					p.quantity, p.sold,
+					p.short_description,
+          p.preview, (SELECT star from ProductStars WHERE product_id = p.id) as star,
+          p.slug,
+					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug',
+					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${productFromServer.name}' IN BOOLEAN MODE) as relevance
+				FROM Products p INNER JOIN cte ON p.category_id = cte.id
+				WHERE
+          p.id != '${product_id}'
+					AND p.published = 1
+					AND p.enable = 1
+					AND p.quantity > 0
+				ORDER BY relevance DESC;
+			`,
+        { nest: true, raw: true }
+      );
+
+    const count = rows.length;
+    const result = rows.slice(offset, offset + limit);
     const pagination = paginate(current_page, count, rows, page_size);
+
     return {
       success: true,
-      data: rows,
+      data: result,
       pagination
     };
   } catch (error) {
