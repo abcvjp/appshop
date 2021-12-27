@@ -259,7 +259,7 @@ const migrationCommands = (transaction) => [
           primaryKey: true,
           allowNull: false,
         },
-        items: { type: Sequelize.JSON, field: "items", allowNull: true },
+        items: { type: Sequelize.JSON, field: "items", allowNull: true, defaultValue: [] },
         sub_total: {
           type: Sequelize.DOUBLE,
           field: "sub_total",

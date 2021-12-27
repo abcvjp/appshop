@@ -6,14 +6,21 @@ const { upsert } = require('../helpers/model.helper');
 
 exports.getCart = async ({ user_id }) => {
   try {
-    const result = await Cart.findOne({
+    let result = await Cart.findOne({
       where: { user_id },
       attributes: {
         exclude: ['id', 'user_id', 'createdAt']
       }
     });
     if (!result) {
-      throw createError(404, 'Your cart is empty');
+      const { items, sub_total, updatedAt } = await Cart.create({
+        user_id
+      });
+      result = {
+        items,
+        sub_total,
+        updatedAt
+      };
     }
     return {
       success: true,
@@ -145,20 +152,6 @@ exports.checkCartValid = async ({ cart_items }) => {
 
 exports.updateCart = async ({ user_id, cart_items }) => {
   try {
-    if (cart_items.length === 0) {
-      await Cart.destroy({
-        where: { user_id }
-      });
-      return {
-        success: true,
-        data: {
-          messages: null,
-          updated_items: null,
-          sub_total: 0
-        }
-      };
-    }
-
     const serverProducts = {};
     const fetchedProducts = await Product.findAll({
       where: {

@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     {
 		items: {
 			type: DataTypes.JSON,
-			allowNull: true
+			allowNull: true,
+      defaultValue: []
 		},
 		sub_total: {
 			type: DataTypes.DOUBLE,
