@@ -183,26 +183,4 @@ authorizationController.cancelOrder = asyncHandler(async (req, res, next) => {
 	next();
 });
 
-authorizationController.getOrdersByUserId = asyncHandler(async (req, res, next) => {
-	const user = req.user;
-	const { userId } = req.params;
-
-	if (
-		!(await checkPermissionByOwnership({
-			user,
-			resourceId: userId,
-			resourceType: ResourceType.User
-		}))
-			&&
-		!(await checkPermissionByRole({
-			user,
-			roles: Role.Admin
-		}))
-	) {
-		throw createError(403, `You don't have permission to access this`);
-	}
-
-	next();
-});
-
 exports.authorizationController = authorizationController;

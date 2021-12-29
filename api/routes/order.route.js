@@ -15,15 +15,15 @@ router.get(
   orderController.getOrders
 );
 router.get(
-  '/by-user/:userId',
+  '/',
   validate(orderValidation.getOrdersByUserId),
   authenticate({ required: true }),
-  authorizationController.getOrdersByUserId,
   orderController.getOrdersByUserId
 );
 router.post(
   '/',
   validate(orderValidation.createOrder),
+  authenticate({ required: false }),
   orderController.createOrder
 );
 router.get(

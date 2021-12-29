@@ -229,6 +229,7 @@ exports.getOrdersByUserId = async ({
 };
 
 exports.createOrder = async ({
+  user_id,
   customer_name,
   address,
   email,
@@ -313,6 +314,7 @@ exports.createOrder = async ({
     const id = uuid(); // generate id
     const newOrder = {
       id,
+      user_id,
       order_total,
       item_total,
       shipping_fee,

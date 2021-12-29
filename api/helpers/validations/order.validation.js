@@ -29,9 +29,6 @@ module.exports = {
     })
   },
   getOrdersByUserId: {
-    params: Joi.object({
-      userId: Joi.string().guid({ version: 'uuidv4' }).required()
-    }),
     query: Joi.object({
       status: Joi.string()
         .trim()

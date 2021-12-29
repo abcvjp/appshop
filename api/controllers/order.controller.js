@@ -4,6 +4,7 @@ const createError = require('http-errors');
 const Role = require('../helpers/roles.helper');
 
 exports.createOrder = asyncHandler(async (req, res, next) => {
+  const user_id = req.user ? req.user.id : null;
   const {
     customer_name,
     address,
@@ -15,6 +16,7 @@ exports.createOrder = asyncHandler(async (req, res, next) => {
     order_items
   } = req.body;
   const result = await orderService.createOrder({
+    user_id,
     customer_name,
     address,
     email,
@@ -94,7 +96,7 @@ exports.getOrders = asyncHandler(async (req, res, next) => {
 });
 
 exports.getOrdersByUserId = asyncHandler(async (req, res, next) => {
-  const { userId } = req.params;
+  const user_id = req.user.id;
   const {
     status,
     payment_status,
@@ -106,7 +108,7 @@ exports.getOrdersByUserId = asyncHandler(async (req, res, next) => {
     sort
   } = req.query;
   const result = await orderService.getOrdersByUserId({
-    user_id: userId,
+    user_id,
     status,
     payment_status,
     shipping_status,
