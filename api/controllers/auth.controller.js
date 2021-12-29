@@ -163,7 +163,7 @@ authorizationController.getOrderById = asyncHandler(async (req, res, next) => {
 
 authorizationController.cancelOrder = asyncHandler(async (req, res, next) => {
 	const user = req.user;
-	const orderId = req.params;
+	const { orderId } = req.params;
 
 	if (
 		!(await checkPermissionByOwnership({
