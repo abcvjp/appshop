@@ -27,7 +27,6 @@ exports.doPaymentWithStripe = async ({
       },
       include: {
         association: 'user',
-        required: true,
         attributes: ['id', 'email', 'phone_number', 'full_name']
       }
     });
@@ -105,7 +104,7 @@ exports.doPaymentWithStripe = async ({
       charge.customer = customer_id;
     }
 
-    await stripe.charges.create(charge);
+    const { amount, currency, receipt_url, receipt_email } = await stripe.charges.create(charge);
 
     await orderFromDb.update({
       payment_status: 'Paid'
@@ -113,6 +112,12 @@ exports.doPaymentWithStripe = async ({
 
     return {
       success: true,
+      result: {
+        amount,
+        currency,
+        receipt_email,
+        receipt_url
+      }
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
