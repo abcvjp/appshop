@@ -29,6 +29,10 @@
     "port": 6379,
     "password": "123456"
   },
+  "stripe": {
+    "public_key": "pk_test_51KBVhVFKXaEYrfJy4zqGEXsmPRo2QVAznuMZYCFwKGBKNxXdC5uH9a27pOK5Y7YKVQkrMbbuk1D7fnmNGNqamQ5H00Oxpcg0nN",
+    "secret_key": "sk_test_51KBVhVFKXaEYrfJytVLXHKFI0DXg6neogeS6PLZW3CkEOFKUTmW4dwN6s8NOTLiRN1oVkA3dhqOR5hrS3sFWRvC000PxnFQly3"
+  },
   "cors": {
     "whiteList": ["http://admin.appshop.local", "http://appshop.local", "http://localhost:5000"],
     "credentials": true

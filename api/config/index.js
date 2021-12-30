@@ -1,3 +1,4 @@
+require('dotenv').config();
 var convict = require('convict');
 
 convict.addFormat({
@@ -149,6 +150,18 @@ var config = convict({
       format: Number,
       default: 6379,
       env: 'MAILHOG_PORT'
+    }
+  },
+  stripe: {
+    public_key: {
+      format: String,
+      default: null,
+      env: 'STRIPE_PUBLIC_KEY',
+    },
+    secret_key: {
+      format: String,
+      default: null,
+      env: 'STRIPE_SECRET_KEY'
     }
   },
   cors: {
