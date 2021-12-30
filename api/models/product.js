@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Product.hasMany(models.OrderItem, {
         foreignKey: { name: 'product_id', allowNull: false },
-        onDelete: 'SET NULL',
+        onDelete: 'RESTRICT',
         onUpdate: 'CASCADE'
       });
       Product.hasMany(models.WishItem, {
@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: { name: 'product_id', allowNull: false },
         as: 'reviews',
         onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       });
     }
   }

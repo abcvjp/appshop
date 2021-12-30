@@ -29,6 +29,12 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
         as: 'cart'
       });
+      User.hasOne(models.StripeCustomer, {
+        foreignKey: { name: 'user_id', allowNull: true },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        as: 'stripe_customer_id'
+      });
     }
   }
 

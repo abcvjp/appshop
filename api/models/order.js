@@ -14,20 +14,22 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Order.hasMany(models.OrderItem, {
-        as: 'order_items',
-        foreignKey: { name: 'order_id', allowNull: false }
+        foreignKey: { name: 'order_id', allowNull: false },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE', 
+        as: 'order_items'
       });
       Order.belongsTo(models.User, {
-        as: 'user',
-        foreignKey: { name: 'user_id', allowNull: true }
+        foreignKey: { name: 'user_id', allowNull: true },
+        as: 'user'
       });
       Order.belongsTo(models.PaymentMethod, {
-        as: 'payment_method',
-        foreignKey: { name: 'payment_method_id', allowNull: false }
+        foreignKey: { name: 'payment_method_id', allowNull: false },
+        as: 'payment_method'
       });
       Order.belongsTo(models.ShippingMethod, {
-        as: 'shipping_method',
-        foreignKey: { name: 'shipping_method_id', allowNull: false }
+        foreignKey: { name: 'shipping_method_id', allowNull: false },
+        as: 'shipping_method'
       });
     }
   }

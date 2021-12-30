@@ -250,6 +250,47 @@ const migrationCommands = (transaction) => [
   {
     fn: "createTable",
     params: [
+      "StripeCustomers",
+      {
+        id: {
+          type: Sequelize.INTEGER,
+          field: "id",
+          autoIncrement: true,
+          primaryKey: true,
+          allowNull: false,
+        },
+        customer_id: {
+          type: Sequelize.STRING,
+          allowNull: false,
+          unique: true
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          field: "createdAt",
+          allowNull: false,
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          field: "updatedAt",
+          allowNull: false,
+        },
+        user_id: {
+          type: Sequelize.UUID,
+          field: "user_id",
+          onUpdate: "CASCADE",
+          onDelete: "CASCADE",
+          references: { model: "Users", key: "id" },
+          unique: true,
+          name: "user_id",
+          allowNull: false,
+        },
+      },
+      { transaction },
+    ],
+  },
+  {
+    fn: "createTable",
+    params: [
       "Carts",
       {
         id: {
@@ -280,7 +321,7 @@ const migrationCommands = (transaction) => [
           type: Sequelize.UUID,
           field: "user_id",
           onUpdate: "CASCADE",
-          onDelete: "NO ACTION",
+          onDelete: "CASCADE",
           references: { model: "Users", key: "id" },
           unique: true,
           name: "user_id",
@@ -634,7 +675,7 @@ const migrationCommands = (transaction) => [
           type: Sequelize.UUID,
           field: "product_id",
           onUpdate: "CASCADE",
-          onDelete: "SET NULL",
+          onDelete: "RESTRICT",
           references: { model: "Products", key: "id" },
           name: "product_id",
           allowNull: true,
@@ -766,6 +807,10 @@ const migrationCommands = (transaction) => [
 ];
 
 const rollbackCommands = (transaction) => [
+  {
+    fn: "dropTable",
+    params: ["StripeCustomers", { transaction }],
+  },
   {
     fn: "dropTable",
     params: ["Carts", { transaction }],
