@@ -20,6 +20,7 @@ router.get('/logout', authenticate({ required: true }), userController.logout);
 router.get(
   '/:userId',
   validate(userValidation.getUserById),
+  authenticate({ required: true }),
   authorizationController.getUserById,
   userController.getUserById
 );

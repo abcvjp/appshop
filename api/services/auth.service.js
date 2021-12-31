@@ -3,15 +3,15 @@ const { ResourceType } = require('../helpers');
 
 const { User } = require('../models');
 
+const { JWT } = require('../helpers');
+
 exports.checkPermissionByRole = async ({ user, roles = [] }) => {
 	try {
-		if (!user) throw createError(500, 'checkPermissionByRole error: user is null');
-
-		const userFromServer = await User.findByPk(user.id, { attributes: ['role'] });
-		if (!userFromServer) {
-			throw createError(409, 'Your user is not exist')
+		if (typeof roles === 'string') {
+			roles = [roles];
 		}
-		if (roles.length && !roles.includes(userFromServer.role)) {
+
+		if (roles.length && !roles.includes(user.role)) {
 			return false;
 		}
 		return true;
@@ -22,16 +22,17 @@ exports.checkPermissionByRole = async ({ user, roles = [] }) => {
 
 exports.checkPermissionByOwnership = async ({ user, resourceId, resourceType }) => {
 	try {
-		if (!user) throw createError(500, 'checkPermissionByOwnership error: user is null');
 		if (resourceType.name === ResourceType.User.name) {
 			if (user.id !== resourceId) {
-				throw createError(403, `You don't have permission to access this`);
+				return false;
 			} else {
 				return true;
 			}
 		} else {
 			const resourceModel = resourceType.model;
-			const resourceFromServer = await resourceModel.findByPk(resourceId);
+			const resourceFromServer = await resourceModel.findByPk(resourceId, {
+				attributes: ['user_id']
+			});
 			if (!resourceFromServer) {
 				throw createError(500, 'checkPermissionByOwnership error: resource does not exist');
 			}
@@ -50,3 +51,17 @@ exports.checkPermissionByOwnership = async ({ user, resourceId, resourceType }) 
     	throw createError(error.statusCode || 500, error.message);
 	}
 }
+
+exports.authenticate = async ({ access_token }) => {
+    try {
+        const userFromToken = JWT.verifyAccessToken(access_token);
+        if (userFromToken) {
+            const userFromDb = await User.findByPk(userFromToken.id);
+            return userFromDb;
+        } else {
+            throw createError(401, 'Acess token is invalid');
+        }
+    } catch (error) {
+        throw createError(error.statusCode || 500, error.message);
+    }
+};

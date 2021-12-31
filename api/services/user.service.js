@@ -203,19 +203,6 @@ exports.deleteRefreshToken = async ({ user }) => {
   }
 };
 
-exports.authenticate = async ({ access_token }) => {
-  try {
-    const user = JWT.verifyAccessToken(access_token);
-    if (user) {
-      return user;
-    } else {
-      throw createError(401, 'Acess token is not valid');
-    }
-  } catch (error) {
-    throw createError(error.statusCode || 500, error.message);
-  }
-};
-
 exports.getUserById = async ({ id }) => {
   try {
     const userById = await User.findOne({

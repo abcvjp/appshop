@@ -1,8 +1,7 @@
-const userService = require('../services/user.service');
 const createError = require('http-errors');
 const asyncHandler = require('express-async-handler');
 
-const { checkPermissionByOwnership, checkPermissionByRole } = require('../services/auth.service');
+const { checkPermissionByOwnership, checkPermissionByRole, authenticate } = require('../services/auth.service');
 
 const { ResourceType, Role } = require('../helpers');
 
@@ -14,7 +13,7 @@ exports.authenticate = ({ required }) =>
     }
     const access_token = headerToken ? headerToken.split(" ")[1] : null;
     if (access_token) {
-      const user = await userService.authenticate({ access_token });
+      const user = await authenticate({ access_token });
       req.user = user ? user : null;
       if (required === true && !user) {
         throw createError(403, 'Authentication failed');
@@ -75,7 +74,7 @@ authorizationController.multipleAuthorization = (authorizeServices = []) =>
 
 authorizationController.getUserById = asyncHandler(async (req, res, next) => {
 	const user = req.user;
-	const userId = req.params;
+	const { userId } = req.params;
 
 	if (
 		!(await checkPermissionByOwnership({
