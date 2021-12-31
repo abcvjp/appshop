@@ -255,6 +255,7 @@ exports.createOrder = async ({
           'root_price',
           'quantity',
           'name',
+          'preview',
           'images'
         ],
         order: ['id']
@@ -297,9 +298,7 @@ exports.createOrder = async ({
         );
       }
 
-      orderItem.product_thumbnail = productFromServer.images
-        ? productFromServer.preview
-        : null;
+      orderItem.product_thumbnail = productFromServer.preview;
       item_total += productFromServer.price * orderItem.quantity;
       item_root_total += productFromServer.root_price * orderItem.quantity;
       items_number += orderItem.quantity;
@@ -335,14 +334,16 @@ exports.createOrder = async ({
           items_number
         })
       ]; // create order
-      order_items.map(order_item => {
+      order_items.forEach(order_item => {
         // create order items and update product stock quantity
         promises.push(
           OrderItem.create({
             ...order_item,
             order_id: newOrder.id
           }),
-          productsFromServer[order_item.product_id].decrement('quantity', { by: order_item.quantity })
+          productsFromServer[order_item.product_id].decrement('quantity', {
+            by: order_item.quantity
+          })
         );
       });
       await Promise.all(promises);
