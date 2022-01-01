@@ -47,7 +47,7 @@ const verifyAccessToken = (token) => {
   try {
     return jwt.verify(token, config.get('jwt.secret'));
   } catch (err) {
-    throw createError(400, 'Invalid access token');
+    throw createError(401, 'Invalid access token');
   }
 };
 
@@ -55,7 +55,7 @@ const verifyRefreshToken = (token) => {
   try {
     return jwt.verify(token, config.get('jwt.refresh_secret'));
   } catch (err) {
-    throw createError(400, 'Invalid refresh token');
+    throw createError(401, 'Invalid refresh token');
   }
 };
 
