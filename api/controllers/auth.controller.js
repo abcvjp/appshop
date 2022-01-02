@@ -46,6 +46,10 @@ exports.authorizeOwner = (resourceType, resourceId) =>
     const user = req.user;
     if (!user) throw createError(500, 'User to be authorized does not exist');
 
+	if (resourceType.name === ResourceType.User.name) {
+		resourceId = user.id;
+	}
+
 	if (!(await checkPermissionByOwnership({
 		user,
 		resourceId,
@@ -94,7 +98,7 @@ authorizationController.getUserById = asyncHandler(async (req, res, next) => {
 	next();
 });
 
-authorizationController.updateUserInfo = asyncHandler(async (req, res, next) => {
+authorizationController.updateUserInfoById = asyncHandler(async (req, res, next) => {
 	const user = req.user;
 	const userId = req.params;
 

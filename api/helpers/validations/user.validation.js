@@ -86,6 +86,24 @@ module.exports = {
         .pattern(/^[0-9]+$/),
       avatar: Joi.string().max(255).allow(null),
       enable: Joi.bool()
+    })
+  },
+  updateUserInfoById: {
+    body: Joi.object({
+      username: Joi.string()
+        .alphanum()
+        .lowercase()
+        .trim()
+        .min(4)
+        .max(20)
+        .required(),
+      full_name: Joi.string().trim().min(1).max(50),
+      email: Joi.string().trim().email(),
+      phone_number: Joi.string()
+        .length(10)
+        .pattern(/^[0-9]+$/),
+      avatar: Joi.string().max(255).allow(null),
+      enable: Joi.bool()
     }),
     params: Joi.object({
       userId: Joi.string().guid({ version: 'uuidv4' }).required()

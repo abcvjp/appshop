@@ -3,8 +3,9 @@ var router = express.Router();
 const userController = require('../controllers/user.controller');
 const { validate } = require('../helpers/validator.helper');
 const userValidation = require('../helpers/validations/user.validation');
-const { authenticate, authorizeRole, authorizationController } = require('../controllers/auth.controller');
+const { authenticate, authorizeRole, authorizationController, authorizeOwner } = require('../controllers/auth.controller');
 const Role = require('../helpers/roles.helper');
+const { ResourceType } = require('../helpers');
 
 router.get(
   '/all',
@@ -12,11 +13,31 @@ router.get(
   authorizeRole(Role.Admin),
   userController.getUsers
 );
-router.post('/signup', validate(userValidation.signup), userController.signup);
-router.post('/login', validate(userValidation.login), userController.login);
-router.post('/login-with-firebase', validate(userValidation.loginWithFirebase), userController.loginWithFirebase);
-router.get('/refresh-token', validate(userValidation.refreshToken), userController.refreshToken);
-router.get('/logout', authenticate({ required: true }), userController.logout);
+router.post(
+  '/signup',
+  validate(userValidation.signup),
+  userController.signup
+);
+router.post(
+  '/login',
+  validate(userValidation.login),
+  userController.login
+);
+router.post(
+  '/login-with-firebase',
+  validate(userValidation.loginWithFirebase),
+  userController.loginWithFirebase
+);
+router.get(
+  '/refresh-token',
+  validate(userValidation.refreshToken),
+  userController.refreshToken
+);
+router.get(
+  '/logout',
+  authenticate({ required: true }),
+  userController.logout
+);
 router.get(
   '/:userId',
   validate(userValidation.getUserById),
@@ -27,8 +48,15 @@ router.get(
 router.put(
   '/:userId',
   authenticate({ required: true }),
+  validate(userValidation.updateUserInfoById),
+  authorizationController.updateUserInfoById,
+  userController.updateUserInfoById
+);
+router.put(
+  '',
+  authenticate({ required: true }),
   validate(userValidation.updateUserInfo),
-  authorizationController.updateUserInfo,
+  authorizeOwner(ResourceType.User),
   userController.updateUserInfo
 );
 router.delete(

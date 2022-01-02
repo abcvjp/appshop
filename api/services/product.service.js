@@ -491,6 +491,43 @@ exports.deleteProducts = async ({ productIds }) => {
   }
 };
 
+exports.checkCanReviewProduct = async ({ userId, productId }) => {
+  try {
+    let result = true;
+
+    const reviewedCount = await Review.count({
+      where: {
+        user_id: userId,
+        product_id: productId
+      }
+    });
+    const orderedCount = await OrderItem.count({
+      where: {
+        product_id: productId
+      },
+      include: {
+        association: 'order',
+        required: true,
+        where: {
+          user_id: userId,
+          status: 'Completed'
+        }
+      }
+    });
+
+    if (orderedCount === 0) {
+      result = false;
+    }
+    if (reviewedCount >= orderedCount) {
+      result = false;
+    }
+
+    return { success: true, result };
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+};
+
 exports.reviewProduct = async ({ userId, productId, star, comment }) => {
   try {
     const reviewedCount = await Review.count({
@@ -551,7 +588,7 @@ exports.getProductReviews = async ({
         }
       ],
       attributes: {
-        exclude: ['id', 'user_id']
+        exclude: ['id', 'user_id', 'product_id']
       },
       limit,
       offset,

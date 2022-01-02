@@ -135,6 +135,16 @@ exports.getProductById = asyncHandler(async (req, res, next) => {
   res.status(200).json(result);
 });
 
+exports.checkCanReviewProduct = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id;
+  const { productId } = req.params;
+  const result = await productService.checkCanReviewProduct({
+    userId,
+    productId
+  });
+  res.status(200).json(result);
+});
+
 exports.reviewProduct = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
   const { productId } = req.params;

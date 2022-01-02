@@ -24,6 +24,12 @@ router.get(
   productController.getRelatedProducts
 );
 router.get(
+  '/:productId/review-permission',
+  validate(productValidation.checkCanReviewProduct),
+  authenticate({ required: true }),
+  productController.checkCanReviewProduct
+);
+router.get(
   '/',
   validate(productValidation.getProduct),
   productController.getProduct

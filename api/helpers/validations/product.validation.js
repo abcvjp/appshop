@@ -147,6 +147,11 @@ module.exports = {
         .required()
     })
   },
+  checkCanReviewProduct: {
+    params: Joi.object({
+      productId: Joi.string().guid({ version: 'uuidv4' }).required()
+    })
+  },
   reviewProduct: {
     params: Joi.object({
       productId: Joi.string().guid({ version: 'uuidv4' }).required()
