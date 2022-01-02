@@ -647,9 +647,9 @@ const migrationCommands = (transaction) => [
           field: "product_name",
           allowNull: false,
         },
-        product_thumbnail: {
+        product_preview: {
           type: Sequelize.STRING,
-          field: "product_thumbnail",
+          field: "product_preview",
           allowNull: true,
         },
         createdAt: {

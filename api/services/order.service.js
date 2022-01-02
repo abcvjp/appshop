@@ -82,7 +82,7 @@ exports.getOrders = async ({
           attributes: [
             'product_id',
             'product_name',
-            'product_thumbnail',
+            'product_preview',
             'price',
             'quantity'
           ]
@@ -125,7 +125,7 @@ exports.getOrderById = async ({ id }) => {
           attributes: [
             'product_id',
             'product_name',
-            'product_thumbnail',
+            'product_preview',
             'price',
             'quantity'
           ]
@@ -202,7 +202,7 @@ exports.getOrdersByUserId = async ({
           attributes: [
             'product_id',
             'product_name',
-            'product_thumbnail',
+            'product_preview',
             'price',
             'quantity'
           ]
@@ -298,7 +298,7 @@ exports.createOrder = async ({
         );
       }
 
-      orderItem.product_thumbnail = productFromServer.preview;
+      orderItem.product_preview = productFromServer.preview;
       item_total += productFromServer.price * orderItem.quantity;
       item_root_total += productFromServer.root_price * orderItem.quantity;
       items_number += orderItem.quantity;
@@ -521,7 +521,7 @@ exports.confirmlOrder = async ({ id }) => {
           attributes: [
             'product_id',
             'product_name',
-            'product_thumbnail',
+            'product_preview',
             'price',
             'quantity'
           ]

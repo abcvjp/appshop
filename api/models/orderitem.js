@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      product_thumbnail: {
+      product_preview: {
         type: DataTypes.STRING,
         allowNull: true
       }
