@@ -1,13 +1,18 @@
 const sampleShippingMethods = [
   {
-    name: 'Nhận tại cửa hàng',
-    detail: 'Nhận sản phẩm tại cửa hàng',
+    name: 'Store Pickup',
+    detail: 'You can go to our store to pick up products directly',
     fee: 0,
   },
   {
-    name: 'Giao hàng tận nơi',
-    detail: 'Giao hàng đến tận nơi',
-    fee: 1,
+    name: 'Free Shipping',
+    detail: 'Our policy provide a zero-fee delivery method',
+    fee: 0,
+  },
+  {
+    name: 'Fast Shipping',
+    detail: 'Faster delivery provided by carriers which you can choose',
+    fee: 2,
   }
 ];
 

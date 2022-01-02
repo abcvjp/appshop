@@ -1,11 +1,15 @@
 const samplePaymentMethods = [
   {
     name: 'COD',
-    detail: 'Thanh toán bằng tiền mặt khi nhận hàng',
+    detail: 'Payment by COD (Cash On Delivery)',
   },
   {
-    name: 'Chuyển khoản ngân hàng',
-    detail: 'Chuyển khoản ngân hàng tới nơi nào có em',
+    name: 'Bank transfer',
+    detail: 'Transfer money to our bank account (Account number: 0123456789 - bank: BIDV)',
+  },
+  {
+    name: 'Visa Card',
+    detail: 'Payment by Visa Card (international payment card)'
   }
 ];
 
