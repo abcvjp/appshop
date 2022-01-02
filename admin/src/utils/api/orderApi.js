@@ -17,17 +17,16 @@ const orderApi = {
   },
   updateOrder: (id, data) => {
     const url = `/order/${id}`;
-    return API.put(url, cleanObj(data));
+    return API.patch(url, cleanObj(data));
   },
-  updateOrdersStatus: (data) => API.put('/order', { orders: data }),
-  editOrder: (id, body) => API.put(`/order/${id}`, body),
+  updateOrdersStatus: (data) => API.patch('/order', { orders: data }),
   searchOrders: (query) => {
     const url = '/search';
     return API.get(url + convertObjToQuery(cleanObj(query)));
   },
-  confirmOrder: (id) => API.put(`/order/${id}/confirm`),
-  cancelOrder: (id) => API.put(`/order/${id}/cancel`),
-  completeOrder: (id) => API.put(`/order/${id}/complete`)
+  confirmOrder: (id) => API.patch(`/order/${id}/confirm`),
+  cancelOrder: (id) => API.patch(`/order/${id}/cancel`),
+  completeOrder: (id) => API.patch(`/order/${id}/complete`)
 };
 
 export default orderApi;

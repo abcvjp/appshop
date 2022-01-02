@@ -49,7 +49,7 @@ const OrderItemList = ({ items }) => (
                 </Typography>
               </Box>
             </TableCell>
-            <TableCell align="left">{item.price}</TableCell>
+            <TableCell align="left">{`$${item.price}`}</TableCell>
             <TableCell align="left">{item.quantity}</TableCell>
           </TableRow>
         ))}

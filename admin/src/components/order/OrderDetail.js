@@ -27,18 +27,19 @@ const OrderDetail = ({ order }) => {
   ];
   const orderInfo = [
     createInfoField('Order ID', order.id),
-    createInfoField('Created At', (new Date(order.createdAt)).toLocaleString('en-us')),
-    createInfoField('Last Update', (new Date(order.updatedAt)).toLocaleString('en-us')),
-    createInfoField('Order Total', `$${order.order_total}`),
-    createInfoField('Item Total', `$${order.item_total}`),
-    createInfoField('Shipping_fee', `$${order.shipping_fee}`),
-    createInfoField('Customer Name', order.customer_name),
+    createInfoField('User ID', order.user_id),
+    createInfoField('Created at', (new Date(order.createdAt)).toLocaleString('en-us')),
+    createInfoField('Last update', (new Date(order.updatedAt)).toLocaleString('en-us')),
+    createInfoField('Order total', `$${order.order_total}`),
+    createInfoField('Item total', `$${order.item_total}`),
+    createInfoField('Shipping fee', `$${order.shipping_fee}`),
+    createInfoField('Customer name', order.customer_name),
     createInfoField('Email', order.email),
-    createInfoField('Phone Number', order.phone_number),
-    createInfoField('Payment Method', order.payment_method.name),
-    createInfoField('Shipping Method', order.shipping_method.name),
-    createInfoField('Shipping Address', order.address),
-    createInfoField('Shipping Note', order.shipping_note)
+    createInfoField('Phone number', order.phone_number),
+    createInfoField('Payment method', order.payment_method.name),
+    createInfoField('Shipping method', order.shipping_method.name),
+    createInfoField('Shipping dddress', order.address),
+    createInfoField('Shipping note', order.shipping_note)
   ];
 
   return (
@@ -53,7 +54,7 @@ const OrderDetail = ({ order }) => {
                 {orderStatus.map((row) => (
                   <TableRow key={row.field} hover>
                     <TableCell align="left">
-                      {row.field}
+                      <b>{row.field}</b>
                     </TableCell>
                     <TableCell align="left">
                       <StatusLabel status={row.value} size="small" />
@@ -73,7 +74,7 @@ const OrderDetail = ({ order }) => {
                 {orderInfo.map((row) => (
                   <TableRow key={row.field} hover>
                     <TableCell align="left">
-                      {row.field}
+                      <b>{row.field}</b>
                     </TableCell>
                     <TableCell align="left">{row.value}</TableCell>
                   </TableRow>
