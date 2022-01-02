@@ -42,7 +42,8 @@ exports.login = async ({ email, password }) => {
           phone_number,
           role,
           enable,
-          avatar
+          avatar,
+          has_password: true
         },
         access_token,
         refresh_token
@@ -86,7 +87,8 @@ exports.loginWithFirebase = async ({ idToken }) => {
       role,
       enable,
       full_name,
-      avatar
+      avatar,
+      hash
     } = user;
     return {
       success: true,
@@ -98,7 +100,8 @@ exports.loginWithFirebase = async ({ idToken }) => {
         phone_number,
         role,
         enable,
-        avatar
+        avatar,
+        has_password: hash ? true : false
       },
       access_token,
       refresh_token
@@ -142,6 +145,11 @@ exports.signup = async ({
       phone_number,
       full_name
     });
+    const {
+      role,
+      enable,
+      avatar,
+    } = newUser;
     return {
       success: true,
       user: {
@@ -150,7 +158,10 @@ exports.signup = async ({
         full_name,
         email,
         phone_number,
-        role: newUser.role
+        role,
+        enable,
+        avatar,
+        has_password: true
       }
     };
   } catch (error) {
@@ -306,13 +317,10 @@ exports.updateUserInfo = async ({
         throw createError(409, 'Phone number already exists');
     }
     const user = await User.findOne({
-      where: { id },
-      attributes: {
-        exclude: ['refresh_token', 'hash']
-      }
+      where: { id }
     });
     if (!user) throw createError(404, 'User does not exist');
-    await user.update({
+    const userAfterUpdate = await user.update({
       username,
       full_name,
       email,
@@ -320,20 +328,55 @@ exports.updateUserInfo = async ({
       avatar,
       enable
     });
+    const {
+      role,
+      hash
+    } = userAfterUpdate;
     return {
       success: true,
-      result: user
+      user: {
+        id,
+        email,
+        username,
+        phone_number,
+        role,
+        enable,
+        full_name,
+        avatar,
+        has_password: hash ? true : false
+      }
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
   }
 };
 
-exports.resetPassword = async ({ id, current_password, new_password }) => {
+exports.createPassword = async ({ user_id, password }) => {
   try {
-    const user = await User.findOne({ where: { id } });
+    const user = await User.findByPk(user_id);
     if (!user) {
       throw createError(404, "User doesn't exist");
+    }
+    if (user.hash) {
+      throw createError(409, "Your user already has password");
+    }
+    await user.update({
+      hash: Bcrypt.hashPassword(password)
+    });
+    return { success: true }
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+};
+
+exports.resetPassword = async ({ user_id, current_password, new_password }) => {
+  try {
+    const user = await User.findOne({ where: { id: user_id } });
+    if (!user) {
+      throw createError(404, "User doesn't exist");
+    }
+    if (!user.hash) {
+      throw createError(409, "Your user does not have password");
     }
     if (Bcrypt.verifyPassword(current_password, user.hash)) {
       await user.update({

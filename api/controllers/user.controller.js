@@ -137,11 +137,21 @@ exports.deleteUsers = asyncHandler(async (req, res, next) => {
   res.status(200).json(result);
 });
 
+exports.createPassword = asyncHandler(async (req, res, next) => {
+  const user_id = req.user.id;
+  const { password } = req.body;
+  const result = await userService.createPassword({
+    user_id,
+    password
+  });
+  res.status(200).json(result);
+});
+
 exports.resetPassword = asyncHandler(async (req, res, next) => {
-  const userId = req.params.userId;
+  const user_id = req.user.id;
   const { current_password, new_password } = req.body;
   const result = await userService.resetPassword({
-    id: userId,
+    user_id,
     current_password,
     new_password
   });

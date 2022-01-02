@@ -109,22 +109,28 @@ module.exports = {
       userId: Joi.string().guid({ version: 'uuidv4' }).required()
     })
   },
+  createPassword: {
+    body: Joi.object({
+      password: Joi.string()
+        .min(8)
+        .max(32)
+        .pattern(new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"))
+        .required()
+    }),
+  },
   resetPassword: {
     body: Joi.object({
       current_password: Joi.string()
-        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
-        .min(6)
+        .min(8)
         .max(32)
+        .pattern(new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"))
         .required(),
       new_password: Joi.string()
-        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
-        .min(6)
+        .min(8)
         .max(32)
+        .pattern(new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"))
         .required()
     }),
-    params: Joi.object({
-      userId: Joi.string().guid({ version: 'uuidv4' }).required()
-    })
   },
   deleteUser: {
     params: Joi.object({

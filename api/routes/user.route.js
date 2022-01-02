@@ -46,6 +46,12 @@ router.get(
   userController.getUserById
 );
 router.put(
+  '/password',
+  validate(userValidation.resetPassword),
+  authenticate({ required: true }),
+  userController.resetPassword
+);
+router.put(
   '/:userId',
   authenticate({ required: true }),
   validate(userValidation.updateUserInfoById),
@@ -74,13 +80,13 @@ router.delete(
   userController.deleteUsers
 );
 router.post(
-  '/:userId/reset-password',
+  '/password',
+  validate(userValidation.createPassword),
   authenticate({ required: true }),
-  validate(userValidation.resetPassword),
-  userController.resetPassword
+  userController.createPassword
 );
 router.post(
-  '/:userId/enable',
+  '/enable',
   authenticate({ required: true }),
   authorizeRole(Role.Admin),
   validate(userValidation.enableUser),
