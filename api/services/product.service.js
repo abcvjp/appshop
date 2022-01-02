@@ -240,9 +240,9 @@ exports.getRelatedProducts = async ({
 				)
 				SELECT p.id, p.name, p.title, p.price, p.root_price,
 					p.quantity, p.sold,
-					p.short_description,
-          p.preview, (SELECT star from ProductStars WHERE product_id = p.id) as star,
-          p.slug,
+					p.short_description, p.description,
+          p.preview, p.images, (SELECT star from ProductStars WHERE product_id = p.id) as star,
+          p.slug, p.meta_title, p.meta_keywords, p.meta_description,
 					p.createdAt, p.updatedAt, cte.id as 'category.id', cte.name as 'category.name', cte.slug as 'category.slug',
 					MATCH (p.name,p.title,p.meta_keywords) AGAINST ('${productFromServer.name}' IN BOOLEAN MODE) as relevance
 				FROM Products p INNER JOIN cte ON p.category_id = cte.id
