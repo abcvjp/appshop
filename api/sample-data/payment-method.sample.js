@@ -5,7 +5,7 @@ const samplePaymentMethods = [
   },
   {
     name: 'Bank transfer',
-    detail: 'Transfer money to our bank account (Account number: 0123456789 - bank: BIDV)',
+    detail: 'Transfer money to our bank account\n(0123456789 - BIDV)',
   },
   {
     name: 'Visa Card',
