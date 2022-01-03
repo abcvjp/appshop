@@ -219,13 +219,34 @@ exports.getUserById = async ({ id }) => {
     const userById = await User.findOne({
       where: { id },
       attributes: {
-        exclude: ['refresh_token', 'hash']
+        exclude: ['refresh_token']
       }
     });
     if (!userById) throw createError(404, 'User does not exist');
+    const {
+      username,
+      full_name,
+      email,
+      phone_number,
+      role,
+      enable,
+      avatar,
+      hash
+    } = userById;
+    const has_password = hash ? true : false;
     return {
       success: true,
-      data: userById
+      data: {
+        id,
+        username,
+        full_name,
+        email,
+        phone_number,
+        role,
+        enable,
+        avatar,
+        has_password
+      }
     };
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);

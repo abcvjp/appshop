@@ -45,6 +45,11 @@ router.get(
   authorizationController.getUserById,
   userController.getUserById
 );
+router.get(
+  '/',
+  authenticate({ required: true }),
+  userController.getMe
+);
 router.put(
   '/password',
   validate(userValidation.resetPassword),

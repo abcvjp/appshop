@@ -95,6 +95,12 @@ exports.getUserById = asyncHandler(async (req, res, next) => {
   res.status(200).json(result);
 });
 
+exports.getMe = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id;
+  const result = await userService.getUserById({ id: userId });
+  res.status(200).json(result);
+});
+
 exports.updateUserInfo = asyncHandler(async (req, res, next) => {
   const { id } = req.user;
   const { username, full_name, email, phone_number, avatar, enable } = req.body;
