@@ -226,6 +226,11 @@ const migrationCommands = (transaction) => [
           allowNull: true,
           field: "phone_number",
         },
+        address: {
+          type: Sequelize.TEXT('medium'),
+          allowNull: true,
+          field: "address"
+        },
         hash: { type: Sequelize.STRING, allowNull: true, field: "hash" },
         avatar: { type: Sequelize.STRING, allowNull: true, field: "avatar" },
         refresh_token: {

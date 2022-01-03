@@ -83,6 +83,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         unique: true
       },
+      address: {
+        type: DataTypes.TEXT('medium'),
+        field: 'address',
+        allowNull: true
+      },
       hash: {
         type: DataTypes.STRING,
         field: 'hash',

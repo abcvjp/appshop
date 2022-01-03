@@ -30,7 +30,8 @@ exports.login = async ({ email, password }) => {
         role,
         enable,
         full_name,
-        avatar
+        avatar,
+        address
       } = user;
       return {
         success: true,
@@ -43,6 +44,7 @@ exports.login = async ({ email, password }) => {
           role,
           enable,
           avatar,
+          address,
           has_password: true
         },
         access_token,
@@ -88,7 +90,8 @@ exports.loginWithFirebase = async ({ idToken }) => {
       enable,
       full_name,
       avatar,
-      hash
+      hash,
+      address
     } = user;
     return {
       success: true,
@@ -101,6 +104,7 @@ exports.loginWithFirebase = async ({ idToken }) => {
         role,
         enable,
         avatar,
+        address,
         has_password: hash ? true : false
       },
       access_token,
@@ -145,23 +149,22 @@ exports.signup = async ({
       phone_number,
       full_name
     });
-    const {
-      role,
-      enable,
-      avatar,
-    } = newUser;
+    const userAfterCreate = await User.findOne({
+      where: { id }
+    });
     return {
       success: true,
       user: {
         id,
-        username,
-        full_name,
-        email,
-        phone_number,
-        role,
-        enable,
-        avatar,
-        has_password: true
+        email: userAfterCreate.email,
+        username: userAfterCreate.username,
+        phone_number: userAfterCreate.phone_number,
+        role: userAfterCreate.role,
+        enable: userAfterCreate.enable,
+        full_name: userAfterCreate.full_name,
+        avatar: userAfterCreate.avatar,
+        address: userAfterCreate.address,
+        has_password: userAfterCreate.hash ? true : false
       }
     };
   } catch (error) {
@@ -231,7 +234,8 @@ exports.getUserById = async ({ id }) => {
       role,
       enable,
       avatar,
-      hash
+      hash,
+      address
     } = userById;
     const has_password = hash ? true : false;
     return {
@@ -245,6 +249,7 @@ exports.getUserById = async ({ id }) => {
         role,
         enable,
         avatar,
+        address,
         has_password
       }
     };
@@ -318,7 +323,8 @@ exports.updateUserInfo = async ({
   full_name,
   email,
   phone_number,
-  avatar
+  avatar,
+  address
 }) => {
   try {
     if (username !== undefined) {
@@ -345,7 +351,8 @@ exports.updateUserInfo = async ({
       full_name,
       email,
       phone_number,
-      avatar
+      avatar,
+      address
     });
     const userAfterUpdate = await User.findOne({
       where: { id }
@@ -361,6 +368,7 @@ exports.updateUserInfo = async ({
         enable: userAfterUpdate.enable,
         full_name: userAfterUpdate.full_name,
         avatar: userAfterUpdate.avatar,
+        address: userAfterUpdate.address,
         has_password: userAfterUpdate.hash ? true : false
       }
     };

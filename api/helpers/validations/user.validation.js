@@ -84,6 +84,7 @@ module.exports = {
         .length(10)
         .pattern(/^[0-9]+$/),
       avatar: Joi.string().max(255).allow(null),
+      address: Joi.string().max(255).allow(null)
     })
   },
   updateUserInfoById: {
@@ -101,7 +102,8 @@ module.exports = {
         .length(10)
         .pattern(/^[0-9]+$/),
       avatar: Joi.string().max(255).allow(null),
-      enable: Joi.bool()
+      enable: Joi.bool(),
+      address: Joi.string().max(255).allow(null)
     }),
     params: Joi.object({
       userId: Joi.string().guid({ version: 'uuidv4' }).required()
