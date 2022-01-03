@@ -77,15 +77,13 @@ module.exports = {
         .lowercase()
         .trim()
         .min(4)
-        .max(20)
-        .required(),
+        .max(20),
       full_name: Joi.string().trim().min(1).max(50),
       email: Joi.string().trim().email(),
       phone_number: Joi.string()
         .length(10)
         .pattern(/^[0-9]+$/),
       avatar: Joi.string().max(255).allow(null),
-      enable: Joi.bool()
     })
   },
   updateUserInfoById: {

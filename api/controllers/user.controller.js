@@ -110,8 +110,7 @@ exports.updateUserInfo = asyncHandler(async (req, res, next) => {
     full_name,
     email,
     phone_number,
-    avatar,
-    enable
+    avatar
   });
   res.status(200).json(result);
 });

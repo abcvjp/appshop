@@ -318,8 +318,7 @@ exports.updateUserInfo = async ({
   full_name,
   email,
   phone_number,
-  avatar,
-  enable
+  avatar
 }) => {
   try {
     if (username !== undefined) {
@@ -341,30 +340,28 @@ exports.updateUserInfo = async ({
       where: { id }
     });
     if (!user) throw createError(404, 'User does not exist');
-    const userAfterUpdate = await user.update({
+    await user.update({
       username,
       full_name,
       email,
       phone_number,
-      avatar,
-      enable
+      avatar
     });
-    const {
-      role,
-      hash
-    } = userAfterUpdate;
+    const userAfterUpdate = await User.findOne({
+      where: { id }
+    });
     return {
       success: true,
       user: {
         id,
-        email,
-        username,
-        phone_number,
-        role,
-        enable,
-        full_name,
-        avatar,
-        has_password: hash ? true : false
+        email: userAfterUpdate.email,
+        username: userAfterUpdate.username,
+        phone_number: userAfterUpdate.phone_number,
+        role: userAfterUpdate.role,
+        enable: userAfterUpdate.enable,
+        full_name: userAfterUpdate.full_name,
+        avatar: userAfterUpdate.avatar,
+        has_password: userAfterUpdate.hash ? true : false
       }
     };
   } catch (error) {
