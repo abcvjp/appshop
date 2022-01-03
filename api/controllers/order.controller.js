@@ -66,6 +66,7 @@ exports.deleteOrder = asyncHandler(async (req, res, next) => {
 exports.getOrders = asyncHandler(async (req, res, next) => {
   const {
     id,
+    code,
     customer_name,
     email,
     phone_number,
@@ -80,6 +81,7 @@ exports.getOrders = asyncHandler(async (req, res, next) => {
   } = req.query;
   const result = await orderService.getOrders({
     id,
+    code,
     customer_name,
     email,
     phone_number,
@@ -98,6 +100,7 @@ exports.getOrders = asyncHandler(async (req, res, next) => {
 exports.getOrdersByUserId = asyncHandler(async (req, res, next) => {
   const user_id = req.user.id;
   const {
+    code,
     status,
     payment_status,
     shipping_status,
@@ -109,6 +112,7 @@ exports.getOrdersByUserId = asyncHandler(async (req, res, next) => {
   } = req.query;
   const result = await orderService.getOrdersByUserId({
     user_id,
+    code,
     status,
     payment_status,
     shipping_status,

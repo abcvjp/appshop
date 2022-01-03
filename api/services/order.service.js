@@ -8,12 +8,14 @@ const {
 const { sequelize, Sequelize } = require('../models');
 const createError = require('http-errors');
 const { uuid } = require('uuidv4');
+const shortid = require('shortid');
 const { calculateLimitAndOffset, paginate } = require('paginate-info');
 const { roundPrice } = require('../helpers/logicFunc.helper');
 const { orderConfirmationMailQueue } = require('../queues');
 
 exports.getOrders = async ({
   id,
+  code,
   customer_name,
   email,
   phone_number,
@@ -30,6 +32,9 @@ exports.getOrders = async ({
     const whereConditions = {};
     if (id) {
       whereConditions['id'] = id;
+    }
+    if (code) {
+      whereConditions['code'] = code;
     }
     if (customer_name) {
       whereConditions['customer_name'] = customer_name;
@@ -147,6 +152,7 @@ exports.getOrderById = async ({ id }) => {
 
 exports.getOrdersByUserId = async ({
   user_id,
+  code,
   status,
   payment_status,
   shipping_status,
@@ -160,6 +166,9 @@ exports.getOrdersByUserId = async ({
     const whereConditions = {
       user_id
     };
+    if (code) {
+      whereConditions['code'] = code;
+    }
     if (status) {
       whereConditions['status'] = status;
     }
@@ -311,8 +320,10 @@ exports.createOrder = async ({
     const profit = roundPrice(item_root_total - item_total);
     const order_total = roundPrice(item_total + shipping_fee);
     const id = uuid(); // generate id
+    const code = shortid.generate() // generate code
     const newOrder = {
       id,
+      code,
       user_id,
       order_total,
       item_total,

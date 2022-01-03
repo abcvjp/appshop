@@ -423,6 +423,12 @@ const migrationCommands = (transaction) => [
           allowNull: false,
           primaryKey: true,
         },
+        code: {
+          type: Sequelize.STRING(14),
+          field: "code",
+          allowNull: false,
+          unique: true
+        },
         status: {
           type: Sequelize.ENUM("Pending", "Handling", "Completed", "Canceled"),
           field: "status",

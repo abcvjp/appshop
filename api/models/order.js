@@ -42,6 +42,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
       },
+      code: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+      },
       status: {
         type: DataTypes.ENUM('Pending', 'Handling', 'Completed', 'Canceled'),
         allowNull: false,
