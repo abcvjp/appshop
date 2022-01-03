@@ -575,32 +575,54 @@ exports.getProductReviews = async ({
   sort
 }) => {
   try {
-    const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
-    const { rows, count } = await Review.findAndCountAll({
-      where: {
-        product_id: productId
-      },
-      include: [
-        {
-          association: 'user',
-          required: true,
-          attributes: ['id', 'full_name', 'avatar']
-        }
-      ],
-      attributes: {
-        exclude: ['id', 'user_id', 'product_id']
-      },
-      limit,
-      offset,
-      order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
-    });
-    
-    const pagination = paginate(current_page, count, rows, page_size);
-    return {
-      success: true,
-      data: rows,
-      pagination
-    };
+    if (!current_page && !page_size) {
+      const result = await Review.findAll({
+        where: {
+          product_id: productId
+        },
+        include: [
+          {
+            association: 'user',
+            required: true,
+            attributes: ['id', 'full_name', 'avatar']
+          }
+        ],
+        attributes: {
+          exclude: ['id', 'user_id', 'product_id']
+        },
+        order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
+      });
+      return {
+        success: true,
+        data: result
+      };
+    } else {
+      const { limit, offset } = calculateLimitAndOffset(current_page, page_size);
+      const { rows, count } = await Review.findAndCountAll({
+        where: {
+          product_id: productId
+        },
+        include: [
+          {
+            association: 'user',
+            required: true,
+            attributes: ['id', 'full_name', 'avatar']
+          }
+        ],
+        attributes: {
+          exclude: ['id', 'user_id', 'product_id']
+        },
+        limit,
+        offset,
+        order: sort ? [sort.split('.')] : [['createdAt', 'DESC']]
+      });
+      const pagination = paginate(current_page, count, rows, page_size);
+      return {
+        success: true,
+        data: rows,
+        pagination
+      };
+    }
   } catch (error) {
     throw createError(error.statusCode || 500, error.message);
   }
