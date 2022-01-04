@@ -120,7 +120,8 @@ exports.signup = async ({
   password,
   email,
   phone_number,
-  full_name
+  full_name,
+  address
 }) => {
   try {
     const userFromServer = await User.findOne({
@@ -147,7 +148,8 @@ exports.signup = async ({
       hash,
       email,
       phone_number,
-      full_name
+      full_name,
+      address
     });
     const userAfterCreate = await User.findOne({
       where: { id }

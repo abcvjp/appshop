@@ -24,7 +24,12 @@ module.exports = {
       phone_number: Joi.string()
         .length(10)
         .pattern(/^[0-9]+$/)
-        .required()
+        .required(),
+      address: Joi.string()
+        .trim()
+        .min(10)
+        .max(300)
+        .allow(null)
     })
   },
   login: {

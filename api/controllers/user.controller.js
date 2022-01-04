@@ -23,13 +23,14 @@ exports.loginWithFirebase = asyncHandler(async (req, res, next) => {
 })
 
 exports.signup = asyncHandler(async (req, res, next) => {
-  const { username, password, email, phone_number, full_name } = req.body;
+  const { username, password, email, phone_number, full_name, address } = req.body;
   const result = await userService.signup({
     username,
     password,
     email,
     phone_number,
-    full_name
+    full_name,
+    address
   });
   res.status(200).json(result);
 });
