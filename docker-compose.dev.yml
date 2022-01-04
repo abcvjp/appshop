@@ -147,19 +147,19 @@ services:
       - PMA_HOST=db
       - PMA_PORT=3306
       - PMA_ARBITRARY=1
-  # mailhog:
-    # depends_on:
-      # - api
-      # - worker
-    # image: mailhog/mailhog
-    # logging:
-      # driver: "none" # disable saving logs
-    # networks:
-      # - backend
-    # expose:
-      # - 1025 # smtp server
-    # ports:
-      # - 8025:8025 # ui server
+  mailhog:
+    depends_on:
+      - api
+      - worker
+    image: mailhog/mailhog:v1.0.1
+    logging:
+      driver: "none" # disable saving logs
+    networks:
+      - backend
+    expose:
+      - 1025 # smtp server
+    ports:
+      - 8025:8025 # ui server
   # aws:
     # image: localstack/localstack-light:0.12.18
     # expose:

@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 const sendMail = ({ to, subject, text, html }, onError, onSuccess) => {
   transporter.sendMail(
     {
-      from: `Webshop <${config.get('mailer.user')}>`,
+      from: `Techmall <${config.get('mailer.user')}>`,
       to,
       subject,
       text,

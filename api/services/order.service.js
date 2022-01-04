@@ -11,7 +11,7 @@ const { uuid } = require('uuidv4');
 const shortid = require('shortid');
 const { calculateLimitAndOffset, paginate } = require('paginate-info');
 const { roundPrice } = require('../helpers/logicFunc.helper');
-const { orderConfirmationMailQueue } = require('../queues');
+const { orderConfirmationMailQueue, orderSuccessMailQueue } = require('../queues');
 
 exports.getOrders = async ({
   id,
@@ -339,12 +339,14 @@ exports.createOrder = async ({
 
     // CREATE ORDER AND ORDER ITEMS
     await sequelize.transaction(async (t) => {
-      let promises = [
+      const promises = [];
+      promises.push(
+        // create order
         Order.create(newOrder, {
           profit,
           items_number
         })
-      ]; // create order
+      );
       order_items.forEach(order_item => {
         // create order items and update product stock quantity
         promises.push(
@@ -358,6 +360,39 @@ exports.createOrder = async ({
         );
       });
       await Promise.all(promises);
+    });
+
+    Order.findByPk(id, {
+      include: [
+        {
+          association: 'payment_method',
+          attributes: ['name']
+        },
+        {
+          association: 'shipping_method',
+          attributes: ['name']
+        },
+        {
+          association: 'order_items',
+          attributes: [
+            'product_id',
+            'product_name',
+            'product_preview',
+            'price',
+            'quantity'
+          ]
+        }
+      ],
+      attributes: {
+        exclude: ['payment_method_id', 'shipping_method_id']
+      }
+    }).then(orderCreated => {
+      orderSuccessMailQueue.add(
+        `Send email: order succeed ${orderCreated.id}`,
+        {
+          order: orderCreated
+        }
+      );
     });
 
     return {
@@ -550,7 +585,7 @@ exports.confirmlOrder = async ({ id }) => {
 
     await sequelize.transaction(async (t) => {
       await orderToConfirm.update({ status: 'Handling' });
-      orderConfirmationMailQueue.add(
+      await orderConfirmationMailQueue.add(
         `Send email: confirm order ${orderToConfirm.id}`,
         {
           order: orderToConfirm

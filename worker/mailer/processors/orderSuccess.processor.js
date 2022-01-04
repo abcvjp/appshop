@@ -1,14 +1,14 @@
 const { sendMail } = require('../transporter');
 const {
-  generateOrderConfirmationMail
+  generateOrderSucceedMail
 } = require('../../helpers/mailContentGenerator.helper');
 
 module.exports = async (job) => {
   const { order } = job.data;
-  const content = await generateOrderConfirmationMail(order);
+  const content = await generateOrderSucceedMail(order);
   sendMail({
     to: order.email,
-    subject: 'Your order is confirmed!',
+    subject: 'Techmall has recieved your order',
     html: content
   });
 };

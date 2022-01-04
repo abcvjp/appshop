@@ -1,10 +1,10 @@
 const connection = require('../connection');
 const { Worker } = require('bullmq');
-const processor = require('../processors/orderConfirmation.processor.js');
+const processor = require('../processors/orderSuccess.processor.js');
 
-const confirmOrderSender = new Worker('orderConfirmationMailQueue', processor, {
+const confirmOrderSender = new Worker('orderSuccessMailQueue', processor, {
   connection,
-  concurrency: 2
+  concurrency: 10
 });
 
 confirmOrderSender.on('progress', (job) => {
