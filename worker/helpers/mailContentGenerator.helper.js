@@ -12,4 +12,9 @@ module.exports = {
       path.join(__dirname, '../mailer/templates/orderSuccess.ejs'),
       { order }
     ),
+  generateForgotPasswordMail: ({ user, new_password }) =>
+    ejs.renderFile(
+      path.join(__dirname, '../mailer/templates/forgotPassword.ejs'),
+      { user, new_password }
+    ),
 };

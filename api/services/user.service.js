@@ -4,6 +4,7 @@ const { Bcrypt, JWT } = require('../helpers');
 const { uuid } = require('uuidv4');
 const { Op } = require('../models').Sequelize;
 const { calculateLimitAndOffset, paginate } = require('paginate-info');
+const { forgotPasswordMailQueue } = require('../queues');
 
 const firebase = require("../firebase");
 
@@ -482,6 +483,32 @@ exports.disableUser = async ({ id }) => {
     await userToDisable.update({
       enable: false
     });
+    return {
+      success: true
+    };
+  } catch (error) {
+    throw createError(error.statusCode || 500, error.message);
+  }
+};
+
+exports.forgotPassword = async ({ email }) => {
+  try {
+    const userForgot = await User.findOne({
+      where: { email }
+    });
+    if (!userForgot) throw createError(404, 'User with email does not exist');
+    const new_password = Math.random().toString(36).slice(-8);
+    await userForgot.update({
+      hash: Bcrypt.hashPassword(new_password)
+    });
+    const { id, full_name } = userForgot;
+    await forgotPasswordMailQueue.add(
+      `Send email: forgot password - user ${userForgot.id}`,
+      {
+        user: { id, full_name, email },
+        new_password
+      }
+    );
     return {
       success: true
     };

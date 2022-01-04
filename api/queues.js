@@ -1,6 +1,5 @@
 const config = require('./config');
 const { Queue, QueueScheduler } = require('bullmq');
-const { logger } = require('./helpers');
 
 const redisConnection = {
   host: config.get('redis.host'),
@@ -9,6 +8,7 @@ const redisConnection = {
 };
 const ORDER_CONFIRMATION_MAIL_QUEUE_NAME = 'orderConfirmationMailQueue';
 const ORDER_SUCCESS_MAIL_QUEUE_NAME = 'orderSuccessMailQueue';
+const FORGOT_PASSWORD_MAIL_QUEUE_NAME = 'forgotPasswordMailQueue';
 
 const orderConfirmationMailQueue = new Queue(
   ORDER_CONFIRMATION_MAIL_QUEUE_NAME,
@@ -52,7 +52,26 @@ const orderSuccessMailQueueScheduler = new QueueScheduler(
   }
 );
 
+const forgotPasswordMailQueue = new Queue(
+  FORGOT_PASSWORD_MAIL_QUEUE_NAME,
+  {
+    connection: redisConnection,
+    defaultJobOptions: {
+      removeOnComplete: true,
+      attempts: 6,
+      backoff: { type: 'exponential', delay: 1000 }
+    }
+  }
+);
+const forgotPasswordMailQueueScheduler = new QueueScheduler(
+  FORGOT_PASSWORD_MAIL_QUEUE_NAME,
+  {
+    connection: redisConnection
+  }
+);
+
 module.exports = {
   orderConfirmationMailQueue,
-  orderSuccessMailQueue
+  orderSuccessMailQueue,
+  forgotPasswordMailQueue
 };

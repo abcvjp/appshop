@@ -185,3 +185,9 @@ exports.checkLockUser = asyncHandler(async (req, res, next) => {
     throw createError(403, 'Your account is locked');
   next();
 });
+
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
+  const result = await userService.forgotPassword({ email });
+  res.status(200).json(result);
+});

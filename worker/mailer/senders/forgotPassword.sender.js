@@ -1,10 +1,10 @@
 const connection = require('../connection');
 const { Worker } = require('bullmq');
-const processor = require('../processors/orderSuccess.processor.js');
+const processor = require('../processors/forgotPassword.processor.js');
 
-const sender = new Worker('orderSuccessMailQueue', processor, {
+const sender = new Worker('forgotPasswordMailQueue', processor, {
   connection,
-  concurrency: 10
+  concurrency: 1
 });
 
 sender.on('progress', (job) => {

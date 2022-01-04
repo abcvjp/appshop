@@ -91,6 +91,11 @@ router.post(
   userController.createPassword
 );
 router.post(
+  '/forgot-password',
+  validate(userValidation.forgotPassword),
+  userController.forgotPassword
+);
+router.post(
   '/enable',
   authenticate({ required: true }),
   authorizeRole(Role.Admin),

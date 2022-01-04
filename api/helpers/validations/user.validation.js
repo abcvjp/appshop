@@ -159,5 +159,10 @@ module.exports = {
     params: Joi.object({
       userId: Joi.string().guid({ version: 'uuidv4' }).required()
     })
-  }
+  },
+  forgotPassword: {
+    body: Joi.object({
+      email: Joi.string().trim().email()
+    })
+  },
 };
